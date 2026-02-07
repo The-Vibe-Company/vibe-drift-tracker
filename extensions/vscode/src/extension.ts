@@ -5,28 +5,57 @@ import { sendCommitPayload } from "./api-client";
 import { createStatusBar, updateStatusBar, disposeStatusBar } from "./status-bar";
 
 let gitWatcher: GitWatcher | undefined;
+let outputChannel: vscode.OutputChannel;
+
+function log(message: string) {
+  const time = new Date().toLocaleTimeString();
+  outputChannel.appendLine(`[${time}] ${message}`);
+}
 
 export function activate(context: vscode.ExtensionContext) {
+  outputChannel = vscode.window.createOutputChannel("VibeDrift");
+  context.subscriptions.push(outputChannel);
+
+  log("Extension activating...");
+
   const config = vscode.workspace.getConfiguration("vibedrift");
-  if (!config.get<boolean>("enabled", true)) return;
+  if (!config.get<boolean>("enabled", true)) {
+    log("Extension disabled in settings");
+    return;
+  }
+
+  const apiUrl = config.get<string>("apiUrl", "http://localhost:3000");
+  const apiKey = config.get<string>("apiKey", "");
+  log(`API URL: ${apiUrl}`);
+  log(`API Key: ${apiKey ? "configured" : "NOT SET — go to /dashboard/settings to generate one"}`);
 
   const statusBar = createStatusBar();
   context.subscriptions.push(statusBar);
 
   const workspaceFolders = vscode.workspace.workspaceFolders;
-  if (!workspaceFolders || workspaceFolders.length === 0) return;
+  if (!workspaceFolders || workspaceFolders.length === 0) {
+    log("No workspace folder found");
+    return;
+  }
 
   const repoPath = workspaceFolders[0].uri.fsPath;
+  log(`Watching repo: ${repoPath}`);
 
   gitWatcher = new GitWatcher(repoPath, async (_repoPath, commitHash) => {
     try {
-      const apiUrl = config.get<string>("apiUrl", "http://localhost:3000");
-      const apiKey = config.get<string>("apiKey", "");
+      log(`New commit detected: ${commitHash.slice(0, 7)}`);
+
+      const currentConfig = vscode.workspace.getConfiguration("vibedrift");
+      const url = currentConfig.get<string>("apiUrl", "http://localhost:3000");
+      const key = currentConfig.get<string>("apiKey", "");
 
       const payload = await buildCommitPayload(_repoPath, commitHash, "vscode");
-      const result = await sendCommitPayload(apiUrl, payload, apiKey || undefined);
+      log(`Sending payload for project "${payload.projectName}"...`);
+
+      const result = await sendCommitPayload(url, payload, key || undefined);
 
       updateStatusBar(result.vibeDriftScore, result.vibeDriftLevel);
+      log(`Done — drift: ${result.vibeDriftLevel} (${result.vibeDriftScore.toFixed(1)})`);
 
       vscode.window.setStatusBarMessage(
         `VibeDrift: ${result.vibeDriftLevel} (${result.vibeDriftScore.toFixed(1)})`,
@@ -34,11 +63,12 @@ export function activate(context: vscode.ExtensionContext) {
       );
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      console.error("VibeDrift error:", message);
+      log(`ERROR: ${message}`);
     }
   });
 
   gitWatcher.start();
+  log("Git watcher started — waiting for commits");
 
   context.subscriptions.push({
     dispose: () => {
