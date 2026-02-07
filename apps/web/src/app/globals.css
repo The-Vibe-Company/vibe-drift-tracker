@@ -20,3 +20,67 @@ body {
   color: var(--foreground);
   font-family: system-ui, -apple-system, sans-serif;
 }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes flowDot {
+  0% { left: -6px; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { left: calc(100% + 6px); opacity: 0; }
+}
+
+@keyframes flowDotVertical {
+  0% { top: -6px; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { top: calc(100% + 6px); opacity: 0; }
+}
+
+@keyframes typing {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(250, 204, 21, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(250, 204, 21, 0.5); }
+}
+
+button,
+a,
+select,
+input[type="date"],
+[role="button"],
+[role="menuitem"] {
+  cursor: pointer;
+}
+
+/* Hide settings link in UserButton dropdown */
+a[href*="/account"] {
+  display: none !important;
+}
+
+@keyframes waveFlow {
+  0% { d: path("M0 10 Q15 2, 30 10 T60 10 T90 10 T120 10"); }
+  50% { d: path("M0 10 Q15 18, 30 10 T60 10 T90 10 T120 10"); }
+  100% { d: path("M0 10 Q15 2, 30 10 T60 10 T90 10 T120 10"); }
+}

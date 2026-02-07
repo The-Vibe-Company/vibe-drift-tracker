@@ -29,7 +29,7 @@ export function Filters({ projects }: { projects: string[] }) {
       <select
         value={currentProject}
         onChange={(e) => updateFilter("project", e.target.value)}
-        className="rounded-md border px-3 py-1.5 text-sm"
+        className="cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors hover:border-[var(--primary)]"
         style={{
           borderColor: "var(--border)",
           backgroundColor: "var(--card)",
@@ -49,7 +49,7 @@ export function Filters({ projects }: { projects: string[] }) {
         value={currentSince}
         onChange={(e) => updateFilter("since", e.target.value)}
         placeholder="Since"
-        className="rounded-md border px-3 py-1.5 text-sm"
+        className="cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors hover:border-[var(--primary)]"
         style={{
           borderColor: "var(--border)",
           backgroundColor: "var(--card)",
@@ -62,7 +62,7 @@ export function Filters({ projects }: { projects: string[] }) {
         value={currentUntil}
         onChange={(e) => updateFilter("until", e.target.value)}
         placeholder="Until"
-        className="rounded-md border px-3 py-1.5 text-sm"
+        className="cursor-pointer rounded-md border px-3 py-1.5 text-sm transition-colors hover:border-[var(--primary)]"
         style={{
           borderColor: "var(--border)",
           backgroundColor: "var(--card)",
