@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
-import { commits, fileChanges, type NewCommitRow, type NewFileChangeRow } from "./schema";
+import { commits, fileChanges, apiKeys, type NewCommitRow, type NewFileChangeRow, type NewApiKeyRow } from "./schema";
 
 function getDb() {
   const databaseUrl = process.env.DATABASE_URL;
@@ -32,10 +32,14 @@ export async function getCommits(filters?: {
   until?: string;
   limit?: number;
   offset?: number;
+  userId?: string;
 }) {
   const db = getDb();
   const conditions = [];
 
+  if (filters?.userId) {
+    conditions.push(eq(commits.userId, filters.userId));
+  }
   if (filters?.project) {
     conditions.push(eq(commits.projectName, filters.project));
   }
@@ -57,11 +61,12 @@ export async function getCommits(filters?: {
   return query;
 }
 
-export async function getProjects() {
+export async function getProjects(userId?: string) {
   const db = getDb();
   const result = await db
     .selectDistinct({ projectName: commits.projectName })
     .from(commits)
+    .where(userId ? eq(commits.userId, userId) : undefined)
     .orderBy(commits.projectName);
   return result.map((r) => r.projectName);
 }
@@ -83,9 +88,11 @@ export async function getCommitDetail(hash: string) {
   return { ...commit, fileChanges: files };
 }
 
-export async function getStats(project?: string) {
+export async function getStats(project?: string, userId?: string) {
   const db = getDb();
-  const condition = project ? eq(commits.projectName, project) : undefined;
+  const conditions = [];
+  if (project) conditions.push(eq(commits.projectName, project));
+  if (userId) conditions.push(eq(commits.userId, userId));
 
   const [result] = await db
     .select({
@@ -95,7 +102,62 @@ export async function getStats(project?: string) {
       totalPrompts: sql<number>`coalesce(sum(${commits.userPrompts}), 0)::int`,
     })
     .from(commits)
-    .where(condition);
+    .where(conditions.length > 0 ? and(...conditions) : undefined);
 
   return result;
+}
+
+// --- API Key helpers ---
+
+export async function hashApiKey(raw: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(raw);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export async function createApiKey(data: NewApiKeyRow) {
+  const db = getDb();
+  const [row] = await db.insert(apiKeys).values(data).returning();
+  return row;
+}
+
+export async function getApiKeysByUser(userId: string) {
+  const db = getDb();
+  return db
+    .select({
+      id: apiKeys.id,
+      name: apiKeys.name,
+      createdAt: apiKeys.createdAt,
+      lastUsedAt: apiKeys.lastUsedAt,
+    })
+    .from(apiKeys)
+    .where(eq(apiKeys.userId, userId))
+    .orderBy(desc(apiKeys.createdAt));
+}
+
+export async function lookupApiKey(keyHash: string) {
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(apiKeys)
+    .where(eq(apiKeys.keyHash, keyHash))
+    .limit(1);
+  return row ?? null;
+}
+
+export async function updateApiKeyLastUsed(id: number) {
+  const db = getDb();
+  await db
+    .update(apiKeys)
+    .set({ lastUsedAt: new Date() })
+    .where(eq(apiKeys.id, id));
+}
+
+export async function deleteApiKey(id: number, userId: string) {
+  const db = getDb();
+  await db
+    .delete(apiKeys)
+    .where(and(eq(apiKeys.id, id), eq(apiKeys.userId, userId)));
 }

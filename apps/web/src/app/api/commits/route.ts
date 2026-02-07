@@ -4,24 +4,32 @@ import {
   computeVibeDriftScore,
   getVibeDriftLevel,
 } from "@vibedrift/shared";
-import { insertCommit, getCommits } from "@/lib/db";
+import { insertCommit, getCommits, hashApiKey, lookupApiKey, updateApiKeyLastUsed } from "@/lib/db";
 import type { NewFileChangeRow } from "@/lib/db/schema";
 import { auth } from "@/lib/auth/server";
 
-async function isAuthenticated(request: NextRequest): Promise<boolean> {
-  // Check for Bearer token (hooks / extensions)
+async function resolveUser(request: NextRequest): Promise<string | null> {
+  // 1. Bearer token → hash → lookup api_keys → userId
   const authHeader = request.headers.get("authorization");
   if (authHeader?.startsWith("Bearer ") && authHeader.length > 7) {
-    return true;
+    const token = authHeader.slice(7);
+    const keyHash = await hashApiKey(token);
+    const apiKey = await lookupApiKey(keyHash);
+    if (apiKey) {
+      updateApiKeyLastUsed(apiKey.id).catch(() => {});
+      return apiKey.userId;
+    }
+    return null;
   }
 
-  // Check for session cookie (dashboard)
+  // 2. Session cookie → userId
   const { data: session } = await auth.getSession();
-  return !!session?.user;
+  return session?.user?.id ?? null;
 }
 
 export async function POST(request: NextRequest) {
-  if (!(await isAuthenticated(request))) {
+  const userId = await resolveUser(request);
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -62,6 +70,7 @@ export async function POST(request: NextRequest) {
         vibeDriftLevel: level,
         source: payload.source,
         sessionIds: payload.sessionIds,
+        userId,
       },
       payload.fileChanges?.map(
         (f): Omit<NewFileChangeRow, "commitId"> & { commitId: number } => ({
@@ -94,6 +103,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
     const rows = await getCommits({
+      userId: session.user.id,
       project: searchParams.get("project") ?? undefined,
       since: searchParams.get("since") ?? undefined,
       until: searchParams.get("until") ?? undefined,

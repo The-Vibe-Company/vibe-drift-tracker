@@ -9,7 +9,7 @@ export async function GET() {
   }
 
   try {
-    const projects = await getProjects();
+    const projects = await getProjects(session.user.id);
     return NextResponse.json(projects);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Internal server error";

@@ -1,5 +1,7 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { getCommits, getProjects, getStats } from "@/lib/db";
+import { auth } from "@/lib/auth/server";
 import { CommitTable } from "@/components/commit-table";
 import { StatsSummary } from "@/components/stats-summary";
 import { Filters } from "@/components/filters";
@@ -11,16 +13,21 @@ export default async function DashboardPage({
 }: {
   searchParams: Promise<{ project?: string; since?: string; until?: string }>;
 }) {
+  const { data: session } = await auth.getSession();
+  if (!session?.user) redirect("/");
+
+  const userId = session.user.id;
   const params = await searchParams;
 
   const [commitRows, projects, stats] = await Promise.all([
     getCommits({
+      userId,
       project: params.project,
       since: params.since,
       until: params.until,
     }),
-    getProjects(),
-    getStats(params.project),
+    getProjects(userId),
+    getStats(params.project, userId),
   ]);
 
   return (

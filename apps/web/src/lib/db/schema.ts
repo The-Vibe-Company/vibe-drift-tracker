@@ -32,6 +32,7 @@ export const commits = pgTable(
     source: text("source").default("manual"),
     sessionIds: jsonb("session_ids").$type<string[]>().default([]),
     receivedAt: timestamp("received_at", { withTimezone: true }).defaultNow(),
+    userId: text("user_id"),
   },
   (table) => [unique("commits_hash_project_unique").on(table.commitHash, table.projectName)],
 );
@@ -46,6 +47,18 @@ export const fileChanges = pgTable("file_changes", {
   linesDeleted: integer("lines_deleted").default(0),
   status: text("status").default("modified"),
 });
+
+export const apiKeys = pgTable("api_keys", {
+  id: serial("id").primaryKey(),
+  keyHash: text("key_hash").notNull().unique(),
+  userId: text("user_id").notNull(),
+  name: text("name").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  lastUsedAt: timestamp("last_used_at", { withTimezone: true }),
+});
+
+export type ApiKeyRow = typeof apiKeys.$inferSelect;
+export type NewApiKeyRow = typeof apiKeys.$inferInsert;
 
 export type CommitRow = typeof commits.$inferSelect;
 export type NewCommitRow = typeof commits.$inferInsert;
