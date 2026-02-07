@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "@neondatabase/auth/ui/tailwind";
 
 :root {
   --background: #0a0a0a;
@@ -8,10 +9,10 @@
   --border: #262626;
   --muted: #1a1a1a;
   --muted-foreground: #a1a1a1;
-  --primary: #ededed;
+  --primary: #facc15;
   --primary-foreground: #0a0a0a;
   --accent: #1a1a1a;
-  --accent-foreground: #ededed;
+  --accent-foreground: #facc15;
 }
 
 body {

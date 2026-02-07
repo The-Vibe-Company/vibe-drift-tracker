@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { authClient } from "@/lib/auth/client";
+import { NeonAuthUIProvider } from "@neondatabase/auth/react";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -13,7 +15,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <NeonAuthUIProvider
+          authClient={authClient}
+          redirectTo="/dashboard"
+          emailOTP
+        >
+          {children}
+        </NeonAuthUIProvider>
+      </body>
     </html>
   );
 }
