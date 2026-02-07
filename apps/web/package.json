@@ -11,6 +11,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@neondatabase/auth": "0.2.0-beta.1",
     "@neondatabase/serverless": "^0.10.4",
     "@vibedrift/shared": "workspace:*",
     "drizzle-orm": "^0.38.3",

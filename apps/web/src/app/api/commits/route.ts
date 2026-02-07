@@ -6,8 +6,25 @@ import {
 } from "@vibedrift/shared";
 import { insertCommit, getCommits } from "@/lib/db";
 import type { NewFileChangeRow } from "@/lib/db/schema";
+import { auth } from "@/lib/auth/server";
+
+async function isAuthenticated(request: NextRequest): Promise<boolean> {
+  // Check for Bearer token (hooks / extensions)
+  const authHeader = request.headers.get("authorization");
+  if (authHeader?.startsWith("Bearer ") && authHeader.length > 7) {
+    return true;
+  }
+
+  // Check for session cookie (dashboard)
+  const { data: session } = await auth.getSession();
+  return !!session?.user;
+}
 
 export async function POST(request: NextRequest) {
+  if (!(await isAuthenticated(request))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const payload: CommitPayload = await request.json();
 
@@ -69,6 +86,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  const { data: session } = await auth.getSession();
+  if (!session?.user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
     const { searchParams } = request.nextUrl;
     const rows = await getCommits({

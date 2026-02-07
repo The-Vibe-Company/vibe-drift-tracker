@@ -1,50 +1,38 @@
-import { Suspense } from "react";
-import { getCommits, getProjects, getStats } from "@/lib/db";
-import { CommitTable } from "@/components/commit-table";
-import { StatsSummary } from "@/components/stats-summary";
-import { Filters } from "@/components/filters";
+import { auth } from "@/lib/auth/server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ project?: string; since?: string; until?: string }>;
-}) {
-  const params = await searchParams;
+export default async function Home() {
+  const { data: session } = await auth.getSession();
 
-  const [commitRows, projects, stats] = await Promise.all([
-    getCommits({
-      project: params.project,
-      since: params.since,
-      until: params.until,
-    }),
-    getProjects(),
-    getStats(params.project),
-  ]);
+  if (session?.user) {
+    redirect("/dashboard");
+  }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
-          VibeDrift Tracker
-        </h1>
-        <p className="mt-1" style={{ color: "var(--muted-foreground)" }}>
-          Monitor your AI-assisted development vibe drift across projects
-        </p>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-4">
+      <h1 className="text-4xl font-bold tracking-tight">VibeDrift</h1>
+      <p style={{ color: "var(--muted-foreground)" }}>
+        Track your AI-assisted development vibe drift
+      </p>
+      <div className="flex gap-3">
+        <Link
+          href="/auth/sign-in"
+          className="rounded-md px-4 py-2 text-sm font-medium"
+          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+        >
+          Sign in
+        </Link>
+        <Link
+          href="/auth/sign-up"
+          className="rounded-md px-4 py-2 text-sm font-medium border"
+          style={{ borderColor: "var(--border)" }}
+        >
+          Sign up
+        </Link>
       </div>
-
-      <div className="mb-6">
-        <StatsSummary stats={stats} />
-      </div>
-
-      <div className="mb-4">
-        <Suspense fallback={null}>
-          <Filters projects={projects} />
-        </Suspense>
-      </div>
-
-      <CommitTable commits={commitRows} />
     </main>
   );
 }
