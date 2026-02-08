@@ -1,3 +1,9 @@
+export interface PromptDetail {
+  text: string;       // content of the prompt (truncated to 500 chars)
+  timestamp: string;  // ISO 8601
+  sessionId: string;
+}
+
 export interface FileChangePayload {
   filePath: string;
   linesAdded: number;
@@ -23,6 +29,7 @@ export interface CommitPayload {
   source: "vscode" | "hook" | "manual";
   sessionIds: string[];
   fileChanges?: FileChangePayload[];
+  prompts?: PromptDetail[];
 }
 
 export interface SessionStats {
@@ -33,6 +40,7 @@ export interface SessionStats {
   totalInteractions: number;
   startTime?: string;
   endTime?: string;
+  prompts?: PromptDetail[];
 }
 
 export interface SessionIndexEntry {

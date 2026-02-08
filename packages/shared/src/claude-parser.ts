@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { SessionStats } from "./types";
+import { SessionStats, PromptDetail } from "./types";
 
 interface SessionIndexFile {
   version: number;
@@ -146,6 +146,7 @@ export function parseSessionFile(
   let startTime: string | undefined;
   let endTime: string | undefined;
   let sessionId = "";
+  const prompts: PromptDetail[] = [];
 
   for (const line of lines) {
     let msg: JSONLMessage;
@@ -177,6 +178,14 @@ export function parseSessionFile(
       if (msg.isSidechain) continue;
       if (msg.message.content && isCommand(msg.message.content)) continue;
       userPrompts++;
+      const text = typeof msg.message.content === "string"
+        ? msg.message.content
+        : msg.message.content?.map((c) => c.text || "").join("") ?? "";
+      prompts.push({
+        text: text.slice(0, 500),
+        timestamp: msg.timestamp || "",
+        sessionId,
+      });
     }
 
     // Count AI responses
@@ -198,6 +207,7 @@ export function parseSessionFile(
     totalInteractions: userPrompts + aiResponses,
     startTime,
     endTime,
+    prompts,
   };
 }
 
@@ -228,6 +238,10 @@ export function parseClaudeSessions(
     }
   }
 
+  const allPrompts = sessions
+    .flatMap((s) => s.prompts ?? [])
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
   return {
     aggregate: {
       sessionId: "aggregate",
@@ -235,6 +249,7 @@ export function parseClaudeSessions(
       aiResponses: totalAiResponses,
       toolCalls: totalToolCalls,
       totalInteractions: totalUserPrompts + totalAiResponses,
+      prompts: allPrompts,
     },
     sessions,
   };

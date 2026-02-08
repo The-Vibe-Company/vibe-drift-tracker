@@ -136,5 +136,6 @@ export async function buildCommitPayload(
     source,
     sessionIds: sessions.map((s) => s.sessionId),
     fileChanges,
+    prompts: aggregate.prompts ?? [],
   };
 }

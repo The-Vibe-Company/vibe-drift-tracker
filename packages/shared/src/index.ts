@@ -1,6 +1,7 @@
 export {
   type CommitPayload,
   type FileChangePayload,
+  type PromptDetail,
   type SessionStats,
   type SessionIndexEntry,
   type VibeDriftLevel,

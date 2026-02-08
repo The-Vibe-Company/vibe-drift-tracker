@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
         vibeDriftLevel: level,
         source: payload.source,
         sessionIds: payload.sessionIds,
+        prompts: payload.prompts ?? [],
         userId,
       },
       payload.fileChanges?.map(
