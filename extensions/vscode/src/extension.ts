@@ -50,6 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
       const key = currentConfig.get<string>("apiKey", "");
 
       const payload = await buildCommitPayload(_repoPath, commitHash, "vscode");
+      log(`Prompts extracted: ${payload.prompts?.length ?? 0}`);
+      if (payload.prompts && payload.prompts.length > 0) {
+        log(`First prompt: "${payload.prompts[0].text.slice(0, 80)}..."`);
+      }
       log(`Sending payload for project "${payload.projectName}"...`);
 
       const result = await sendCommitPayload(url, payload, key || undefined);
