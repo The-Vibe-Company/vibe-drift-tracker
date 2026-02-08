@@ -32,14 +32,7 @@ export default async function DashboardPage({
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">
-          VibeDriftTracker
-        </h1>
-        <p className="mt-1" style={{ color: "var(--muted-foreground)" }}>
-          Monitor your AI-assisted development vibe drift across projects
-        </p>
-      </div>
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Dashboard</h1>
 
       <div className="mb-6">
         <StatsSummary stats={stats} />

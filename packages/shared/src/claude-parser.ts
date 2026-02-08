@@ -82,29 +82,45 @@ export function getSessionsInWindow(
 
   for (const dir of projectDirs) {
     const indexPath = path.join(dir, "sessions-index.json");
-    if (!fs.existsSync(indexPath)) continue;
 
-    try {
-      const index: SessionIndexFile = JSON.parse(
-        fs.readFileSync(indexPath, "utf-8"),
-      );
+    if (fs.existsSync(indexPath)) {
+      // Use the index for fast lookup
+      try {
+        const index: SessionIndexFile = JSON.parse(
+          fs.readFileSync(indexPath, "utf-8"),
+        );
 
-      for (const entry of index.entries) {
-        const created = new Date(entry.created);
-        const modified = new Date(entry.modified);
+        for (const entry of index.entries) {
+          const created = new Date(entry.created);
+          const modified = new Date(entry.modified);
 
-        // Session overlaps with our window if it was modified after `since`
-        // and created before `until`
-        if (modified >= since && created <= until) {
-          const jsonlPath =
-            entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
-          if (fs.existsSync(jsonlPath)) {
-            sessions.push({ sessionId: entry.sessionId, fullPath: jsonlPath });
+          if (modified >= since && created <= until) {
+            const jsonlPath =
+              entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
+            if (fs.existsSync(jsonlPath)) {
+              sessions.push({ sessionId: entry.sessionId, fullPath: jsonlPath });
+            }
           }
         }
+      } catch {
+        // Skip malformed index files
       }
-    } catch {
-      // Skip malformed index files
+    } else {
+      // Fallback: scan .jsonl files directly when index is missing
+      try {
+        const files = fs.readdirSync(dir).filter((f) => f.endsWith(".jsonl"));
+        for (const file of files) {
+          const fullPath = path.join(dir, file);
+          const stat = fs.statSync(fullPath);
+
+          if (stat.mtimeMs >= since.getTime() && stat.birthtimeMs <= until.getTime()) {
+            const sessionId = file.replace(".jsonl", "");
+            sessions.push({ sessionId, fullPath });
+          }
+        }
+      } catch {
+        // Skip unreadable directories
+      }
     }
   }
 
