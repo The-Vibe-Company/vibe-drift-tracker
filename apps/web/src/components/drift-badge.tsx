@@ -2,16 +2,10 @@ const driftColors: Record<string, string> = {
   low: "#22c55e",
   moderate: "#eab308",
   high: "#f97316",
-  "vibe-drift": "#ef4444",
+  "vibe-drifting": "#ef4444",
 };
 
-export function DriftBadge({
-  score,
-  level,
-}: {
-  score: number;
-  level: string;
-}) {
+export function DriftBadge({ score, level }: { score: number; level: string }) {
   const color = driftColors[level] ?? "#6b7280";
 
   return (
