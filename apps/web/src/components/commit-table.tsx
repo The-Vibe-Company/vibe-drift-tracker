@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import type { CommitRow } from "@/lib/db/schema";
 import { DriftBadge } from "./drift-badge";
 
@@ -213,9 +213,8 @@ export function CommitTable({ commits }: { commits: CommitRow[] }) {
           {commits.map((commit) => {
             const isExpanded = expandedId === commit.id;
             return (
-              <>
+              <Fragment key={commit.id}>
                 <tr
-                  key={commit.id}
                   className="border-b cursor-pointer transition-colors"
                   style={{
                     borderColor: "var(--border)",
@@ -269,7 +268,7 @@ export function CommitTable({ commits }: { commits: CommitRow[] }) {
                     style={{ color: "var(--muted-foreground)" }}
                   >
                     {commit.committedAt
-                      ? new Date(commit.committedAt).toLocaleDateString()
+                      ? new Date(commit.committedAt).toLocaleDateString("en-US")
                       : ""}
                   </td>
                 </tr>
@@ -285,7 +284,7 @@ export function CommitTable({ commits }: { commits: CommitRow[] }) {
                     <DetailPanel commit={commit} />
                   </tr>
                 )}
-              </>
+              </Fragment>
             );
           })}
         </tbody>
