@@ -46,11 +46,7 @@ export async function POST(request: NextRequest) {
     const cleanedPrompts = payload.prompts ?? [];
     const userPrompts = cleanedPrompts.length;
 
-    const score = computeVibeDriftScore(
-      userPrompts,
-      payload.linesAdded,
-      payload.linesDeleted,
-    );
+    const score = computeVibeDriftScore(userPrompts, payload.linesAdded, payload.linesDeleted);
     const level = getVibeDriftLevel(score);
 
     const row = await insertCommit(

@@ -10,7 +10,7 @@ export function DriftBadge({ score, level }: { score: number; level: string }) {
 
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
+      className="inline-flex whitespace-nowrap items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium"
       style={{ backgroundColor: `${color}20`, color }}
     >
       <span

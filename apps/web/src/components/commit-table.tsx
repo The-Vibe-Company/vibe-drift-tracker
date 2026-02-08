@@ -19,8 +19,66 @@ function formatRelativeTime(timestamp: string): string {
   return `${diffD}d ago`;
 }
 
+function PromptModal({
+  prompt,
+  index,
+  onClose,
+}: {
+  prompt: { text: string; timestamp: string };
+  index: number;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+      onClick={onClose}
+    >
+      <div
+        className="relative mx-4 max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-lg border p-6"
+        style={{
+          backgroundColor: "var(--card)",
+          borderColor: "var(--border)",
+        }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <span
+            className="text-xs font-semibold"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            Prompt #{index + 1}
+            {prompt.timestamp && (
+              <span className="ml-2 font-normal">
+                {formatRelativeTime(prompt.timestamp)}
+              </span>
+            )}
+          </span>
+          <button
+            className="rounded p-1 transition-colors hover:bg-white/10"
+            style={{ color: "var(--muted-foreground)" }}
+            onClick={onClose}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+        <p
+          className="whitespace-pre-wrap font-mono text-sm leading-relaxed"
+          style={{ color: "var(--foreground)" }}
+        >
+          {prompt.text}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 function DetailPanel({ commit }: { commit: CommitRow }) {
   const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
+  const [modalPrompt, setModalPrompt] = useState<number | null>(null);
 
   const promptCount = prompts.length;
   const stats = [
@@ -37,7 +95,7 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
       : "—";
 
   return (
-    <td colSpan={7} className="px-4 py-4">
+    <td colSpan={8} className="px-4 py-4">
       <div className="grid grid-cols-2 gap-4">
         {stats.map((s) => (
           <div key={s.label}>
@@ -69,13 +127,13 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
         )}
       </div>
 
-      {/* Exchange history */}
+      {/* Prompt history */}
       <div className="mt-4">
         <p
           className="mb-2 text-xs font-medium"
           style={{ color: "var(--muted-foreground)" }}
         >
-          Exchange History ({prompts.length || 0})
+          Prompt History ({prompts.length || 0})
         </p>
         {prompts.length === 0 ? (
           <p
@@ -92,8 +150,12 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
             {prompts.map((p, i) => (
               <li
                 key={i}
-                className="flex items-start gap-3 rounded-md px-3 py-2"
+                className="flex cursor-pointer items-start gap-3 rounded-md px-3 py-2 transition-colors hover:brightness-125"
                 style={{ backgroundColor: "var(--muted)" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setModalPrompt(i);
+                }}
               >
                 <span
                   className="mt-0.5 flex-shrink-0 text-xs font-semibold"
@@ -102,9 +164,8 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
                   #{i + 1}
                 </span>
                 <p
-                  className="min-w-0 flex-1 truncate font-mono text-xs"
+                  className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono text-xs"
                   style={{ color: "var(--foreground)" }}
-                  title={p.text}
                 >
                   {p.text}
                 </p>
@@ -121,6 +182,14 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
           </ol>
         )}
       </div>
+
+      {modalPrompt !== null && prompts[modalPrompt] && (
+        <PromptModal
+          prompt={prompts[modalPrompt]}
+          index={modalPrompt}
+          onClose={() => setModalPrompt(null)}
+        />
+      )}
     </td>
   );
 }
@@ -168,10 +237,20 @@ export function CommitTable({
 
   return (
     <div
-      className="overflow-x-auto rounded-lg border"
+      className="overflow-hidden rounded-lg border"
       style={{ borderColor: "var(--border)" }}
     >
-      <table className="w-full text-sm">
+      <table className="w-full table-fixed text-sm">
+        <colgroup>
+          <col style={{ width: "15%" }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "10%" }} />
+          <col style={{ width: "7%" }} />
+          <col style={{ width: "33%" }} />
+          <col style={{ width: "8%" }} />
+          <col style={{ width: "9%" }} />
+          <col />
+        </colgroup>
         <thead>
           <tr
             className="border-b text-left"
@@ -180,14 +259,14 @@ export function CommitTable({
               backgroundColor: "var(--muted)",
             }}
           >
-            <th className="px-4 py-3 font-medium">Commit</th>
-            <th className="w-2/5 px-4 py-3 font-medium">Message</th>
             <th className="px-4 py-3 font-medium">Project</th>
+            <th className="px-4 py-3 font-medium">Drift</th>
             <th className="px-4 py-3 font-medium text-right">Lines</th>
             <th className="px-4 py-3 font-medium text-right">Prompts</th>
-            <th className="px-4 py-3 font-medium">Drift</th>
+            <th className="px-4 py-3 font-medium">Message</th>
+            <th className="px-4 py-3 font-medium">Commit</th>
             <th className="px-4 py-3 font-medium">Date</th>
-            <th className="w-10"></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -211,13 +290,13 @@ export function CommitTable({
                     setExpandedId(isExpanded ? null : commit.id)
                   }
                 >
-                  <td className="px-4 py-3 font-mono text-xs">
-                    {commit.commitHash.slice(0, 7)}
+                  <td className="truncate px-4 py-3">{commit.projectName}</td>
+                  <td className="px-4 py-3">
+                    <DriftBadge
+                      score={driftScore}
+                      level={driftLevel}
+                    />
                   </td>
-                  <td className="max-w-[300px] truncate px-4 py-3">
-                    {commit.message}
-                  </td>
-                  <td className="px-4 py-3">{commit.projectName}</td>
                   <td className="px-4 py-3 text-right font-mono">
                     <span style={{ color: "#22c55e" }}>
                       +{commit.linesAdded ?? 0}
@@ -230,11 +309,11 @@ export function CommitTable({
                   <td className="px-4 py-3 text-right font-mono">
                     {promptCount}
                   </td>
-                  <td className="px-4 py-3">
-                    <DriftBadge
-                      score={driftScore}
-                      level={driftLevel}
-                    />
+                  <td className="truncate px-4 py-3">
+                    {commit.message}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs">
+                    {commit.commitHash.slice(0, 7)}
                   </td>
                   <td
                     className="whitespace-nowrap px-4 py-3 text-xs"

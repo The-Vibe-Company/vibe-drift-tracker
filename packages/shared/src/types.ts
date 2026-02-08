@@ -51,11 +51,20 @@ export interface SessionIndexEntry {
 
 export function computeVibeDriftScore(
   userPrompts: number,
-  linesAdded: number,
-  linesDeleted: number,
+  linesAdded: number = 0,
+  linesDeleted: number = 0,
 ): number {
-  const totalLines = linesAdded + linesDeleted;
-  return userPrompts / Math.max(1, totalLines / 100);
+  const P = userPrompts;
+  const L = linesAdded + linesDeleted;
+  const linesPerPrompt = L / Math.max(1, P);
+
+  // Efficiency factor: lpp >= 50 → 0.7 (productive), lpp = 20 → 1.0, lpp <= 5 → 1.5 (spinning)
+  let factor = Math.min(1.5, Math.max(0.7, 1.5 - linesPerPrompt / 40));
+
+  // 1 prompt should never be penalised
+  if (P <= 1) factor = Math.min(factor, 1.0);
+
+  return P * factor;
 }
 
 export type VibeDriftLevel = "low" | "moderate" | "high" | "vibe-drift";
