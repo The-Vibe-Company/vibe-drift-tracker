@@ -10,8 +10,8 @@ export function StatsSummary({
 }) {
   const cards = [
     { label: "Total Commits", value: stats.totalCommits },
-    { label: "Avg Drift Score", value: stats.avgScore.toFixed(2) },
-    { label: "Total Lines Changed", value: stats.totalLines.toLocaleString() },
+    { label: "Avg Drift Score", value: Number(stats.avgScore).toFixed(2) },
+    { label: "Total Lines Changed", value: Number(stats.totalLines).toLocaleString() },
     { label: "Total Prompts", value: stats.totalPrompts },
   ];
 

@@ -2,7 +2,7 @@
 
 import { Fragment, useState } from "react";
 import type { CommitRow } from "@/lib/db/schema";
-import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared";
+import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared/dist/types";
 import { DriftBadge } from "./drift-badge";
 
 function formatRelativeTime(timestamp: string): string {
@@ -37,7 +37,7 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
       : "—";
 
   return (
-    <td colSpan={10} className="px-4 py-4">
+    <td colSpan={7} className="px-4 py-4">
       <div className="grid grid-cols-2 gap-4">
         {stats.map((s) => (
           <div key={s.label}>
@@ -125,8 +125,13 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
   );
 }
 
-export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] }) {
-  const [commits, setCommits] = useState(initialCommits);
+export function CommitTable({
+  commits,
+  onCommitsChange,
+}: {
+  commits: CommitRow[];
+  onCommitsChange?: (commits: CommitRow[]) => void;
+}) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
@@ -137,8 +142,9 @@ export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] 
     try {
       const res = await fetch(`/api/commits/${commitId}`, { method: "DELETE" });
       if (res.ok) {
-        setCommits((prev) => prev.filter((c) => c.id !== commitId));
+        const updated = commits.filter((c) => c.id !== commitId);
         if (expandedId === commitId) setExpandedId(null);
+        onCommitsChange?.(updated);
       }
     } finally {
       setDeletingId(null);
@@ -175,15 +181,13 @@ export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] 
             }}
           >
             <th className="px-4 py-3 font-medium">Commit</th>
-            <th className="px-4 py-3 font-medium">Message</th>
+            <th className="w-2/5 px-4 py-3 font-medium">Message</th>
             <th className="px-4 py-3 font-medium">Project</th>
-            <th className="px-4 py-3 font-medium">Author</th>
             <th className="px-4 py-3 font-medium text-right">Lines</th>
             <th className="px-4 py-3 font-medium text-right">Prompts</th>
             <th className="px-4 py-3 font-medium">Drift</th>
-            <th className="px-4 py-3 font-medium">Source</th>
             <th className="px-4 py-3 font-medium">Date</th>
-            <th className="px-4 py-3 font-medium"></th>
+            <th className="w-10"></th>
           </tr>
         </thead>
         <tbody>
@@ -214,7 +218,6 @@ export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] 
                     {commit.message}
                   </td>
                   <td className="px-4 py-3">{commit.projectName}</td>
-                  <td className="px-4 py-3">{commit.author}</td>
                   <td className="px-4 py-3 text-right font-mono">
                     <span style={{ color: "#22c55e" }}>
                       +{commit.linesAdded ?? 0}
@@ -233,41 +236,26 @@ export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] 
                       level={driftLevel}
                     />
                   </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className="rounded-full px-2 py-0.5 text-xs"
-                      style={{
-                        backgroundColor: "var(--accent)",
-                        color: "var(--accent-foreground)",
-                      }}
-                    >
-                      {commit.source}
-                    </span>
-                  </td>
                   <td
                     className="whitespace-nowrap px-4 py-3 text-xs"
                     style={{ color: "var(--muted-foreground)" }}
                   >
                     {commit.committedAt
-                      ? new Date(commit.committedAt).toLocaleDateString("en-US")
+                      ? formatRelativeTime(new Date(commit.committedAt).toISOString())
                       : ""}
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-2 py-3">
                     <button
-                      className="rounded p-1 text-xs transition-colors hover:bg-red-500/20"
+                      className="rounded p-1 transition-colors hover:bg-red-500/20 disabled:opacity-30"
                       style={{ color: "var(--muted-foreground)" }}
                       title="Delete commit"
                       disabled={deletingId === commit.id}
                       onClick={(e) => handleDelete(e, commit.id)}
                     >
-                      {deletingId === commit.id ? (
-                        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                      ) : (
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="3 6 5 6 21 6" />
-                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                        </svg>
-                      )}
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
                     </button>
                   </td>
                 </tr>
