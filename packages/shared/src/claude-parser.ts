@@ -147,6 +147,7 @@ export function parseSessionFile(
   let endTime: string | undefined;
   let sessionId = "";
   const prompts: PromptDetail[] = [];
+  let lastPromptIdx = -1;
 
   for (const line of lines) {
     let msg: JSONLMessage;
@@ -181,11 +182,15 @@ export function parseSessionFile(
       const text = typeof msg.message.content === "string"
         ? msg.message.content
         : msg.message.content?.map((c) => c.text || "").join("") ?? "";
-      prompts.push({
-        text: text.slice(0, 500),
-        timestamp: msg.timestamp || "",
-        sessionId,
-      });
+      const trimmed = text.trim();
+      if (trimmed.length > 0) {
+        prompts.push({
+          text: trimmed.slice(0, 500),
+          timestamp: msg.timestamp || "",
+          sessionId,
+        });
+        lastPromptIdx = prompts.length - 1;
+      }
     }
 
     // Count AI responses
@@ -193,6 +198,21 @@ export function parseSessionFile(
       aiResponses++;
       if (msg.message.content) {
         toolCalls += countToolUses(msg.message.content);
+
+        // Attach first text response to last prompt (skip tool_use blocks)
+        if (lastPromptIdx >= 0 && !prompts[lastPromptIdx].response) {
+          const contentArr = typeof msg.message.content === "string"
+            ? [{ type: "text" as const, text: msg.message.content }]
+            : msg.message.content;
+          const responseText = contentArr
+            .filter((c): c is { type: string; text: string } => c.type === "text" && !!c.text)
+            .map((c) => c.text)
+            .join("\n")
+            .trim();
+          if (responseText.length > 0) {
+            prompts[lastPromptIdx].response = responseText.slice(0, 500);
+          }
+        }
       }
     }
   }

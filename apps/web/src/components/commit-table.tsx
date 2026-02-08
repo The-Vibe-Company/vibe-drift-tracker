@@ -19,7 +19,8 @@ function formatRelativeTime(timestamp: string): string {
 }
 
 function DetailPanel({ commit }: { commit: CommitRow }) {
-  const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
+  const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string; response?: string }>;
+  const [expandedPrompt, setExpandedPrompt] = useState<number | null>(null);
 
   const stats = [
     { label: "User Prompts", value: commit.userPrompts ?? 0 },
@@ -90,35 +91,74 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
           </p>
         ) : (
           <ol className="space-y-2">
-            {prompts.map((p, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-3 rounded-md px-3 py-2"
-                style={{ backgroundColor: "var(--muted)" }}
-              >
-                <span
-                  className="mt-0.5 flex-shrink-0 text-xs font-semibold"
-                  style={{ color: "var(--muted-foreground)" }}
-                >
-                  #{i + 1}
-                </span>
-                <p
-                  className="min-w-0 flex-1 truncate font-mono text-xs"
-                  style={{ color: "var(--foreground)" }}
-                  title={p.text}
-                >
-                  {p.text}
-                </p>
-                {p.timestamp && (
-                  <span
-                    className="flex-shrink-0 text-xs"
-                    style={{ color: "var(--muted-foreground)" }}
+            {prompts.map((p, i) => {
+              const isPromptExpanded = expandedPrompt === i;
+              return (
+                <li key={i}>
+                  <div
+                    className="flex cursor-pointer items-start gap-3 rounded-md px-3 py-2 transition-colors hover:brightness-110"
+                    style={{ backgroundColor: "var(--muted)" }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setExpandedPrompt(isPromptExpanded ? null : i);
+                    }}
                   >
-                    {formatRelativeTime(p.timestamp)}
-                  </span>
-                )}
-              </li>
-            ))}
+                    <span
+                      className="mt-0.5 flex-shrink-0 text-xs"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      {isPromptExpanded ? "▼" : "▶"}
+                    </span>
+                    <span
+                      className="mt-0.5 flex-shrink-0 text-xs font-semibold"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      #{i + 1}
+                    </span>
+                    <p
+                      className="min-w-0 flex-1 truncate font-mono text-xs"
+                      style={{ color: "var(--foreground)" }}
+                      title={p.text}
+                    >
+                      {p.text}
+                    </p>
+                    {p.timestamp && (
+                      <span
+                        className="flex-shrink-0 text-xs"
+                        style={{ color: "var(--muted-foreground)" }}
+                      >
+                        {formatRelativeTime(p.timestamp)}
+                      </span>
+                    )}
+                  </div>
+                  {isPromptExpanded && (
+                    <div
+                      className="ml-10 mt-1 rounded-md px-3 py-2"
+                      style={{
+                        backgroundColor: "rgba(250, 204, 21, 0.05)",
+                        borderLeft: "2px solid var(--border)",
+                      }}
+                    >
+                      {p.response ? (
+                        <p
+                          className="whitespace-pre-wrap font-mono text-xs"
+                          style={{ color: "var(--muted-foreground)" }}
+                        >
+                          {p.response}
+                        </p>
+                      ) : (
+                        <p
+                          className="text-xs italic"
+                          style={{ color: "var(--muted-foreground)" }}
+                        >
+                          No response captured
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
           </ol>
         )}
       </div>

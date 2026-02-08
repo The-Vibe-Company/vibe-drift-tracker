@@ -2,6 +2,7 @@ export interface PromptDetail {
   text: string;       // content of the prompt (truncated to 500 chars)
   timestamp: string;  // ISO 8601
   sessionId: string;
+  response?: string;  // AI response text (truncated to 500 chars)
 }
 
 export interface FileChangePayload {
