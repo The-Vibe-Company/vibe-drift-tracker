@@ -2,6 +2,7 @@
 
 import { Fragment, useState } from "react";
 import type { CommitRow } from "@/lib/db/schema";
+import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared";
 import { DriftBadge } from "./drift-badge";
 
 function formatRelativeTime(timestamp: string): string {
@@ -188,6 +189,10 @@ export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] 
         <tbody>
           {commits.map((commit) => {
             const isExpanded = expandedId === commit.id;
+            const prompts = (commit.prompts ?? []) as Array<{ text: string }>;
+            const promptCount = prompts.length;
+            const driftScore = computeVibeDriftScore(promptCount, commit.linesAdded ?? 0, commit.linesDeleted ?? 0);
+            const driftLevel = getVibeDriftLevel(driftScore);
             return (
               <Fragment key={commit.id}>
                 <tr
@@ -220,12 +225,12 @@ export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] 
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right font-mono">
-                    {commit.userPrompts ?? 0}
+                    {promptCount}
                   </td>
                   <td className="px-4 py-3">
                     <DriftBadge
-                      score={commit.vibeDriftScore ?? 0}
-                      level={commit.vibeDriftLevel ?? "low"}
+                      score={driftScore}
+                      level={driftLevel}
                     />
                   </td>
                   <td className="px-4 py-3">

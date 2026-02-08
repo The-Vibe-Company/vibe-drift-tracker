@@ -43,8 +43,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const cleanedPrompts = payload.prompts ?? [];
+    const userPrompts = cleanedPrompts.length;
+
     const score = computeVibeDriftScore(
-      payload.userPrompts,
+      userPrompts,
       payload.linesAdded,
       payload.linesDeleted,
     );
@@ -59,7 +62,7 @@ export async function POST(request: NextRequest) {
         committedAt: new Date(payload.committedAt),
         projectName: payload.projectName,
         remoteUrl: payload.remoteUrl,
-        userPrompts: payload.userPrompts,
+        userPrompts,
         aiResponses: payload.aiResponses,
         totalInteractions: payload.totalInteractions,
         toolCalls: payload.toolCalls,
@@ -70,7 +73,7 @@ export async function POST(request: NextRequest) {
         vibeDriftLevel: level,
         source: payload.source,
         sessionIds: payload.sessionIds,
-        prompts: payload.prompts ?? [],
+        prompts: cleanedPrompts,
         userId,
       },
       payload.fileChanges?.map(
