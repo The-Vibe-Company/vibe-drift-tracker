@@ -27,6 +27,8 @@ function computeStats(commits: CommitRow[]) {
     avgScore: totalCommits > 0 ? totalScore / totalCommits : 0,
     totalLines,
     totalPrompts,
+    linesPerCommit: totalCommits > 0 ? Math.round(totalLines / totalCommits) : 0,
+    promptsPerCommit: totalCommits > 0 ? totalPrompts / totalCommits : 0,
   };
 }
 
