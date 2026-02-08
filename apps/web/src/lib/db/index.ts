@@ -155,6 +155,13 @@ export async function updateApiKeyLastUsed(id: number) {
     .where(eq(apiKeys.id, id));
 }
 
+export async function deleteCommit(id: number, userId: string) {
+  const db = getDb();
+  await db
+    .delete(commits)
+    .where(and(eq(commits.id, id), eq(commits.userId, userId)));
+}
+
 export async function deleteApiKey(id: number, userId: string) {
   const db = getDb();
   await db

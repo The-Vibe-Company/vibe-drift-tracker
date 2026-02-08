@@ -1,6 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
-import { SessionStats } from "./types";
+import { SessionStats, PromptDetail } from "./types";
 
 interface SessionIndexFile {
   version: number;
@@ -140,12 +140,12 @@ export function parseSessionFile(
   const content = fs.readFileSync(filePath, "utf-8");
   const lines = content.split("\n").filter((l) => l.trim());
 
-  let userPrompts = 0;
   let aiResponses = 0;
   let toolCalls = 0;
   let startTime: string | undefined;
   let endTime: string | undefined;
   let sessionId = "";
+  const prompts: PromptDetail[] = [];
 
   for (const line of lines) {
     let msg: JSONLMessage;
@@ -176,7 +176,17 @@ export function parseSessionFile(
       if (msg.isMeta) continue;
       if (msg.isSidechain) continue;
       if (msg.message.content && isCommand(msg.message.content)) continue;
-      userPrompts++;
+      const text = typeof msg.message.content === "string"
+        ? msg.message.content
+        : msg.message.content?.map((c) => c.text || "").join("") ?? "";
+      const trimmed = text.trim();
+      if (trimmed.length > 0) {
+        prompts.push({
+          text: trimmed.slice(0, 500),
+          timestamp: msg.timestamp || "",
+          sessionId,
+        });
+      }
     }
 
     // Count AI responses
@@ -188,6 +198,7 @@ export function parseSessionFile(
     }
   }
 
+  const userPrompts = prompts.length;
   if (userPrompts === 0 && aiResponses === 0) return null;
 
   return {
@@ -198,6 +209,7 @@ export function parseSessionFile(
     totalInteractions: userPrompts + aiResponses,
     startTime,
     endTime,
+    prompts,
   };
 }
 
@@ -228,6 +240,10 @@ export function parseClaudeSessions(
     }
   }
 
+  const allPrompts = sessions
+    .flatMap((s) => s.prompts ?? [])
+    .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+
   return {
     aggregate: {
       sessionId: "aggregate",
@@ -235,6 +251,7 @@ export function parseClaudeSessions(
       aiResponses: totalAiResponses,
       toolCalls: totalToolCalls,
       totalInteractions: totalUserPrompts + totalAiResponses,
+      prompts: allPrompts,
     },
     sessions,
   };

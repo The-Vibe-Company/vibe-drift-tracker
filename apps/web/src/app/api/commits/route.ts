@@ -43,11 +43,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const score = computeVibeDriftScore(
-      payload.userPrompts,
-      payload.linesAdded,
-      payload.linesDeleted,
-    );
+    const cleanedPrompts = payload.prompts ?? [];
+    const userPrompts = cleanedPrompts.length;
+
+    const score = computeVibeDriftScore(userPrompts, payload.linesAdded, payload.linesDeleted);
     const level = getVibeDriftLevel(score);
 
     const row = await insertCommit(
@@ -59,7 +58,7 @@ export async function POST(request: NextRequest) {
         committedAt: new Date(payload.committedAt),
         projectName: payload.projectName,
         remoteUrl: payload.remoteUrl,
-        userPrompts: payload.userPrompts,
+        userPrompts,
         aiResponses: payload.aiResponses,
         totalInteractions: payload.totalInteractions,
         toolCalls: payload.toolCalls,
@@ -70,6 +69,7 @@ export async function POST(request: NextRequest) {
         vibeDriftLevel: level,
         source: payload.source,
         sessionIds: payload.sessionIds,
+        prompts: cleanedPrompts,
         userId,
       },
       payload.fileChanges?.map(

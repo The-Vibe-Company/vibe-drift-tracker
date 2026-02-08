@@ -1,9 +1,8 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { getCommits, getProjects, getStats } from "@/lib/db";
+import { getCommits, getProjects } from "@/lib/db";
 import { auth } from "@/lib/auth/server";
-import { CommitTable } from "@/components/commit-table";
-import { StatsSummary } from "@/components/stats-summary";
+import { DashboardContent } from "@/components/dashboard-content";
 import { Filters } from "@/components/filters";
 
 export const dynamic = "force-dynamic";
@@ -19,7 +18,7 @@ export default async function DashboardPage({
   const userId = session.user.id;
   const params = await searchParams;
 
-  const [commitRows, projects, stats] = await Promise.all([
+  const [commitRows, projects] = await Promise.all([
     getCommits({
       userId,
       project: params.project,
@@ -27,16 +26,11 @@ export default async function DashboardPage({
       until: params.until,
     }),
     getProjects(userId),
-    getStats(params.project, userId),
   ]);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <h1 className="mb-6 text-2xl font-bold tracking-tight">Dashboard</h1>
-
-      <div className="mb-6">
-        <StatsSummary stats={stats} />
-      </div>
 
       <div className="mb-4">
         <Suspense fallback={null}>
@@ -44,7 +38,7 @@ export default async function DashboardPage({
         </Suspense>
       </div>
 
-      <CommitTable commits={commitRows} />
+      <DashboardContent initialCommits={commitRows} />
     </main>
   );
 }

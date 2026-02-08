@@ -38,11 +38,7 @@ async function main() {
   try {
     const payload = await buildCommitPayload(cwd, commitHash, "hook");
 
-    const score = computeVibeDriftScore(
-      payload.userPrompts,
-      payload.linesAdded,
-      payload.linesDeleted,
-    );
+    const score = computeVibeDriftScore(payload.userPrompts, payload.linesAdded, payload.linesDeleted);
     const level = getVibeDriftLevel(score);
     const color = getVibeDriftColor(level);
 
