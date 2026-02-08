@@ -19,8 +19,7 @@ function formatRelativeTime(timestamp: string): string {
 }
 
 function DetailPanel({ commit }: { commit: CommitRow }) {
-  const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string; response?: string }>;
-  const [expandedPrompt, setExpandedPrompt] = useState<number | null>(null);
+  const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
 
   const stats = [
     { label: "User Prompts", value: commit.userPrompts ?? 0 },
@@ -39,7 +38,7 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
       : "—";
 
   return (
-    <td colSpan={9} className="px-4 py-4">
+    <td colSpan={10} className="px-4 py-4">
       <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         {stats.map((s) => (
           <div key={s.label}>
@@ -71,13 +70,13 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
         )}
       </div>
 
-      {/* Prompt history */}
+      {/* Exchange history */}
       <div className="mt-4">
         <p
           className="mb-2 text-xs font-medium"
           style={{ color: "var(--muted-foreground)" }}
         >
-          Prompt History - TEST ({prompts.length || 0})
+          Exchange History ({prompts.length || 0})
         </p>
         {prompts.length === 0 ? (
           <p
@@ -91,74 +90,35 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
           </p>
         ) : (
           <ol className="space-y-2">
-            {prompts.map((p, i) => {
-              const isPromptExpanded = expandedPrompt === i;
-              return (
-                <li key={i}>
-                  <div
-                    className="flex cursor-pointer items-start gap-3 rounded-md px-3 py-2 transition-colors hover:brightness-110"
-                    style={{ backgroundColor: "var(--muted)" }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setExpandedPrompt(isPromptExpanded ? null : i);
-                    }}
+            {prompts.map((p, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-3 rounded-md px-3 py-2"
+                style={{ backgroundColor: "var(--muted)" }}
+              >
+                <span
+                  className="mt-0.5 flex-shrink-0 text-xs font-semibold"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  #{i + 1}
+                </span>
+                <p
+                  className="min-w-0 flex-1 truncate font-mono text-xs"
+                  style={{ color: "var(--foreground)" }}
+                  title={p.text}
+                >
+                  {p.text}
+                </p>
+                {p.timestamp && (
+                  <span
+                    className="flex-shrink-0 text-xs"
+                    style={{ color: "var(--muted-foreground)" }}
                   >
-                    <span
-                      className="mt-0.5 flex-shrink-0 text-xs"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
-                      {isPromptExpanded ? "▼" : "▶"}
-                    </span>
-                    <span
-                      className="mt-0.5 flex-shrink-0 text-xs font-semibold"
-                      style={{ color: "var(--muted-foreground)" }}
-                    >
-                      #{i + 1}
-                    </span>
-                    <p
-                      className="min-w-0 flex-1 truncate font-mono text-xs"
-                      style={{ color: "var(--foreground)" }}
-                      title={p.text}
-                    >
-                      {p.text}
-                    </p>
-                    {p.timestamp && (
-                      <span
-                        className="flex-shrink-0 text-xs"
-                        style={{ color: "var(--muted-foreground)" }}
-                      >
-                        {formatRelativeTime(p.timestamp)}
-                      </span>
-                    )}
-                  </div>
-                  {isPromptExpanded && (
-                    <div
-                      className="ml-10 mt-1 rounded-md px-3 py-2"
-                      style={{
-                        backgroundColor: "rgba(250, 204, 21, 0.05)",
-                        borderLeft: "2px solid var(--border)",
-                      }}
-                    >
-                      {p.response ? (
-                        <p
-                          className="whitespace-pre-wrap font-mono text-xs"
-                          style={{ color: "var(--muted-foreground)" }}
-                        >
-                          {p.response}
-                        </p>
-                      ) : (
-                        <p
-                          className="text-xs italic"
-                          style={{ color: "var(--muted-foreground)" }}
-                        >
-                          No response captured
-                        </p>
-                      )}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
+                    {formatRelativeTime(p.timestamp)}
+                  </span>
+                )}
+              </li>
+            ))}
           </ol>
         )}
       </div>
@@ -166,8 +126,25 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
   );
 }
 
-export function CommitTable({ commits }: { commits: CommitRow[] }) {
+export function CommitTable({ commits: initialCommits }: { commits: CommitRow[] }) {
+  const [commits, setCommits] = useState(initialCommits);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+
+  async function handleDelete(e: React.MouseEvent, commitId: number) {
+    e.stopPropagation();
+    if (deletingId) return;
+    setDeletingId(commitId);
+    try {
+      const res = await fetch(`/api/commits/${commitId}`, { method: "DELETE" });
+      if (res.ok) {
+        setCommits((prev) => prev.filter((c) => c.id !== commitId));
+        if (expandedId === commitId) setExpandedId(null);
+      }
+    } finally {
+      setDeletingId(null);
+    }
+  }
 
   if (commits.length === 0) {
     return (
@@ -207,6 +184,7 @@ export function CommitTable({ commits }: { commits: CommitRow[] }) {
             <th className="px-4 py-3 font-medium">Drift</th>
             <th className="px-4 py-3 font-medium">Source</th>
             <th className="px-4 py-3 font-medium">Date</th>
+            <th className="px-4 py-3 font-medium"></th>
           </tr>
         </thead>
         <tbody>
@@ -270,6 +248,24 @@ export function CommitTable({ commits }: { commits: CommitRow[] }) {
                     {commit.committedAt
                       ? new Date(commit.committedAt).toLocaleDateString("en-US")
                       : ""}
+                  </td>
+                  <td className="px-4 py-3">
+                    <button
+                      className="rounded p-1 text-xs transition-colors hover:bg-red-500/20"
+                      style={{ color: "var(--muted-foreground)" }}
+                      title="Delete commit"
+                      disabled={deletingId === commit.id}
+                      onClick={(e) => handleDelete(e, commit.id)}
+                    >
+                      {deletingId === commit.id ? (
+                        <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      ) : (
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                      )}
+                    </button>
                   </td>
                 </tr>
                 {isExpanded && (
