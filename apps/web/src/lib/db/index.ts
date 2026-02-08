@@ -37,6 +37,9 @@ export async function getCommits(filters?: {
   const db = getDb();
   const conditions = [];
 
+  // Always exclude merge commits (no prompts, no drift value)
+  conditions.push(sql`${commits.message} NOT LIKE 'Merge %'`);
+
   if (filters?.userId) {
     conditions.push(eq(commits.userId, filters.userId));
   }
@@ -91,6 +94,8 @@ export async function getCommitDetail(hash: string) {
 export async function getStats(project?: string, userId?: string) {
   const db = getDb();
   const conditions = [];
+  // Always exclude merge commits (no prompts, no drift value)
+  conditions.push(sql`${commits.message} NOT LIKE 'Merge %'`);
   if (project) conditions.push(eq(commits.projectName, project));
   if (userId) conditions.push(eq(commits.userId, userId));
 
