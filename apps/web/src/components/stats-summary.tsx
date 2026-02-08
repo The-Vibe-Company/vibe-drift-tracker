@@ -20,9 +20,10 @@ export function StatsSummary({
       {cards.map((card) => (
         <div
           key={card.label}
-          className="rounded-lg border p-4"
+          className="rounded-lg border-l-2 border p-4"
           style={{
             borderColor: "var(--border)",
+            borderLeftColor: "var(--primary)",
             backgroundColor: "var(--card)",
           }}
         >
@@ -32,7 +33,12 @@ export function StatsSummary({
           >
             {card.label}
           </p>
-          <p className="mt-1 text-2xl font-semibold">{card.value}</p>
+          <p
+            className="mt-1 text-2xl font-semibold"
+            style={{ color: "var(--primary)" }}
+          >
+            {card.value}
+          </p>
         </div>
       ))}
     </div>
