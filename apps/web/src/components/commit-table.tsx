@@ -21,25 +21,23 @@ function formatRelativeTime(timestamp: string): string {
 function DetailPanel({ commit }: { commit: CommitRow }) {
   const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
 
+  const promptCount = prompts.length;
   const stats = [
-    { label: "User Prompts", value: commit.userPrompts ?? 0 },
-    { label: "AI Responses", value: commit.aiResponses ?? 0 },
-    { label: "Tool Calls", value: commit.toolCalls ?? 0 },
-    { label: "Total Interactions", value: commit.totalInteractions ?? 0 },
+    { label: "User Prompts", value: promptCount },
     { label: "Files Changed", value: commit.filesChanged ?? 0 },
   ];
 
   const ratio =
-    (commit.userPrompts ?? 0) > 0
+    promptCount > 0
       ? (
           ((commit.linesAdded ?? 0) + (commit.linesDeleted ?? 0)) /
-          (commit.userPrompts ?? 1)
+          promptCount
         ).toFixed(1)
       : "—";
 
   return (
     <td colSpan={10} className="px-4 py-4">
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4">
         {stats.map((s) => (
           <div key={s.label}>
             <p
