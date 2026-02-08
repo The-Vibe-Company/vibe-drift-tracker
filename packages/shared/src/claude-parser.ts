@@ -34,6 +34,22 @@ function isCommand(content: string | Array<{ type: string; text?: string }>): bo
   return text.includes("<command-name>") || text.includes("<local-command");
 }
 
+function isSystemGenerated(
+  content: string | Array<{ type: string; text?: string }>,
+): boolean {
+  const text =
+    typeof content === "string"
+      ? content
+      : content.map((c) => c.text || "").join("");
+  const trimmed = text.trim();
+
+  if (trimmed === "[Request interrupted by user for tool use]") return true;
+  if (trimmed.startsWith("Implement the following plan:")) return true;
+  if (trimmed.startsWith("<task-notification>")) return true;
+
+  return false;
+}
+
 function countToolUses(
   content: string | Array<{ type: string; id?: string }>,
 ): number {
@@ -176,6 +192,7 @@ export function parseSessionFile(
       if (msg.isMeta) continue;
       if (msg.isSidechain) continue;
       if (msg.message.content && isCommand(msg.message.content)) continue;
+      if (msg.message.content && isSystemGenerated(msg.message.content)) continue;
       const text = typeof msg.message.content === "string"
         ? msg.message.content
         : msg.message.content?.map((c) => c.text || "").join("") ?? "";
