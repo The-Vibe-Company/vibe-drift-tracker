@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { UserButton } from "@neondatabase/auth/react";
+import { SidebarNav } from "@/components/sidebar-nav";
+import Link from "next/link";
 
 export default function DashboardLayout({
   children,
@@ -7,27 +8,25 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <header
-        className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b"
+    <div className="flex h-screen">
+      <aside
+        className="flex flex-col items-center w-16 shrink-0 border-r py-4"
         style={{
           borderColor: "var(--border)",
-          background: "rgba(10, 10, 10, 0.8)",
-          backdropFilter: "blur(12px)",
+          background: "var(--card)",
         }}
       >
+        {/* Logo */}
         <Link
           href="/dashboard"
-          className="flex items-center gap-1.5 text-lg font-semibold tracking-tight"
-          style={{ color: "var(--primary)" }}
+          className="flex items-center justify-center w-10 h-10 mb-6"
+          title="VibeDriftTracker"
         >
-          VibeDriftTracker
           <svg
-            width="20"
-            height="12"
+            width="24"
+            height="14"
             viewBox="0 0 20 12"
             fill="none"
-            style={{ display: "inline-block", opacity: 0.7 }}
           >
             <path
               d="M1 6 C4 1, 7 1, 10 6 S16 11, 19 6"
@@ -38,31 +37,22 @@ export default function DashboardLayout({
             />
           </svg>
         </Link>
-        <div className="flex items-center gap-4">
-          <Link
-            href="/dashboard/settings"
-            className="flex items-center gap-1.5 text-sm transition-colors hover:opacity-80"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-              <circle cx="12" cy="12" r="3" />
-            </svg>
-            Settings
-          </Link>
+
+        {/* Navigation */}
+        <SidebarNav />
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* User button */}
+        <div className="mb-2">
           <UserButton size="icon" />
         </div>
-      </header>
-      {children}
-    </>
+      </aside>
+
+      <div className="flex-1 overflow-auto">
+        {children}
+      </div>
+    </div>
   );
 }
