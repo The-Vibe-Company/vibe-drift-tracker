@@ -32,6 +32,8 @@ export default async function DashboardPage({
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
+      <h1 className="mb-6 text-2xl font-bold tracking-tight">Dashboard</h1>
+
       <div className="mb-6">
         <StatsSummary stats={stats} />
       </div>
