@@ -77,7 +77,7 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
           className="mb-2 text-xs font-medium"
           style={{ color: "var(--muted-foreground)" }}
         >
-          Prompts ({prompts.length || 0})
+          Prompt History ({prompts.length || 0})
         </p>
         {prompts.length === 0 ? (
           <p
