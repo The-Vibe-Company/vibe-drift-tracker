@@ -43,7 +43,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const cleanedPrompts = payload.prompts ?? [];
+    const rawPrompts = payload.prompts ?? [];
+    const cleanedPrompts = rawPrompts.filter((p) => {
+      const trimmed = p.text.trim();
+      if (trimmed.startsWith("[Request interrupted by user")) return false;
+      if (trimmed.startsWith("Implement the following plan:")) return false;
+      if (trimmed.startsWith("<task-notification>")) return false;
+      return true;
+    });
     const userPrompts = cleanedPrompts.length;
 
     const score = computeVibeDriftScore(userPrompts, payload.linesAdded, payload.linesDeleted);
