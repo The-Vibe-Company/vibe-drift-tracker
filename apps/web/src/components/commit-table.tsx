@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import type { CommitRow } from "@/lib/db/schema";
 import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared/dist/types";
 import { DriftBadge } from "./drift-badge";
+import { Pagination } from "./pagination";
 
 function formatRelativeTime(timestamp: string): string {
   const date = new Date(timestamp);
@@ -194,9 +195,15 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
 export function CommitTable({
   commits,
   onCommitsChange,
+  page,
+  pageSize,
+  totalCommits,
 }: {
   commits: CommitRow[];
   onCommitsChange?: (commits: CommitRow[]) => void;
+  page: number;
+  pageSize: number;
+  totalCommits: number;
 }) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -352,6 +359,7 @@ export function CommitTable({
           })}
         </tbody>
       </table>
+      <Pagination page={page} pageSize={pageSize} totalItems={totalCommits} />
     </div>
   );
 }

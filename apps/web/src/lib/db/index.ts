@@ -65,6 +65,38 @@ export async function getCommits(filters?: {
   return query;
 }
 
+export async function getCommitCount(filters?: {
+  project?: string;
+  since?: string;
+  until?: string;
+  userId?: string;
+}): Promise<number> {
+  const db = getDb();
+  const conditions = [];
+
+  conditions.push(sql`${commits.message} NOT LIKE 'Merge %'`);
+
+  if (filters?.userId) {
+    conditions.push(eq(commits.userId, filters.userId));
+  }
+  if (filters?.project) {
+    conditions.push(eq(commits.projectName, filters.project));
+  }
+  if (filters?.since) {
+    conditions.push(gte(commits.committedAt, new Date(filters.since)));
+  }
+  if (filters?.until) {
+    conditions.push(lte(commits.committedAt, new Date(filters.until)));
+  }
+
+  const [result] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(commits)
+    .where(conditions.length > 0 ? and(...conditions) : undefined);
+
+  return result?.count ?? 0;
+}
+
 export async function getProjects(userId?: string) {
   const db = getDb();
   const result = await db

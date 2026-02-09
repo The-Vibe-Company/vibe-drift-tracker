@@ -32,7 +32,17 @@ function computeStats(commits: CommitRow[]) {
   };
 }
 
-export function DashboardContent({ initialCommits }: { initialCommits: CommitRow[] }) {
+export function DashboardContent({
+  initialCommits,
+  totalCommits,
+  page,
+  pageSize,
+}: {
+  initialCommits: CommitRow[];
+  totalCommits: number;
+  page: number;
+  pageSize: number;
+}) {
   const router = useRouter();
   const [commits, setCommits] = useState(initialCommits);
   const stats = computeStats(commits);
@@ -45,9 +55,15 @@ export function DashboardContent({ initialCommits }: { initialCommits: CommitRow
   return (
     <>
       <div className="mb-6">
-        <StatsSummary stats={stats} />
+        <StatsSummary stats={{ ...stats, totalCommits }} />
       </div>
-      <CommitTable commits={commits} onCommitsChange={handleCommitsChange} />
+      <CommitTable
+        commits={commits}
+        onCommitsChange={handleCommitsChange}
+        page={page}
+        pageSize={pageSize}
+        totalCommits={totalCommits}
+      />
     </>
   );
 }
