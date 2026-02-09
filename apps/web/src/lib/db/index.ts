@@ -177,7 +177,7 @@ export async function deleteApiKey(id: number, userId: string) {
 
 function isSystemGeneratedPrompt(text: string): boolean {
   const trimmed = text.trim();
-  if (trimmed === "[Request interrupted by user for tool use]") return true;
+  if (trimmed.startsWith("[Request interrupted by user")) return true;
   if (trimmed.startsWith("Implement the following plan:")) return true;
   if (trimmed.startsWith("<task-notification>")) return true;
   return false;
