@@ -2,6 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
 import { commits, fileChanges, apiKeys, type NewCommitRow, type NewFileChangeRow, type NewApiKeyRow } from "./schema";
+import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared";
 
 function getDb() {
   const databaseUrl = process.env.DATABASE_URL;
@@ -172,4 +173,47 @@ export async function deleteApiKey(id: number, userId: string) {
   await db
     .delete(apiKeys)
     .where(and(eq(apiKeys.id, id), eq(apiKeys.userId, userId)));
+}
+
+function isSystemGeneratedPrompt(text: string): boolean {
+  const trimmed = text.trim();
+  if (trimmed === "[Request interrupted by user for tool use]") return true;
+  if (trimmed.startsWith("Implement the following plan:")) return true;
+  if (trimmed.startsWith("<task-notification>")) return true;
+  return false;
+}
+
+export async function cleanupSystemPrompts(userId: string) {
+  const db = getDb();
+  const allCommits = await db
+    .select()
+    .from(commits)
+    .where(eq(commits.userId, userId));
+
+  let updated = 0;
+
+  for (const commit of allCommits) {
+    const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
+    const filtered = prompts.filter((p) => !isSystemGeneratedPrompt(p.text));
+
+    if (filtered.length === prompts.length) continue;
+
+    const score = computeVibeDriftScore(filtered.length, commit.linesAdded ?? 0, commit.linesDeleted ?? 0);
+    const level = getVibeDriftLevel(score);
+
+    await db
+      .update(commits)
+      .set({
+        prompts: filtered,
+        userPrompts: filtered.length,
+        totalInteractions: filtered.length + (commit.aiResponses ?? 0),
+        vibeDriftScore: score,
+        vibeDriftLevel: level,
+      })
+      .where(eq(commits.id, commit.id));
+
+    updated++;
+  }
+
+  return { total: allCommits.length, updated };
 }
