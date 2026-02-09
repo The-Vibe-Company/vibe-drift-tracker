@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { CommitRow } from "@/lib/db/schema";
 import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared/dist/types";
@@ -40,7 +41,7 @@ function PromptModal({
       onClick={onClose}
     >
       <div
-        className="relative mx-4 max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-xl border p-6"
+        className="relative mx-4 max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-xl border"
         style={{
           backgroundColor: "var(--card)",
           borderColor: "var(--border)",
@@ -48,7 +49,10 @@ function PromptModal({
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
+        <div
+          className="sticky top-0 z-10 flex items-center justify-between border-b px-6 py-4"
+          style={{ borderColor: "var(--border)", backgroundColor: "var(--card)" }}
+        >
           <span
             className="text-xs font-semibold"
             style={{ color: "var(--muted-foreground)" }}
@@ -71,12 +75,14 @@ function PromptModal({
             </svg>
           </button>
         </div>
-        <p
-          className="whitespace-pre-wrap font-mono text-sm leading-relaxed"
-          style={{ color: "var(--foreground)" }}
-        >
-          {prompt.text}
-        </p>
+        <div className="px-6 py-4">
+          <p
+            className="whitespace-pre-wrap font-mono text-sm leading-relaxed"
+            style={{ color: "var(--foreground)" }}
+          >
+            {prompt.text}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -97,12 +103,6 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
         ).toFixed(1)
       : "—";
 
-  const stats = [
-    { label: "User Prompts", value: promptCount },
-    { label: "Files Changed", value: commit.filesChanged ?? 0 },
-    { label: "Lines / Prompt", value: ratio },
-  ];
-
   return (
     <td colSpan={8}>
       <div
@@ -114,38 +114,60 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
       >
         {/* Stats row */}
         <div className="flex items-center gap-6">
-          {stats.map((s) => (
-            <div key={s.label} className="flex items-baseline gap-1.5">
-              <span
-                className="text-xs"
-                style={{ color: "var(--muted-foreground)" }}
-              >
-                {s.label}
-              </span>
-              <span className="text-sm font-medium">{s.value}</span>
-            </div>
-          ))}
+          <div className="flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)" }}>
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+            </svg>
+            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>User Prompts</span>
+            <span className="text-xs font-semibold">{promptCount}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)" }}>
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+            </svg>
+            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>Files Changed</span>
+            <span className="text-xs font-semibold">{commit.filesChanged ?? 0}</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--muted-foreground)" }}>
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+              <polyline points="17 6 23 6 23 12" />
+            </svg>
+            <span className="text-xs" style={{ color: "var(--muted-foreground)" }}>Lines / Prompt</span>
+            <span className="text-xs font-semibold">{ratio}</span>
+          </div>
         </div>
 
         {/* Commit message */}
         {commit.message && (
-          <p
-            className="mt-2 max-w-[640px] truncate text-xs"
-            style={{ color: "var(--muted-foreground)" }}
-          >
-            <span className="mr-1.5">Commit message:</span>
-            <span style={{ color: "var(--foreground)" }}>{commit.message}</span>
-          </p>
+          <div className="mt-5">
+            <div className="mb-1 flex items-center gap-1.5" style={{ color: "var(--muted-foreground)" }}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <line x1="1.05" y1="12" x2="7" y2="12" />
+                <line x1="17.01" y1="12" x2="22.96" y2="12" />
+              </svg>
+              <span className="text-xs">Commit message</span>
+            </div>
+            <p className="text-xs" style={{ color: "var(--foreground)" }}>
+              {commit.message}
+            </p>
+          </div>
         )}
 
         {/* Prompt history */}
-        <div className="mt-4">
-          <p
-            className="mb-2 text-xs font-medium"
+        <div className="mt-5">
+          <div
+            className="mb-2 flex items-center gap-1.5"
             style={{ color: "var(--muted-foreground)" }}
           >
-            Prompt History ({prompts.length || 0})
-          </p>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span className="text-xs font-medium">Prompt History ({prompts.length || 0})</span>
+          </div>
           {prompts.length === 0 ? (
             <p
               className="text-xs italic"
@@ -207,13 +229,15 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
           )}
         </div>
 
-        {modalPrompt !== null && prompts[modalPrompt] && (
-          <PromptModal
-            prompt={prompts[modalPrompt]}
-            index={modalPrompt}
-            onClose={() => setModalPrompt(null)}
-          />
-        )}
+        {modalPrompt !== null && prompts[modalPrompt] &&
+          createPortal(
+            <PromptModal
+              prompt={prompts[modalPrompt]}
+              index={modalPrompt}
+              onClose={() => setModalPrompt(null)}
+            />,
+            document.body,
+          )}
       </div>
     </td>
   );
