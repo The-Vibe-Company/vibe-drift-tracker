@@ -37,11 +37,15 @@ export function DashboardContent({
   totalCommits,
   page,
   pageSize,
+  sortBy,
+  sortOrder,
 }: {
   initialCommits: CommitRow[];
   totalCommits: number;
   page: number;
   pageSize: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) {
   const router = useRouter();
   const [commits, setCommits] = useState(initialCommits);
@@ -64,6 +68,8 @@ export function DashboardContent({
           page={page}
           pageSize={pageSize}
           totalCommits={totalCommits}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
         />
       </div>
     </div>

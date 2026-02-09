@@ -16,6 +16,8 @@ export default async function DashboardPage({
     until?: string;
     page?: string;
     pageSize?: string;
+    sortBy?: string;
+    sortOrder?: string;
   }>;
 }) {
   const { data: session } = await auth.getSession();
@@ -28,6 +30,9 @@ export default async function DashboardPage({
   const page = Math.max(1, parseInt(params.page || "1", 10) || 1);
   const offset = (page - 1) * pageSize;
 
+  const sortBy = params.sortBy;
+  const sortOrder = params.sortOrder === "asc" ? "asc" as const : params.sortOrder === "desc" ? "desc" as const : undefined;
+
   const filterParams = {
     userId,
     project: params.project,
@@ -36,7 +41,7 @@ export default async function DashboardPage({
   };
 
   const [commitRows, totalCommits, projects] = await Promise.all([
-    getCommits({ ...filterParams, limit: pageSize, offset }),
+    getCommits({ ...filterParams, limit: pageSize, offset, sortBy, sortOrder }),
     getCommitCount(filterParams),
     getProjects(userId),
   ]);
@@ -52,11 +57,13 @@ export default async function DashboardPage({
       </div>
 
       <DashboardContent
-        key={`${page}-${pageSize}-${params.project || ''}-${params.since || ''}-${params.until || ''}`}
+        key={`${page}-${pageSize}-${params.project || ''}-${params.since || ''}-${params.until || ''}-${sortBy || ''}-${sortOrder || ''}`}
         initialCommits={commitRows}
         totalCommits={totalCommits}
         page={page}
         pageSize={pageSize}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
       />
     </main>
   );

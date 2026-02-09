@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { CommitRow } from "@/lib/db/schema";
 import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared/dist/types";
 import { DriftBadge } from "./drift-badge";
@@ -218,18 +219,68 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
   );
 }
 
+function SortableHeader({
+  label,
+  column,
+  sortBy,
+  sortOrder,
+  className,
+}: {
+  label: string;
+  column: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  className?: string;
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isActive = sortBy === column;
+
+  function handleClick() {
+    const params = new URLSearchParams(searchParams.toString());
+    if (isActive && sortOrder === "asc") {
+      params.set("sortBy", column);
+      params.set("sortOrder", "desc");
+    } else {
+      params.set("sortBy", column);
+      params.set("sortOrder", "asc");
+    }
+    // Reset to page 1 when sorting changes
+    params.delete("page");
+    router.push(`?${params.toString()}`);
+  }
+
+  return (
+    <th
+      className={`cursor-pointer select-none px-4 py-3 font-medium transition-colors hover:text-white ${className ?? ""}`}
+      onClick={handleClick}
+    >
+      <span className="inline-flex items-center gap-1">
+        {label}
+        {isActive && (
+          <span className="text-xs">{sortOrder === "asc" ? "▲" : "▼"}</span>
+        )}
+      </span>
+    </th>
+  );
+}
+
 export function CommitTable({
   commits,
   onCommitsChange,
   page,
   pageSize,
   totalCommits,
+  sortBy,
+  sortOrder,
 }: {
   commits: CommitRow[];
   onCommitsChange?: (commits: CommitRow[]) => void;
   page: number;
   pageSize: number;
   totalCommits: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -290,13 +341,13 @@ export function CommitTable({
               backgroundColor: "var(--muted)",
             }}
           >
-            <th className="px-4 py-3 font-medium">Project</th>
-            <th className="px-4 py-3 font-medium">Drift</th>
-            <th className="px-4 py-3 font-medium text-right">Lines</th>
-            <th className="px-4 py-3 font-medium text-right">Prompts</th>
+            <SortableHeader label="Project" column="project" sortBy={sortBy} sortOrder={sortOrder} />
+            <SortableHeader label="Drift" column="drift" sortBy={sortBy} sortOrder={sortOrder} />
+            <SortableHeader label="Lines" column="lines" sortBy={sortBy} sortOrder={sortOrder} className="text-right" />
+            <SortableHeader label="Prompts" column="prompts" sortBy={sortBy} sortOrder={sortOrder} className="text-right" />
             <th className="px-4 py-3 font-medium">Branch</th>
             <th className="px-4 py-3 font-medium">Commit</th>
-            <th className="px-4 py-3 font-medium">Date</th>
+            <SortableHeader label="Date" column="date" sortBy={sortBy} sortOrder={sortOrder} />
             <th></th>
           </tr>
         </thead>
@@ -336,7 +387,7 @@ export function CommitTable({
                       level={driftLevel}
                     />
                   </td>
-                  <td className="px-4 py-3 text-right font-mono">
+                  <td className="whitespace-nowrap px-4 py-3 text-right font-mono text-xs">
                     <span style={{ color: "#22c55e" }}>
                       +{commit.linesAdded ?? 0}
                     </span>
