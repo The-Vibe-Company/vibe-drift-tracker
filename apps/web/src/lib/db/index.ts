@@ -51,7 +51,9 @@ export async function getCommits(filters?: {
     conditions.push(gte(commits.committedAt, new Date(filters.since)));
   }
   if (filters?.until) {
-    conditions.push(lte(commits.committedAt, new Date(filters.until)));
+    const untilDate = new Date(filters.until);
+    untilDate.setUTCHours(23, 59, 59, 999);
+    conditions.push(lte(commits.committedAt, untilDate));
   }
 
   const query = db
@@ -86,7 +88,9 @@ export async function getCommitCount(filters?: {
     conditions.push(gte(commits.committedAt, new Date(filters.since)));
   }
   if (filters?.until) {
-    conditions.push(lte(commits.committedAt, new Date(filters.until)));
+    const untilDate = new Date(filters.until);
+    untilDate.setUTCHours(23, 59, 59, 999);
+    conditions.push(lte(commits.committedAt, untilDate));
   }
 
   const [result] = await db

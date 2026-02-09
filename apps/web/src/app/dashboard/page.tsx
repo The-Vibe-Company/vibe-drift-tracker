@@ -24,7 +24,7 @@ export default async function DashboardPage({
   const userId = session.user.id;
   const params = await searchParams;
 
-  const pageSize = Math.max(1, parseInt(params.pageSize || "10", 10) || 10);
+  const pageSize = Math.max(1, parseInt(params.pageSize || "25", 10) || 25);
   const page = Math.max(1, parseInt(params.page || "1", 10) || 1);
   const offset = (page - 1) * pageSize;
 
@@ -42,17 +42,17 @@ export default async function DashboardPage({
   ]);
 
   return (
-    <main className="mx-auto max-w-7xl px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold tracking-tight">Dashboard</h1>
+    <main className="mx-auto flex h-screen max-w-7xl flex-col overflow-hidden px-4 py-8">
+      <h1 className="mb-6 flex-shrink-0 text-2xl font-bold tracking-tight">Dashboard</h1>
 
-      <div className="mb-4">
+      <div className="mb-4 flex-shrink-0">
         <Suspense fallback={null}>
           <Filters projects={projects} />
         </Suspense>
       </div>
 
       <DashboardContent
-        key={`${page}-${pageSize}`}
+        key={`${page}-${pageSize}-${params.project || ''}-${params.since || ''}-${params.until || ''}`}
         initialCommits={commitRows}
         totalCommits={totalCommits}
         page={page}

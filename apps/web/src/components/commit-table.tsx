@@ -32,14 +32,18 @@ function PromptModal({
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+      style={{
+        backgroundColor: "rgba(0, 0, 0, 0.7)",
+        backdropFilter: "blur(4px)",
+      }}
       onClick={onClose}
     >
       <div
-        className="relative mx-4 max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-lg border p-6"
+        className="relative mx-4 max-h-[80vh] w-full max-w-2xl overflow-y-auto rounded-xl border p-6"
         style={{
           backgroundColor: "var(--card)",
           borderColor: "var(--border)",
+          boxShadow: "0 16px 48px rgba(0, 0, 0, 0.4)",
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -48,7 +52,7 @@ function PromptModal({
             className="text-xs font-semibold"
             style={{ color: "var(--muted-foreground)" }}
           >
-            Prompt #{index + 1}
+            Prompt {index + 1}
             {prompt.timestamp && (
               <span className="ml-2 font-normal">
                 {formatRelativeTime(prompt.timestamp)}
@@ -80,12 +84,9 @@ function PromptModal({
 function DetailPanel({ commit }: { commit: CommitRow }) {
   const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
   const [modalPrompt, setModalPrompt] = useState<number | null>(null);
+  const [hoveredPrompt, setHoveredPrompt] = useState<number | null>(null);
 
   const promptCount = prompts.length;
-  const stats = [
-    { label: "User Prompts", value: promptCount },
-    { label: "Files Changed", value: commit.filesChanged ?? 0 },
-  ];
 
   const ratio =
     promptCount > 0
@@ -95,99 +96,124 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
         ).toFixed(1)
       : "—";
 
+  const stats = [
+    { label: "User Prompts", value: promptCount },
+    { label: "Files Changed", value: commit.filesChanged ?? 0 },
+    { label: "Lines / Prompt", value: ratio },
+  ];
+
   return (
-    <td colSpan={8} className="px-4 py-4">
-      <div className="grid grid-cols-2 gap-4">
-        {stats.map((s) => (
-          <div key={s.label}>
+    <td colSpan={8}>
+      <div
+        className="px-4 py-4"
+        style={{
+          backgroundColor: "rgba(255, 255, 255, 0.015)",
+          borderTop: "1px solid var(--border)",
+        }}
+      >
+        {/* Stats row */}
+        <div className="flex items-center gap-6">
+          {stats.map((s) => (
+            <div key={s.label} className="flex items-baseline gap-1.5">
+              <span
+                className="text-xs"
+                style={{ color: "var(--muted-foreground)" }}
+              >
+                {s.label}
+              </span>
+              <span className="text-sm font-medium">{s.value}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Commit message */}
+        {commit.message && (
+          <p
+            className="mt-2 max-w-[640px] truncate text-xs"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            <span className="mr-1.5">Commit message:</span>
+            <span style={{ color: "var(--foreground)" }}>{commit.message}</span>
+          </p>
+        )}
+
+        {/* Prompt history */}
+        <div className="mt-4">
+          <p
+            className="mb-2 text-xs font-medium"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            Prompt History ({prompts.length || 0})
+          </p>
+          {prompts.length === 0 ? (
             <p
-              className="text-xs"
+              className="text-xs italic"
               style={{ color: "var(--muted-foreground)" }}
             >
-              {s.label}
+              No prompt data available
             </p>
-            <p className="text-lg font-semibold">{s.value}</p>
-          </div>
-        ))}
-      </div>
-
-      <div
-        className="mt-3 flex flex-wrap items-center gap-4 text-xs"
-        style={{ color: "var(--muted-foreground)" }}
-      >
-        <span>
-          Lines / Prompt: <strong style={{ color: "var(--foreground)" }}>{ratio}</strong>
-        </span>
-        {commit.message && (
-          <span className="max-w-md truncate">
-            Message: <strong style={{ color: "var(--foreground)" }}>{commit.message}</strong>
-          </span>
-        )}
-      </div>
-
-      {/* Prompt history */}
-      <div className="mt-4">
-        <p
-          className="mb-2 text-xs font-medium"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          Prompt History ({prompts.length || 0})
-        </p>
-        {prompts.length === 0 ? (
-          <p
-            className="rounded-md px-3 py-2 text-xs italic"
-            style={{
-              backgroundColor: "var(--muted)",
-              color: "var(--muted-foreground)",
-            }}
-          >
-            No prompt data available
-          </p>
-        ) : (
-          <ol className="space-y-2">
-            {prompts.map((p, i) => (
-              <li
-                key={i}
-                className="flex cursor-pointer items-start gap-3 rounded-md px-3 py-2 transition-colors hover:brightness-125"
-                style={{ backgroundColor: "var(--muted)" }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setModalPrompt(i);
-                }}
-              >
-                <span
-                  className="mt-0.5 flex-shrink-0 text-xs font-semibold"
-                  style={{ color: "var(--muted-foreground)" }}
+          ) : (
+            <ol className="space-y-0.5">
+              {prompts.map((p, i) => (
+                <li
+                  key={i}
+                  className="flex cursor-pointer items-center gap-3 rounded-md px-3 py-2 transition-colors"
+                  style={{
+                    backgroundColor:
+                      hoveredPrompt === i
+                        ? "rgba(255, 255, 255, 0.05)"
+                        : "rgba(255, 255, 255, 0.02)",
+                  }}
+                  onMouseEnter={() => setHoveredPrompt(i)}
+                  onMouseLeave={() => setHoveredPrompt(null)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalPrompt(i);
+                  }}
                 >
-                  #{i + 1}
-                </span>
-                <p
-                  className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono text-xs"
-                  style={{ color: "var(--foreground)" }}
-                >
-                  {p.text}
-                </p>
-                {p.timestamp && (
                   <span
-                    className="flex-shrink-0 text-xs"
-                    style={{ color: "var(--muted-foreground)" }}
+                    className="flex-shrink-0 text-xs font-medium tabular-nums"
+                    style={{ color: "var(--muted-foreground)", minWidth: "1.25rem" }}
                   >
-                    {formatRelativeTime(p.timestamp)}
+                    {i + 1}
                   </span>
-                )}
-              </li>
-            ))}
-          </ol>
+                  <p
+                    className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono text-xs"
+                    style={{ color: "var(--foreground)" }}
+                  >
+                    {p.text}
+                  </p>
+                  {p.timestamp && (
+                    <span
+                      className="flex-shrink-0 text-xs"
+                      style={{ color: "var(--muted-foreground)" }}
+                    >
+                      {formatRelativeTime(p.timestamp)}
+                    </span>
+                  )}
+                  <span
+                    className="flex-shrink-0 text-xs transition-opacity"
+                    style={{
+                      color: "var(--muted-foreground)",
+                      opacity: hoveredPrompt === i ? 1 : 0,
+                    }}
+                  >
+                    →
+                  </span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+
+        {modalPrompt !== null && prompts[modalPrompt] && (
+          <PromptModal
+            prompt={prompts[modalPrompt]}
+            index={modalPrompt}
+            onClose={() => setModalPrompt(null)}
+          />
         )}
       </div>
-
-      {modalPrompt !== null && prompts[modalPrompt] && (
-        <PromptModal
-          prompt={prompts[modalPrompt]}
-          index={modalPrompt}
-          onClose={() => setModalPrompt(null)}
-        />
-      )}
     </td>
   );
 }
@@ -207,6 +233,7 @@ export function CommitTable({
 }) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [hoveredRowId, setHoveredRowId] = useState<number | null>(null);
 
   async function handleDelete(e: React.MouseEvent, commitId: number) {
     e.stopPropagation();
@@ -285,11 +312,19 @@ export function CommitTable({
                 <tr
                   className="border-b cursor-pointer transition-colors"
                   style={{
-                    borderColor: "var(--border)",
+                    borderColor: isExpanded ? "transparent" : "var(--border)",
                     backgroundColor: isExpanded
-                      ? "rgba(250, 204, 21, 0.05)"
-                      : undefined,
+                      ? "rgba(255, 255, 255, 0.03)"
+                      : hoveredRowId === commit.id
+                        ? "rgba(255, 255, 255, 0.02)"
+                        : undefined,
+                    ...(isExpanded && {
+                      boxShadow:
+                        "inset 1px 0 0 rgba(250, 204, 21, 0.3), inset -1px 0 0 rgba(250, 204, 21, 0.3), inset 0 1px 0 rgba(250, 204, 21, 0.3)",
+                    }),
                   }}
+                  onMouseEnter={() => !isExpanded && setHoveredRowId(commit.id)}
+                  onMouseLeave={() => setHoveredRowId(null)}
                   onClick={() =>
                     setExpandedId(isExpanded ? null : commit.id)
                   }
@@ -348,7 +383,8 @@ export function CommitTable({
                     className="border-b"
                     style={{
                       borderColor: "var(--border)",
-                      backgroundColor: "rgba(250, 204, 21, 0.03)",
+                      boxShadow:
+                        "inset 1px 0 0 rgba(250, 204, 21, 0.3), inset -1px 0 0 rgba(250, 204, 21, 0.3), inset 0 -1px 0 rgba(250, 204, 21, 0.3)",
                     }}
                   >
                     <DetailPanel commit={commit} />

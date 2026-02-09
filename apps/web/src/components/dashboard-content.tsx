@@ -53,17 +53,19 @@ export function DashboardContent({
   }
 
   return (
-    <>
-      <div className="mb-6">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="mb-6 flex-shrink-0">
         <StatsSummary stats={{ ...stats, totalCommits }} />
       </div>
-      <CommitTable
-        commits={commits}
-        onCommitsChange={handleCommitsChange}
-        page={page}
-        pageSize={pageSize}
-        totalCommits={totalCommits}
-      />
-    </>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <CommitTable
+          commits={commits}
+          onCommitsChange={handleCommitsChange}
+          page={page}
+          pageSize={pageSize}
+          totalCommits={totalCommits}
+        />
+      </div>
+    </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useRef, useState, useEffect } from "react";
 
-const PAGE_SIZE_OPTIONS = [5, 10, 25, 50, 100];
+const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
 function ChevronDown() {
   return (
@@ -63,7 +63,7 @@ export function Pagination({
     (updates: Record<string, string>) => {
       const params = new URLSearchParams(searchParams.toString());
       for (const [key, value] of Object.entries(updates)) {
-        if (value && value !== "1" && !(key === "pageSize" && value === "10")) {
+        if (value && value !== "1" && !(key === "pageSize" && value === "25")) {
           params.set(key, value);
         } else {
           params.delete(key);
