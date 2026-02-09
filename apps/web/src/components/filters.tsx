@@ -41,7 +41,7 @@ function Dropdown({
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors"
+        className="flex min-w-[10rem] items-center justify-between gap-2 rounded-md border px-3 py-1.5 text-sm transition-colors"
         style={{
           borderColor: open ? "var(--primary)" : "var(--border)",
           backgroundColor: "var(--card)",
@@ -53,19 +53,19 @@ function Dropdown({
       </button>
       {open && (
         <div
-          className="absolute left-0 top-full z-50 mt-1 min-w-full rounded-md border py-1 shadow-lg"
+          className="absolute left-0 top-full z-50 mt-1 min-w-[12rem] overflow-hidden rounded-md border shadow-lg"
           style={{
             borderColor: "var(--border)",
             backgroundColor: "var(--card)",
           }}
         >
-          {options.map((opt) => (
+          {options.map((opt, i) => (
             <button
               key={opt.value}
-              className="block w-full px-3 py-1.5 text-left text-sm transition-colors hover:brightness-150"
+              className="block w-full whitespace-nowrap border-t px-3 py-2 text-left text-sm transition-colors hover:bg-white/5"
               style={{
-                color: opt.value === value ? "var(--primary)" : "var(--foreground)",
-                backgroundColor: opt.value === value ? "rgba(250, 204, 21, 0.08)" : "transparent",
+                borderColor: i === 0 ? "transparent" : "var(--border)",
+                color: "var(--foreground)",
               }}
               onClick={() => {
                 onChange(opt.value);
