@@ -12,6 +12,7 @@ function computeStats(commits: CommitRow[]) {
   let totalLines = 0;
   let totalPrompts = 0;
   let totalScore = 0;
+  let vibeCommits = 0;
 
   for (const c of commits) {
     const prompts = (c.prompts ?? []) as Array<{ text: string }>;
@@ -19,12 +20,15 @@ function computeStats(commits: CommitRow[]) {
     const lines = (c.linesAdded ?? 0) + (c.linesDeleted ?? 0);
     totalLines += lines;
     totalPrompts += promptCount;
-    totalScore += computeVibeDriftScore(promptCount, c.linesAdded ?? 0, c.linesDeleted ?? 0);
+    if (promptCount > 0) {
+      totalScore += computeVibeDriftScore(promptCount, c.linesAdded ?? 0, c.linesDeleted ?? 0);
+      vibeCommits++;
+    }
   }
 
   return {
     totalCommits,
-    avgScore: totalCommits > 0 ? totalScore / totalCommits : 0,
+    avgScore: vibeCommits > 0 ? totalScore / vibeCommits : 0,
     totalLines,
     totalPrompts,
     linesPerCommit: totalCommits > 0 ? Math.round(totalLines / totalCommits) : 0,
@@ -37,11 +41,15 @@ export function DashboardContent({
   totalCommits,
   page,
   pageSize,
+  sortBy,
+  sortOrder,
 }: {
   initialCommits: CommitRow[];
   totalCommits: number;
   page: number;
   pageSize: number;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) {
   const router = useRouter();
   const [commits, setCommits] = useState(initialCommits);
@@ -64,6 +72,8 @@ export function DashboardContent({
           page={page}
           pageSize={pageSize}
           totalCommits={totalCommits}
+          sortBy={sortBy}
+          sortOrder={sortOrder}
         />
       </div>
     </div>

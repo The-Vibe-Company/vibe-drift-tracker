@@ -7,7 +7,7 @@ const levelLabels: Record<string, string> = {
   low: "Low",
   moderate: "Moderate",
   high: "High",
-  "vibe-drift": "Vibe Drifting",
+  "vibe-drift": "Very High",
 };
 
 export function StatsSummary({
@@ -24,7 +24,17 @@ export function StatsSummary({
   const driftColor = getVibeDriftColor(driftLevel);
 
   const cards = [
-    { label: "Total Commits", value: stats.totalCommits },
+    {
+      label: "Total Commits",
+      value: stats.totalCommits,
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="4" />
+          <line x1="1.05" y1="12" x2="7" y2="12" />
+          <line x1="17.01" y1="12" x2="22.96" y2="12" />
+        </svg>
+      ),
+    },
     {
       label: "Avg Drift Score",
       value: Number(stats.avgScore).toFixed(2),
@@ -32,6 +42,11 @@ export function StatsSummary({
         label: levelLabels[driftLevel] ?? driftLevel,
         color: driftColor,
       },
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+        </svg>
+      ),
     },
     {
       label: "Lines / Commit",
@@ -39,6 +54,12 @@ export function StatsSummary({
         stats.totalCommits > 0
           ? stats.linesPerCommit.toLocaleString()
           : "–",
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="4 17 10 11 4 5" />
+          <line x1="12" y1="19" x2="20" y2="19" />
+        </svg>
+      ),
     },
     {
       label: "Prompts / Commit",
@@ -46,6 +67,11 @@ export function StatsSummary({
         stats.totalCommits > 0
           ? stats.promptsPerCommit.toFixed(1)
           : "–",
+      icon: (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      ),
     },
   ];
 
@@ -61,12 +87,13 @@ export function StatsSummary({
             backgroundColor: "var(--card)",
           }}
         >
-          <p
-            className="text-sm"
+          <div
+            className="flex items-center gap-1.5 text-sm"
             style={{ color: "var(--muted-foreground)" }}
           >
-            {card.label}
-          </p>
+            {card.icon}
+            <span>{card.label}</span>
+          </div>
           <p
             className="mt-1 text-2xl font-semibold"
             style={{ color: "var(--primary)" }}

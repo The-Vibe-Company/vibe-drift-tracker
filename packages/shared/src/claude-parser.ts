@@ -43,11 +43,24 @@ function isSystemGenerated(
       : content.map((c) => c.text || "").join("");
   const trimmed = text.trim();
 
-  if (trimmed.startsWith("[Request interrupted by user")) return true;
+  if (trimmed === "[Request interrupted by user]") return true;
+  if (trimmed.startsWith("[Request interrupted by user for tool use]")) return true;
   if (trimmed.startsWith("Implement the following plan:")) return true;
   if (trimmed.startsWith("<task-notification>")) return true;
 
   return false;
+}
+
+/**
+ * Strip the "[Request interrupted by user]" prefix from a message
+ * that also contains real user text (mid-processing interruption).
+ */
+function stripInterruptPrefix(text: string): string {
+  const prefix = "[Request interrupted by user]";
+  if (text.startsWith(prefix)) {
+    return text.slice(prefix.length).trim();
+  }
+  return text;
 }
 
 function countToolUses(
@@ -193,10 +206,10 @@ export function parseSessionFile(
       if (msg.isSidechain) continue;
       if (msg.message.content && isCommand(msg.message.content)) continue;
       if (msg.message.content && isSystemGenerated(msg.message.content)) continue;
-      const text = typeof msg.message.content === "string"
+      const raw = typeof msg.message.content === "string"
         ? msg.message.content
         : msg.message.content?.map((c) => c.text || "").join("") ?? "";
-      const trimmed = text.trim();
+      const trimmed = stripInterruptPrefix(raw.trim());
       if (trimmed.length > 0) {
         prompts.push({
           text: trimmed.slice(0, 500),

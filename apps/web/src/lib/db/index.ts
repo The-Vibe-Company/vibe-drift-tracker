@@ -1,6 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
-import { eq, desc, sql, and, gte, lte } from "drizzle-orm";
+import { eq, desc, asc, sql, and, gte, lte } from "drizzle-orm";
 import { commits, fileChanges, apiKeys, type NewCommitRow, type NewFileChangeRow, type NewApiKeyRow } from "./schema";
 import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared";
 
@@ -34,6 +34,8 @@ export async function getCommits(filters?: {
   limit?: number;
   offset?: number;
   userId?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }) {
   const db = getDb();
   const conditions = [];
@@ -56,11 +58,24 @@ export async function getCommits(filters?: {
     conditions.push(lte(commits.committedAt, untilDate));
   }
 
+  const sortDir = filters?.sortOrder === "asc" ? asc : desc;
+
+  function getSortExpression() {
+    switch (filters?.sortBy) {
+      case "project": return sortDir(commits.projectName);
+      case "drift": return sortDir(commits.vibeDriftScore);
+      case "lines": return sortDir(sql`${commits.linesAdded} + ${commits.linesDeleted}`);
+      case "prompts": return sortDir(commits.userPrompts);
+      case "date": return sortDir(commits.committedAt);
+      default: return desc(commits.committedAt);
+    }
+  }
+
   const query = db
     .select()
     .from(commits)
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(desc(commits.committedAt))
+    .orderBy(getSortExpression())
     .limit(filters?.limit ?? 50)
     .offset(filters?.offset ?? 0);
 
@@ -139,7 +154,7 @@ export async function getStats(project?: string, userId?: string) {
   const [result] = await db
     .select({
       totalCommits: sql<number>`count(*)::int`,
-      avgScore: sql<number>`coalesce(avg(${commits.vibeDriftScore}), 0)`,
+      avgScore: sql<number>`coalesce(avg(${commits.vibeDriftScore}) filter (where ${commits.userPrompts} > 0), 0)`,
       totalLines: sql<number>`coalesce(sum(${commits.linesAdded}) + sum(${commits.linesDeleted}), 0)::int`,
       totalPrompts: sql<number>`coalesce(sum(${commits.userPrompts}), 0)::int`,
     })

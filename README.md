@@ -10,12 +10,12 @@ Vibe coding without feedback loops leads to chaos. You start with a clear goal, 
 
 Vibe Drift Tracker measures how many AI prompts go into each commit, how many lines of code each prompt produces, and whether your session is drifting from focused work into feature creep. Every commit gets a **drift score** and a **drift level**:
 
-| Level        | Color  | Meaning                              |
-|--------------|--------|--------------------------------------|
-| **low**      | 🟢 Green  | Focused, on track                    |
-| **moderate** | 🟡 Yellow | Starting to wander                   |
-| **high**     | 🟠 Orange | Significant drift from original task |
-| **vibe-drift** | 🔴 Red | You've lost the plot — time to reset |
+| Level          | Color     | Meaning                              |
+| -------------- | --------- | ------------------------------------ |
+| **low**        | 🟢 Green  | Focused, on track                    |
+| **moderate**   | 🟡 Yellow | Starting to wander                   |
+| **high**       | 🟠 Orange | Significant drift from original task |
+| **vibe-drift** | 🔴 Red    | You've lost the plot — time to reset |
 
 ---
 
@@ -34,7 +34,7 @@ Data sources: the git post-commit hook or the VS Code extension sends a payload 
 
 ### 1. Create an account
 
-Go to your hosted VibeDrift dashboard and sign up. Authentication is handled via Neon Auth (passwordless).
+Go to your hosted VibeDrift dashboard and sign up. Authentication is handled via Neon Auth.
 
 ### 2. Generate an API key
 
@@ -63,11 +63,11 @@ Then configure in VS Code settings (`settings.json`):
 }
 ```
 
-| Setting              | Type    | Default                  | Description                          |
-|----------------------|---------|--------------------------|--------------------------------------|
-| `vibedrift.apiUrl`   | string  | `http://localhost:3000`  | URL of the VibeDrift dashboard API   |
-| `vibedrift.apiKey`   | string  | `""`                     | API key for authentication           |
-| `vibedrift.enabled`  | boolean | `true`                   | Enable automatic commit tracking     |
+| Setting             | Type    | Default                 | Description                        |
+| ------------------- | ------- | ----------------------- | ---------------------------------- |
+| `vibedrift.apiUrl`  | string  | `http://localhost:3000` | URL of the VibeDrift dashboard API |
+| `vibedrift.apiKey`  | string  | `""`                    | API key for authentication         |
+| `vibedrift.enabled` | boolean | `true`                  | Enable automatic commit tracking   |
 
 The extension activates automatically when a `.git` folder is detected in your workspace.
 
@@ -112,16 +112,16 @@ The web dashboard gives you a clear view of your AI-assisted development pattern
 
 ## Tech Stack
 
-| Layer         | Technology                        |
-|---------------|-----------------------------------|
-| Framework     | Next.js 15, React 19              |
-| Database      | Neon PostgreSQL, Drizzle ORM      |
-| Styling       | Tailwind CSS 4                    |
-| Auth          | Neon Auth                         |
-| Package mgr   | pnpm                             |
-| Monorepo      | Turborepo                         |
-| Bundler       | esbuild (CLI, hooks, extension)   |
-| Language      | TypeScript 5.6                    |
+| Layer       | Technology                      |
+| ----------- | ------------------------------- |
+| Framework   | Next.js 15, React 19            |
+| Database    | Neon PostgreSQL, Drizzle ORM    |
+| Styling     | Tailwind CSS 4                  |
+| Auth        | Neon Auth                       |
+| Package mgr | pnpm                            |
+| Monorepo    | Turborepo                       |
+| Bundler     | esbuild (CLI, hooks, extension) |
+| Language    | TypeScript 5.6                  |
 
 ---
 
@@ -157,14 +157,14 @@ vibedrift-tracker/
 
 ### Key scripts
 
-| Command          | Description                       |
-|------------------|-----------------------------------|
-| `pnpm dev`       | Start all packages in dev mode    |
-| `pnpm build`     | Build all packages                |
-| `pnpm lint`      | Lint all packages                 |
-| `pnpm clean`     | Clean build artifacts             |
-| `pnpm db:push`   | Push schema to database (web)     |
-| `pnpm db:studio` | Open Drizzle Studio (web)         |
+| Command          | Description                    |
+| ---------------- | ------------------------------ |
+| `pnpm dev`       | Start all packages in dev mode |
+| `pnpm build`     | Build all packages             |
+| `pnpm lint`      | Lint all packages              |
+| `pnpm clean`     | Clean build artifacts          |
+| `pnpm db:push`   | Push schema to database (web)  |
+| `pnpm db:studio` | Open Drizzle Studio (web)      |
 
 ---
 
