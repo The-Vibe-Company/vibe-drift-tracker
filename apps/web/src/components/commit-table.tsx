@@ -117,9 +117,6 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
         <span>
           Lines / Prompt: <strong style={{ color: "var(--foreground)" }}>{ratio}</strong>
         </span>
-        <span>
-          Branch: <strong style={{ color: "var(--foreground)" }}>{commit.branch}</strong>
-        </span>
         {commit.message && (
           <span className="max-w-md truncate">
             Message: <strong style={{ color: "var(--foreground)" }}>{commit.message}</strong>
@@ -263,7 +260,7 @@ export function CommitTable({
             <th className="px-4 py-3 font-medium">Drift</th>
             <th className="px-4 py-3 font-medium text-right">Lines</th>
             <th className="px-4 py-3 font-medium text-right">Prompts</th>
-            <th className="px-4 py-3 font-medium">Message</th>
+            <th className="px-4 py-3 font-medium">Branch</th>
             <th className="px-4 py-3 font-medium">Commit</th>
             <th className="px-4 py-3 font-medium">Date</th>
             <th></th>
@@ -310,7 +307,7 @@ export function CommitTable({
                     {promptCount}
                   </td>
                   <td className="truncate px-4 py-3">
-                    {commit.message}
+                    {commit.branch}
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">
                     {commit.commitHash.slice(0, 7)}
