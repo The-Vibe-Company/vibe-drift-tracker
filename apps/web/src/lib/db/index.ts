@@ -154,7 +154,7 @@ export async function getStats(project?: string, userId?: string) {
   const [result] = await db
     .select({
       totalCommits: sql<number>`count(*)::int`,
-      avgScore: sql<number>`coalesce(avg(${commits.vibeDriftScore}), 0)`,
+      avgScore: sql<number>`coalesce(avg(${commits.vibeDriftScore}) filter (where ${commits.userPrompts} > 0), 0)`,
       totalLines: sql<number>`coalesce(sum(${commits.linesAdded}) + sum(${commits.linesDeleted}), 0)::int`,
       totalPrompts: sql<number>`coalesce(sum(${commits.userPrompts}), 0)::int`,
     })

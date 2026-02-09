@@ -7,7 +7,7 @@ const levelLabels: Record<string, string> = {
   low: "Low",
   moderate: "Moderate",
   high: "High",
-  "vibe-drift": "Vibe Drifting",
+  "vibe-drift": "Very High",
 };
 
 export function StatsSummary({

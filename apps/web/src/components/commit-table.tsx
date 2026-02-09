@@ -409,6 +409,7 @@ export function CommitTable({
                     <DriftBadge
                       score={driftScore}
                       level={driftLevel}
+                      promptCount={promptCount}
                     />
                   </td>
                   <td className="whitespace-nowrap px-4 py-3 text-right font-mono text-xs">
