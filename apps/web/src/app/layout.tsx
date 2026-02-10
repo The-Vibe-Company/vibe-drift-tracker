@@ -5,7 +5,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "VibeDrift Tracker",
-  description: "Track your AI-assisted development vibe drift",
+  description:
+    "Track your AI-assisted development vibe drift. Stay focused, ship better.",
 };
 
 export default function RootLayout({
