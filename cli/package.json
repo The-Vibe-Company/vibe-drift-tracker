@@ -1,6 +1,6 @@
 {
   "name": "vibedrift",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Track AI interactions per commit and detect vibe drift",
   "publishConfig": {
     "access": "public"
