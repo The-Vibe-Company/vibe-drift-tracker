@@ -14,10 +14,6 @@
     },
     "clean": {
       "cache": false
-    },
-    "package": {
-      "dependsOn": ["build"],
-      "outputs": ["*.vsix"]
     }
   }
 }

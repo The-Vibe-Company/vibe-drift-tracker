@@ -23,7 +23,7 @@ export default async function SettingsPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Settings</h1>
         <p className="mt-1" style={{ color: "var(--muted-foreground)" }}>
-          Manage your API keys for the VS Code extension and other integrations.
+          Manage your API keys for your integrations.
         </p>
       </div>
 

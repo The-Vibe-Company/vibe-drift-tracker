@@ -44,7 +44,7 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKey[] }) {
   }
 
   async function handleDelete(id: number) {
-    if (!confirm("Delete this API key? Any extension using it will stop working.")) return;
+    if (!confirm("Delete this API key? Any integration using it will stop working.")) return;
 
     try {
       const res = await fetch(`/api/api-keys/${id}`, { method: "DELETE" });
@@ -130,7 +130,7 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKey[] }) {
             className="mt-2 text-xs"
             style={{ color: "var(--muted-foreground)" }}
           >
-            Paste this key in your VS Code settings: <code>vibedrift.apiKey</code>
+            Paste this key in your <code>.vibedrift.json</code> config file.
           </p>
         </div>
       )}
@@ -205,7 +205,7 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKey[] }) {
             color: "var(--muted-foreground)",
           }}
         >
-          No API keys yet. Generate one to connect your VS Code extension.
+          No API keys yet. Generate one to connect your project.
         </div>
       )}
     </div>

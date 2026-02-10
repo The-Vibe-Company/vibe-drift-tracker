@@ -335,8 +335,7 @@ export function CommitTable({
           color: "var(--muted-foreground)",
         }}
       >
-        No commits yet. Push some data via the API, VS Code extension, or
-        post-commit hook.
+        No commits yet. Push some data via the API or post-commit hook.
       </div>
     );
   }

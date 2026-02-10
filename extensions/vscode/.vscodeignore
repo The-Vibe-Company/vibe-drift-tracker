@@ -1,9 +1,0 @@
-src/
-tsconfig.json
-node_modules/
-.vscode/
-*.ts
-!dist/**
-!icon.png
-!README.md
-!CHANGELOG.md

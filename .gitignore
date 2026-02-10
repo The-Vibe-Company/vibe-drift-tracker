@@ -5,4 +5,5 @@ dist/
 *.tsbuildinfo
 .env
 .env.local
-*.vsix
+.vibedrift.json
+.claude/settings.json

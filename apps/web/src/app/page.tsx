@@ -14,8 +14,8 @@ const pipelineSteps = [
         <polyline points="8 6 2 12 8 18" />
       </svg>
     ),
-    title: "Install the extension",
-    description: "One click in VS Code or Cursor.",
+    title: "Run `vibedrift init`",
+    description: "One command to set up tracking.",
   },
   {
     icon: (
