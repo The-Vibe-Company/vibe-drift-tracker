@@ -19,19 +19,35 @@ function resolveHookScript(): string {
   return hookEntry;
 }
 
-function buildHookContent(hookScriptPath: string, apiUrl?: string): string {
-  const envLine = apiUrl
+function buildHookContent(hookScriptPath: string, apiUrl?: string, apiKey?: string): string {
+  const urlLine = apiUrl
     ? `export VIBEDRIFT_API_URL="${apiUrl}"`
     : `export VIBEDRIFT_API_URL="\${VIBEDRIFT_API_URL:-http://localhost:3000}"`;
 
+  const keyLine = apiKey
+    ? `export VIBEDRIFT_API_KEY="${apiKey}"`
+    : "";
+
   return `#!/bin/sh
 ${MARKER}
-${envLine}
+${urlLine}
+${keyLine}
 node "${hookScriptPath}" || true
-`;
+`.replace(/\n\n\n/g, "\n\n");
 }
 
-export async function init(apiUrl?: string) {
+function writeProjectConfig(apiUrl?: string, apiKey?: string) {
+  const configPath = path.join(process.cwd(), ".vibedrift.json");
+  const config: Record<string, string> = {};
+  if (apiUrl) config.apiUrl = apiUrl;
+  if (apiKey) config.apiKey = apiKey;
+  if (Object.keys(config).length > 0) {
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
+    console.log(`vibedrift: config saved to ${configPath}`);
+  }
+}
+
+export async function init(apiUrl?: string, apiKey?: string) {
   const gitDir = findGitDir();
   const hooksDir = path.join(gitDir, "hooks");
   const hookPath = path.join(hooksDir, "post-commit");
@@ -43,7 +59,10 @@ export async function init(apiUrl?: string) {
     fs.mkdirSync(hooksDir, { recursive: true });
   }
 
-  let content = buildHookContent(hookScriptPath, apiUrl);
+  // Save project config for prompt hook / statusline
+  writeProjectConfig(apiUrl, apiKey);
+
+  let content = buildHookContent(hookScriptPath, apiUrl, apiKey);
 
   // If an existing hook exists and it's not ours, chain it
   if (fs.existsSync(hookPath)) {
@@ -62,6 +81,9 @@ export async function init(apiUrl?: string) {
   console.log(`vibedrift: post-commit hook installed at ${hookPath}`);
   if (apiUrl) {
     console.log(`vibedrift: API URL set to ${apiUrl}`);
+  }
+  if (apiKey) {
+    console.log("vibedrift: API key configured");
   }
 }
 

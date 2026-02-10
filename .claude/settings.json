@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"/Users/stan/Dev/vibe-drift-tracker/hooks/dist/prompt-hook.js\""
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node \"/Users/stan/Dev/vibe-drift-tracker/hooks/dist/statusline.js\""
+  }
+}

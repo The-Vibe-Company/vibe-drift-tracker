@@ -1,7 +1,10 @@
 {
   "name": "@vibedrift/hooks",
   "version": "0.1.0",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist"],
   "bin": {
     "vibedrift-post-commit": "./dist/post-commit.js",
     "vibedrift-prompt-hook": "./dist/prompt-hook.js",

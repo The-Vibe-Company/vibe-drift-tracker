@@ -54,6 +54,83 @@ function detectFileStatus(
   }));
 }
 
+/**
+ * Build a live (uncommitted) payload for the current working tree.
+ * Uses git diff HEAD for line changes and parses Claude sessions since the last commit.
+ */
+export async function buildLivePayload(
+  repoPath: string,
+): Promise<CommitPayload> {
+  const branch = exec("git rev-parse --abbrev-ref HEAD", repoPath);
+  const projectName = repoPath.split("/").pop() || "unknown";
+
+  let author = "unknown";
+  try {
+    author = exec("git config user.name", repoPath);
+  } catch {
+    // ignore
+  }
+
+  let remoteUrl: string | undefined;
+  try {
+    remoteUrl = exec("git remote get-url origin", repoPath) || undefined;
+  } catch {
+    remoteUrl = undefined;
+  }
+
+  // Uncommitted diff stats (staged + unstaged vs HEAD)
+  let numstat = "";
+  try {
+    numstat = exec("git diff HEAD --numstat", repoPath);
+  } catch {
+    // No commits yet or other error
+  }
+  const fileChanges = parseFileChanges(numstat);
+  const linesAdded = fileChanges.reduce((s, f) => s + f.linesAdded, 0);
+  const linesDeleted = fileChanges.reduce((s, f) => s + f.linesDeleted, 0);
+
+  // Time window: last commit timestamp -> now
+  let sinceDate: Date;
+  let commitHash = "HEAD";
+  try {
+    commitHash = exec("git rev-parse HEAD", repoPath);
+    const lastCommitTime = exec("git log -1 --format=%aI HEAD", repoPath);
+    sinceDate = new Date(lastCommitTime);
+  } catch {
+    // No commits yet
+    sinceDate = new Date(Date.now() - 24 * 60 * 60 * 1000);
+  }
+  const untilDate = new Date();
+
+  // Parse Claude sessions in this time window
+  const { aggregate, sessions } = parseClaudeSessions(
+    repoPath,
+    sinceDate,
+    untilDate,
+  );
+
+  return {
+    commitHash: `live-${projectName}`,
+    message: "Live session (uncommitted)",
+    author,
+    branch,
+    committedAt: new Date().toISOString(),
+    projectName,
+    remoteUrl,
+    userPrompts: aggregate.userPrompts,
+    aiResponses: aggregate.aiResponses,
+    totalInteractions: aggregate.totalInteractions,
+    toolCalls: aggregate.toolCalls,
+    filesChanged: fileChanges.length,
+    linesAdded,
+    linesDeleted,
+    source: "live",
+    sessionIds: sessions.map((s) => s.sessionId),
+    fileChanges,
+    prompts: aggregate.prompts ?? [],
+  };
+}
+
 export async function buildCommitPayload(
   repoPath: string,
   commitHash: string,

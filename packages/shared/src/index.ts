@@ -18,4 +18,4 @@ export {
   parseClaudeSessions,
 } from "./claude-parser";
 
-export { buildCommitPayload } from "./payload-builder";
+export { buildCommitPayload, buildLivePayload } from "./payload-builder";

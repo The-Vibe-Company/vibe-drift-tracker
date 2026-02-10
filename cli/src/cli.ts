@@ -7,9 +7,11 @@ function printUsage() {
   console.log(`Usage: vibedrift <command>
 
 Commands:
-  init [--api-url URL] [--global]   Install hooks in the current repo
-                                    --global installs Claude Code hooks globally
-  uninstall [--global]              Remove all VibeDrift hooks
+  init [options]         Install hooks in the current repo
+    --api-url URL        Dashboard API URL (default: http://localhost:3000)
+    --api-key KEY        API key for authentication (from dashboard settings)
+    --global             Install Claude Code hooks globally
+  uninstall [--global]   Remove all VibeDrift hooks
 `);
 }
 
@@ -23,7 +25,12 @@ async function main() {
       if (apiUrlIndex !== -1 && args[apiUrlIndex + 1]) {
         apiUrl = args[apiUrlIndex + 1];
       }
-      await init(apiUrl);
+      let apiKey: string | undefined;
+      const apiKeyIndex = args.indexOf("--api-key");
+      if (apiKeyIndex !== -1 && args[apiKeyIndex + 1]) {
+        apiKey = args[apiKeyIndex + 1];
+      }
+      await init(apiUrl, apiKey);
       await installClaudeCodeHooks({ global: hasGlobal });
       break;
     }

@@ -26,7 +26,7 @@ export interface CommitPayload {
   filesChanged: number;
   linesAdded: number;
   linesDeleted: number;
-  source: "vscode" | "hook" | "manual";
+  source: "vscode" | "hook" | "manual" | "live";
   sessionIds: string[];
   fileChanges?: FileChangePayload[];
   prompts?: PromptDetail[];

@@ -40,8 +40,9 @@ export async function getCommits(filters?: {
   const db = getDb();
   const conditions = [];
 
-  // Always exclude merge commits (no prompts, no drift value)
+  // Always exclude merge commits and live snapshots
   conditions.push(sql`${commits.message} NOT LIKE 'Merge %'`);
+  conditions.push(sql`${commits.source} != 'live'`);
 
   if (filters?.userId) {
     conditions.push(eq(commits.userId, filters.userId));
@@ -92,6 +93,7 @@ export async function getCommitCount(filters?: {
   const conditions = [];
 
   conditions.push(sql`${commits.message} NOT LIKE 'Merge %'`);
+  conditions.push(sql`${commits.source} != 'live'`);
 
   if (filters?.userId) {
     conditions.push(eq(commits.userId, filters.userId));
@@ -146,8 +148,9 @@ export async function getCommitDetail(hash: string) {
 export async function getStats(project?: string, userId?: string) {
   const db = getDb();
   const conditions = [];
-  // Always exclude merge commits (no prompts, no drift value)
+  // Always exclude merge commits and live snapshots
   conditions.push(sql`${commits.message} NOT LIKE 'Merge %'`);
+  conditions.push(sql`${commits.source} != 'live'`);
   if (project) conditions.push(eq(commits.projectName, project));
   if (userId) conditions.push(eq(commits.userId, userId));
 
