@@ -75,9 +75,8 @@ input[type="date"],
 }
 
 /* Force auth card to fill its container */
-[data-slot="card"] {
+[data-slot="card"].max-w-sm {
   max-width: 100% !important;
-  width: 100%;
 }
 
 /* Hide settings link in UserButton dropdown */
