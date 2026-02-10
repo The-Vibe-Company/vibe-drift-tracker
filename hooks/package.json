@@ -1,12 +1,17 @@
 {
   "name": "@vibedrift/hooks",
   "version": "0.1.0",
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist"],
   "bin": {
-    "vibedrift-post-commit": "./dist/post-commit.js"
+    "vibedrift-post-commit": "./dist/post-commit.js",
+    "vibedrift-prompt-hook": "./dist/prompt-hook.js",
+    "vibedrift-statusline": "./dist/statusline.js"
   },
   "scripts": {
-    "build": "esbuild src/post-commit.ts --bundle --outfile=dist/post-commit.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\"",
+    "build": "esbuild src/post-commit.ts --bundle --outfile=dist/post-commit.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/prompt-hook.ts --bundle --outfile=dist/prompt-hook.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/statusline.ts --bundle --outfile=dist/statusline.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\"",
     "clean": "rm -rf dist"
   },
   "dependencies": {

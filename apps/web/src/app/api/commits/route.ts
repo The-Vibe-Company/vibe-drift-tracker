@@ -43,6 +43,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (payload.source === "live") {
+      return NextResponse.json(
+        { error: "Live payloads are not accepted" },
+        { status: 400 },
+      );
+    }
+
     const rawPrompts = payload.prompts ?? [];
     const cleanedPrompts = rawPrompts.filter((p) => {
       const trimmed = p.text.trim();
@@ -56,39 +63,40 @@ export async function POST(request: NextRequest) {
     const score = computeVibeDriftScore(userPrompts, payload.linesAdded, payload.linesDeleted);
     const level = getVibeDriftLevel(score);
 
-    const row = await insertCommit(
-      {
-        commitHash: payload.commitHash,
-        message: payload.message,
-        author: payload.author,
-        branch: payload.branch,
-        committedAt: new Date(payload.committedAt),
-        projectName: payload.projectName,
-        remoteUrl: payload.remoteUrl,
-        userPrompts,
-        aiResponses: payload.aiResponses,
-        totalInteractions: payload.totalInteractions,
-        toolCalls: payload.toolCalls,
-        filesChanged: payload.filesChanged,
-        linesAdded: payload.linesAdded,
-        linesDeleted: payload.linesDeleted,
-        vibeDriftScore: score,
-        vibeDriftLevel: level,
-        source: payload.source,
-        sessionIds: payload.sessionIds,
-        prompts: cleanedPrompts,
-        userId,
-      },
-      payload.fileChanges?.map(
-        (f): Omit<NewFileChangeRow, "commitId"> & { commitId: number } => ({
-          commitId: 0, // Will be set by insertCommit
-          filePath: f.filePath,
-          linesAdded: f.linesAdded,
-          linesDeleted: f.linesDeleted,
-          status: f.status,
-        }),
-      ),
+    const commitData = {
+      commitHash: payload.commitHash,
+      message: payload.message,
+      author: payload.author,
+      branch: payload.branch,
+      committedAt: new Date(payload.committedAt),
+      projectName: payload.projectName,
+      remoteUrl: payload.remoteUrl,
+      userPrompts,
+      aiResponses: payload.aiResponses,
+      totalInteractions: payload.totalInteractions,
+      toolCalls: payload.toolCalls,
+      filesChanged: payload.filesChanged,
+      linesAdded: payload.linesAdded,
+      linesDeleted: payload.linesDeleted,
+      vibeDriftScore: score,
+      vibeDriftLevel: level,
+      source: payload.source,
+      sessionIds: payload.sessionIds,
+      prompts: cleanedPrompts,
+      userId,
+    };
+
+    const fileData = payload.fileChanges?.map(
+      (f): Omit<NewFileChangeRow, "commitId"> & { commitId: number } => ({
+        commitId: 0, // Will be set by insert
+        filePath: f.filePath,
+        linesAdded: f.linesAdded,
+        linesDeleted: f.linesDeleted,
+        status: f.status,
+      }),
     );
+
+    const row = await insertCommit(commitData, fileData);
 
     return NextResponse.json({ ...row, vibeDriftScore: score, vibeDriftLevel: level });
   } catch (error) {

@@ -19,19 +19,35 @@ function resolveHookScript(): string {
   return hookEntry;
 }
 
-function buildHookContent(hookScriptPath: string, apiUrl?: string): string {
-  const envLine = apiUrl
+function buildHookContent(hookScriptPath: string, apiUrl?: string, apiKey?: string): string {
+  const urlLine = apiUrl
     ? `export VIBEDRIFT_API_URL="${apiUrl}"`
     : `export VIBEDRIFT_API_URL="\${VIBEDRIFT_API_URL:-http://localhost:3000}"`;
 
+  const keyLine = apiKey
+    ? `export VIBEDRIFT_API_KEY="${apiKey}"`
+    : "";
+
   return `#!/bin/sh
 ${MARKER}
-${envLine}
+${urlLine}
+${keyLine}
 node "${hookScriptPath}" || true
-`;
+`.replace(/\n\n\n/g, "\n\n");
 }
 
-export async function init(apiUrl?: string) {
+function writeProjectConfig(apiUrl?: string, apiKey?: string) {
+  const configPath = path.join(process.cwd(), ".vibedrift.json");
+  const config: Record<string, string> = {};
+  if (apiUrl) config.apiUrl = apiUrl;
+  if (apiKey) config.apiKey = apiKey;
+  if (Object.keys(config).length > 0) {
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + "\n");
+    console.log(`vibedrift: config saved to ${configPath}`);
+  }
+}
+
+export async function init(apiUrl?: string, apiKey?: string) {
   const gitDir = findGitDir();
   const hooksDir = path.join(gitDir, "hooks");
   const hookPath = path.join(hooksDir, "post-commit");
@@ -43,7 +59,10 @@ export async function init(apiUrl?: string) {
     fs.mkdirSync(hooksDir, { recursive: true });
   }
 
-  let content = buildHookContent(hookScriptPath, apiUrl);
+  // Save project config for prompt hook / statusline
+  writeProjectConfig(apiUrl, apiKey);
+
+  let content = buildHookContent(hookScriptPath, apiUrl, apiKey);
 
   // If an existing hook exists and it's not ours, chain it
   if (fs.existsSync(hookPath)) {
@@ -63,6 +82,115 @@ export async function init(apiUrl?: string) {
   if (apiUrl) {
     console.log(`vibedrift: API URL set to ${apiUrl}`);
   }
+  if (apiKey) {
+    console.log("vibedrift: API key configured");
+  }
+}
+
+export async function installClaudeCodeHooks(options: { global?: boolean } = {}) {
+  const promptHookPath = require.resolve("@vibedrift/hooks/dist/prompt-hook.js");
+  const statuslinePath = require.resolve("@vibedrift/hooks/dist/statusline.js");
+
+  let settingsPath: string;
+  if (options.global) {
+    const homeDir = process.env.HOME || process.env.USERPROFILE || "";
+    settingsPath = path.join(homeDir, ".claude", "settings.json");
+  } else {
+    settingsPath = path.join(process.cwd(), ".claude", "settings.json");
+  }
+
+  let settings: Record<string, unknown> = {};
+  if (fs.existsSync(settingsPath)) {
+    try {
+      settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+    } catch {
+      // Start fresh if malformed
+    }
+  }
+
+  const settingsDir = path.dirname(settingsPath);
+  if (!fs.existsSync(settingsDir)) {
+    fs.mkdirSync(settingsDir, { recursive: true });
+  }
+
+  // Add UserPromptSubmit hook
+  if (!settings.hooks) settings.hooks = {};
+  const hooks = settings.hooks as Record<string, unknown[]>;
+
+  const promptHookCommand = `node "${promptHookPath}"`;
+  const promptHookEntry = {
+    hooks: [{ type: "command", command: promptHookCommand }],
+  };
+
+  if (!hooks.UserPromptSubmit) {
+    hooks.UserPromptSubmit = [promptHookEntry];
+  } else {
+    const existing = hooks.UserPromptSubmit as Array<{ hooks?: Array<{ command?: string }> }>;
+    const vibedriftIndex = existing.findIndex((group) =>
+      group.hooks?.some((h) => h.command?.includes("vibedrift") || h.command?.includes("prompt-hook")),
+    );
+    if (vibedriftIndex >= 0) {
+      existing[vibedriftIndex] = promptHookEntry;
+      console.log("vibedrift: updating existing UserPromptSubmit hook");
+    } else {
+      existing.push(promptHookEntry);
+    }
+  }
+
+  // Add statusLine
+  settings.statusLine = {
+    type: "command",
+    command: `node "${statuslinePath}"`,
+  };
+
+  fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+  console.log(`vibedrift: Claude Code hooks installed at ${settingsPath}`);
+  console.log(`vibedrift: UserPromptSubmit hook -> ${promptHookPath}`);
+  console.log(`vibedrift: statusLine -> ${statuslinePath}`);
+}
+
+export async function uninstallClaudeCodeHooks(options: { global?: boolean } = {}) {
+  let settingsPath: string;
+  if (options.global) {
+    const homeDir = process.env.HOME || process.env.USERPROFILE || "";
+    settingsPath = path.join(homeDir, ".claude", "settings.json");
+  } else {
+    settingsPath = path.join(process.cwd(), ".claude", "settings.json");
+  }
+
+  if (!fs.existsSync(settingsPath)) {
+    console.log("vibedrift: no Claude Code settings found");
+    return;
+  }
+
+  let settings: Record<string, unknown>;
+  try {
+    settings = JSON.parse(fs.readFileSync(settingsPath, "utf-8"));
+  } catch {
+    console.log("vibedrift: could not parse settings file");
+    return;
+  }
+
+  const hooks = settings.hooks as Record<string, unknown[]> | undefined;
+  if (hooks?.UserPromptSubmit) {
+    hooks.UserPromptSubmit = (hooks.UserPromptSubmit as Array<{ hooks?: Array<{ command?: string }> }>).filter(
+      (group) => !group.hooks?.some((h) => h.command?.includes("vibedrift") || h.command?.includes("prompt-hook")),
+    );
+    if (hooks.UserPromptSubmit.length === 0) {
+      delete hooks.UserPromptSubmit;
+    }
+    if (Object.keys(hooks).length === 0) {
+      delete settings.hooks;
+    }
+  }
+
+  const statusLine = settings.statusLine as { command?: string } | undefined;
+  if (statusLine?.command?.includes("vibedrift") || statusLine?.command?.includes("statusline")) {
+    delete settings.statusLine;
+  }
+
+  fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+  console.log("vibedrift: Claude Code hooks removed");
 }
 
 export async function uninstall() {

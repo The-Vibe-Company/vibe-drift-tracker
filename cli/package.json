@@ -1,7 +1,11 @@
 {
-  "name": "@vibedrift/cli",
+  "name": "vibedrift",
   "version": "0.1.0",
-  "private": true,
+  "description": "Track AI interactions per commit and detect vibe drift",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": ["dist"],
   "bin": {
     "vibedrift": "./dist/cli.js"
   },
