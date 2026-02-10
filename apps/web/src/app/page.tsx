@@ -1,6 +1,8 @@
 import { auth } from "@/lib/auth/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
+import landingImg from "@/assets/landing.png";
 
 export const dynamic = "force-dynamic";
 
@@ -252,9 +254,9 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ===== TERMINAL MOCKUP ===== */}
+      {/* ===== SCREENSHOT ===== */}
       <section className="px-6 py-24">
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto max-w-4xl">
           {/* Section label */}
           <p
             className="text-xs font-medium tracking-widest uppercase text-center mb-3"
@@ -269,98 +271,13 @@ export default async function Home() {
             After every commit, VibeDrift tells you exactly where you stand.
           </p>
 
-          {/* Terminal window */}
-          <div
-            className="rounded-lg border overflow-hidden"
-            style={{ borderColor: "var(--border)", background: "#0d0d0d" }}
-          >
-            {/* Title bar */}
-            <div
-              className="flex items-center gap-2 px-4 py-3 border-b"
-              style={{ borderColor: "var(--border)", background: "var(--card)" }}
-            >
-              <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#ef4444" }} />
-              <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#facc15" }} />
-              <span style={{ width: 12, height: 12, borderRadius: "50%", background: "#22c55e" }} />
-              <span className="ml-2 text-xs" style={{ color: "var(--muted-foreground)" }}>Terminal</span>
-            </div>
-
-            {/* Terminal body */}
-            <div className="p-5 font-mono text-sm leading-7 overflow-x-auto">
-              {/* Typing command line */}
-              <div className="flex items-center">
-                <span style={{ color: "var(--muted-foreground)" }}>$&nbsp;</span>
-                <div style={{ overflow: "hidden", whiteSpace: "nowrap" }}>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      overflow: "hidden",
-                      whiteSpace: "nowrap",
-                      animation: "typing 2s steps(34) forwards",
-                      width: 0,
-                    }}
-                  >
-                    git commit -m &quot;<span style={{ color: "var(--primary)" }}>add user auth</span>&quot;
-                  </span>
-                  <span
-                    style={{
-                      display: "inline-block",
-                      width: 2,
-                      height: 16,
-                      background: "var(--primary)",
-                      marginLeft: 1,
-                      verticalAlign: "middle",
-                      animation: "blink 1s step-end infinite",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Output (fades in after typing) */}
-              <div
-                style={{
-                  opacity: 0,
-                  animation: "fadeIn 0.6s ease-out 2.5s forwards",
-                }}
-              >
-                <div className="mt-4 mb-1">
-                  <span style={{ color: "var(--primary)", fontWeight: 700 }}>VibeDriftTracker</span>
-                  <span style={{ color: "var(--muted-foreground)" }}> — commit analysis</span>
-                </div>
-                <div style={{ color: "var(--muted-foreground)" }}>
-                  ─────────────────────────────────
-                </div>
-                <div className="mt-2 space-y-1">
-                  <div>
-                    <span style={{ color: "var(--muted-foreground)" }}>  Prompts used     </span>
-                    <span style={{ color: "var(--primary)" }}>12</span>
-                  </div>
-                  <div>
-                    <span style={{ color: "var(--muted-foreground)" }}>  Lines changed    </span>
-                    <span style={{ color: "#22c55e" }}>+147</span>
-                    <span style={{ color: "var(--muted-foreground)" }}> / </span>
-                    <span style={{ color: "#ef4444" }}>-23</span>
-                  </div>
-                  <div>
-                    <span style={{ color: "var(--muted-foreground)" }}>  Drift score      </span>
-                    <span style={{ color: "var(--primary)" }}>0.73</span>
-                    <span style={{ color: "#f97316" }}> ▲ high</span>
-                  </div>
-                </div>
-                <div className="mt-3" style={{ color: "#f97316" }}>
-                  ⚠ You&apos;re drifting — scope expanded beyond initial task
-                </div>
-                <div className="mt-1">
-                  <span style={{ color: "var(--muted-foreground)" }}>  Scope: </span>
-                  <span style={{ color: "var(--primary)" }}>auth</span>
-                  <span style={{ color: "var(--muted-foreground)" }}>, </span>
-                  <span style={{ color: "var(--primary)" }}>middleware</span>
-                  <span style={{ color: "var(--muted-foreground)" }}>, </span>
-                  <span style={{ color: "var(--primary)" }}>database</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Image
+            src={landingImg}
+            alt="VibeDriftTracker dashboard"
+            className="rounded-lg border"
+            style={{ borderColor: "var(--border)" }}
+            priority
+          />
         </div>
       </section>
 
