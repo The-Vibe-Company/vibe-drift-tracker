@@ -113,7 +113,8 @@ export function getSessionsInWindow(
     const indexPath = path.join(dir, "sessions-index.json");
 
     if (fs.existsSync(indexPath)) {
-      // Use the index for fast lookup
+      // Use the index for session listing, but check actual file mtime
+      // (the index `modified` field can be stale if Claude Code hasn't flushed it yet)
       try {
         const index: SessionIndexFile = JSON.parse(
           fs.readFileSync(indexPath, "utf-8"),
@@ -121,14 +122,17 @@ export function getSessionsInWindow(
 
         for (const entry of index.entries) {
           const created = new Date(entry.created);
-          const modified = new Date(entry.modified);
+          if (created > until) continue;
 
-          if (modified >= since && created <= until) {
-            const jsonlPath =
-              entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
-            if (fs.existsSync(jsonlPath)) {
+          const jsonlPath =
+            entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
+          try {
+            const stat = fs.statSync(jsonlPath);
+            if (stat.mtimeMs >= since.getTime()) {
               sessions.push({ sessionId: entry.sessionId, fullPath: jsonlPath });
             }
+          } catch {
+            // File doesn't exist or is unreadable
           }
         }
       } catch {
