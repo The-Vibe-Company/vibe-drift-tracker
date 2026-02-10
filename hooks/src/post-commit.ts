@@ -5,6 +5,7 @@ import {
   getVibeDriftLevel,
   getVibeDriftColor,
 } from "vibedrift-shared";
+import { computeCurrentDrift } from "./shared-runtime";
 
 const RESET = "\x1b[0m";
 const BOLD = "\x1b[1m";
@@ -31,6 +32,13 @@ async function main() {
   } catch {
     console.error("vibedrift: not in a git repository");
     return;
+  }
+
+  // Pre-warm the statusline cache with post-commit values (score ~0)
+  try {
+    computeCurrentDrift(cwd);
+  } catch {
+    // Silently ignore cache pre-warming failures
   }
 
   try {
