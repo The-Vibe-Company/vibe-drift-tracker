@@ -126,6 +126,15 @@ export function getSessionsInWindow(
 
           const jsonlPath =
             entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
+
+          // If the index says modified >= since, trust it (index is fresh enough)
+          const indexModified = new Date(entry.modified).getTime();
+          if (indexModified >= since.getTime()) {
+            sessions.push({ sessionId: entry.sessionId, fullPath: jsonlPath });
+            continue;
+          }
+
+          // Index says modified < since — but it might be stale, so check real mtime
           try {
             const stat = fs.statSync(jsonlPath);
             if (stat.mtimeMs >= since.getTime()) {

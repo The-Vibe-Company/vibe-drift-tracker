@@ -37,8 +37,10 @@ function getCachePath(projectPath: string): string {
 
 function getLastCommitInfo(cwd: string): { hash: string; timestamp: Date } {
   try {
-    const hash = execSync("git rev-parse HEAD", { cwd, encoding: "utf-8", timeout: 5000 }).trim();
-    const ts = execSync("git log -1 --format=%aI HEAD", { cwd, encoding: "utf-8", timeout: 5000 }).trim();
+    const raw = execSync("git log -1 --format='%H %aI' HEAD", { cwd, encoding: "utf-8", timeout: 5000 }).trim();
+    const spaceIdx = raw.indexOf(" ");
+    const hash = raw.slice(0, spaceIdx);
+    const ts = raw.slice(spaceIdx + 1);
     const date = new Date(ts);
     return { hash, timestamp: isNaN(date.getTime()) ? new Date(0) : date };
   } catch {

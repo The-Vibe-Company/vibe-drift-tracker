@@ -1,8 +1,4 @@
-import {
-  buildLivePayload,
-  computeVibeDriftScore,
-  getVibeDriftLevel,
-} from "vibedrift-shared";
+import { computeCurrentDrift } from "./shared-runtime";
 
 interface UserPromptSubmitInput {
   session_id: string;
@@ -27,20 +23,18 @@ async function main() {
     const input: UserPromptSubmitInput = JSON.parse(raw);
     const projectPath = input.cwd;
 
-    const payload = await buildLivePayload(projectPath);
-    const score = computeVibeDriftScore(payload.userPrompts, payload.linesAdded, payload.linesDeleted);
-    const level = getVibeDriftLevel(score);
+    const drift = computeCurrentDrift(projectPath);
 
-    if (payload.userPrompts === 0) {
+    if (drift.userPrompts === 0) {
       process.exit(0);
       return;
     }
 
-    let contextMessage = `[VibeDrift] Score: ${score.toFixed(1)} (${level}) | ${payload.userPrompts} prompts since last commit, +${payload.linesAdded}/-${payload.linesDeleted} lines`;
+    let contextMessage = `[VibeDrift] Score: ${drift.score.toFixed(1)} (${drift.level}) | ${drift.userPrompts} prompts since last commit, +${drift.linesAdded}/-${drift.linesDeleted} lines`;
 
-    if (level === "high") {
+    if (drift.level === "high") {
       contextMessage += " -- Consider committing your current progress before continuing.";
-    } else if (level === "vibe-drift") {
+    } else if (drift.level === "vibe-drift") {
       contextMessage += " -- WARNING: Significant vibe drift detected. You may be feature-creeping or losing focus. Strongly consider committing or reviewing your approach.";
     }
 
