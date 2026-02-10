@@ -42,8 +42,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build all packages
-        run: pnpm build
+      - name: Build publishable packages
+        run: pnpm turbo build --filter=@vibedrift/shared --filter=@vibedrift/hooks --filter=vibedrift
 
       # Publish in dependency order: shared → hooks → cli
       # pnpm publish resolves workspace:* to real versions automatically
