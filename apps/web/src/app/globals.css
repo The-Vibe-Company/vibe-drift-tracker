@@ -74,6 +74,12 @@ input[type="date"],
   cursor: pointer;
 }
 
+/* Force auth card to fill its container */
+[data-slot="card"] {
+  max-width: 100% !important;
+  width: 100%;
+}
+
 /* Hide settings link in UserButton dropdown */
 a[href*="/account"] {
   display: none !important;
