@@ -28,7 +28,7 @@ async function main() {
     const drift = computeCurrentDrift(projectPath);
 
     const scoreText = ansiColor(drift.color, `${drift.score.toFixed(1)} (${drift.level})`);
-    const promptsText = `${drift.userPrompts} prompts`;
+    const promptsText = `${drift.userPrompts} prompt${drift.userPrompts !== 1 ? "s" : ""}`;
     const linesText = `${DIM}+${drift.linesAdded}/-${drift.linesDeleted}${RESET}`;
 
     process.stdout.write(`${BOLD}VibeDrift${RESET} ${scoreText} | ${promptsText} ${linesText}`);

@@ -30,7 +30,7 @@ async function main() {
       return;
     }
 
-    let contextMessage = `[VibeDrift] Score: ${drift.score.toFixed(1)} (${drift.level}) | ${drift.userPrompts} prompts since last commit, +${drift.linesAdded}/-${drift.linesDeleted} lines`;
+    let contextMessage = `[VibeDrift] Score: ${drift.score.toFixed(1)} (${drift.level}) | ${drift.userPrompts} prompt${drift.userPrompts !== 1 ? "s" : ""} since last commit, +${drift.linesAdded}/-${drift.linesDeleted} lines`;
 
     if (drift.level === "high") {
       contextMessage += " -- Consider committing your current progress before continuing.";

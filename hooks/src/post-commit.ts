@@ -62,7 +62,7 @@ async function main() {
     // Display in terminal
     console.log(
       `\n${BOLD}VibeDrift${RESET} ${colorize(color, `${score.toFixed(1)} (${level})`)}` +
-        ` | ${payload.userPrompts} prompts, +${payload.linesAdded}/-${payload.linesDeleted} lines`,
+        ` | ${payload.userPrompts} prompt${payload.userPrompts !== 1 ? "s" : ""}, +${payload.linesAdded}/-${payload.linesDeleted} lines`,
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
