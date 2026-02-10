@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.3](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.2...v0.1.3) (2026-02-10)
+
+
+### Features
+
+* remove [@vibedrift](https://github.com/vibedrift) org scope from all packages ([#27](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/27)) ([d33bf1c](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/d33bf1c5653d1f1c62059bafabce91a3014e0b02))
+
 ## [0.1.2](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.1...v0.1.2) (2026-02-10)
 
 
