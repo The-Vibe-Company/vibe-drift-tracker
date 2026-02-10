@@ -14,8 +14,8 @@ function findGitDir(): string {
 }
 
 function resolveHookScript(): string {
-  // Resolve the bundled post-commit.js from @vibedrift/hooks
-  const hookEntry = require.resolve("@vibedrift/hooks/dist/post-commit.js");
+  // Resolve the bundled post-commit.js from vibedrift-hooks
+  const hookEntry = require.resolve("vibedrift-hooks/dist/post-commit.js");
   return hookEntry;
 }
 
@@ -88,8 +88,8 @@ export async function init(apiUrl?: string, apiKey?: string) {
 }
 
 export async function installClaudeCodeHooks(options: { global?: boolean } = {}) {
-  const promptHookPath = require.resolve("@vibedrift/hooks/dist/prompt-hook.js");
-  const statuslinePath = require.resolve("@vibedrift/hooks/dist/statusline.js");
+  const promptHookPath = require.resolve("vibedrift-hooks/dist/prompt-hook.js");
+  const statuslinePath = require.resolve("vibedrift-hooks/dist/statusline.js");
 
   let settingsPath: string;
   if (options.global) {

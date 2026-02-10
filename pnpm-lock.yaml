@@ -23,9 +23,6 @@ importers:
       '@neondatabase/serverless':
         specifier: ^0.10.4
         version: 0.10.4
-      '@vibedrift/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       drizzle-orm:
         specifier: ^0.38.3
         version: 0.38.4(@neondatabase/serverless@0.10.4)(@types/pg@8.11.6)(@types/react@19.2.13)(kysely@0.28.11)(react@19.2.4)
@@ -38,6 +35,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.2.4(react@19.2.4)
+      vibedrift-shared:
+        specifier: workspace:*
+        version: link:../../packages/shared
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.0.0
@@ -63,7 +63,7 @@ importers:
 
   cli:
     dependencies:
-      '@vibedrift/hooks':
+      vibedrift-hooks:
         specifier: workspace:*
         version: link:../hooks
     devDependencies:
@@ -79,7 +79,7 @@ importers:
 
   extensions/vscode:
     dependencies:
-      '@vibedrift/shared':
+      vibedrift-shared:
         specifier: workspace:*
         version: link:../../packages/shared
     devDependencies:
@@ -101,7 +101,7 @@ importers:
 
   hooks:
     dependencies:
-      '@vibedrift/shared':
+      vibedrift-shared:
         specifier: workspace:*
         version: link:../packages/shared
     devDependencies:

@@ -3,7 +3,7 @@ import {
   type CommitPayload,
   computeVibeDriftScore,
   getVibeDriftLevel,
-} from "@vibedrift/shared";
+} from "vibedrift-shared";
 import { insertCommit, getCommits, hashApiKey, lookupApiKey, updateApiKeyLastUsed } from "@/lib/db";
 import type { NewFileChangeRow } from "@/lib/db/schema";
 import { auth } from "@/lib/auth/server";

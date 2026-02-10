@@ -4,7 +4,7 @@ import {
   computeVibeDriftScore,
   getVibeDriftLevel,
   getVibeDriftColor,
-} from "@vibedrift/shared";
+} from "vibedrift-shared";
 
 const RESET = "\x1b[0m";
 const BOLD = "\x1b[1m";

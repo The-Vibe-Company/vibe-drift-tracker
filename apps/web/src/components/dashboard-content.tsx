@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { CommitRow } from "@/lib/db/schema";
-import { computeVibeDriftScore } from "@vibedrift/shared/dist/types";
+import { computeVibeDriftScore } from "vibedrift-shared/dist/types";
 import { StatsSummary } from "./stats-summary";
 import { CommitTable } from "./commit-table";
 

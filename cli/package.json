@@ -12,11 +12,11 @@
     "vibedrift": "./dist/cli.js"
   },
   "scripts": {
-    "build": "esbuild src/cli.ts --bundle --outfile=dist/cli.js --format=cjs --platform=node --external:@vibedrift/hooks --banner:js=\"#!/usr/bin/env node\"",
+    "build": "esbuild src/cli.ts --bundle --outfile=dist/cli.js --format=cjs --platform=node --external:vibedrift-hooks --banner:js=\"#!/usr/bin/env node\"",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@vibedrift/hooks": "workspace:*"
+    "vibedrift-hooks": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^25.2.1",

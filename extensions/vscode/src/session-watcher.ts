@@ -7,7 +7,7 @@ import {
   computeVibeDriftScore,
   getVibeDriftLevel,
   type VibeDriftLevel,
-} from "@vibedrift/shared";
+} from "vibedrift-shared";
 
 type ScoreCallback = (score: number, level: VibeDriftLevel, promptCount: number) => void;
 

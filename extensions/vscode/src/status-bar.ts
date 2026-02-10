@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getVibeDriftColor, type VibeDriftLevel } from "@vibedrift/shared";
+import { getVibeDriftColor, type VibeDriftLevel } from "vibedrift-shared";
 
 let statusBarItem: vscode.StatusBarItem | undefined;
 

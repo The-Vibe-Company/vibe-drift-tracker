@@ -2,7 +2,7 @@ import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq, desc, asc, sql, and, gte, lte } from "drizzle-orm";
 import { commits, fileChanges, apiKeys, type NewCommitRow, type NewFileChangeRow, type NewApiKeyRow } from "./schema";
-import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared";
+import { computeVibeDriftScore, getVibeDriftLevel } from "vibedrift-shared";
 
 function getDb() {
   const databaseUrl = process.env.DATABASE_URL;

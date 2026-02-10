@@ -1,4 +1,4 @@
-import type { CommitPayload } from "@vibedrift/shared";
+import type { CommitPayload } from "vibedrift-shared";
 
 export async function sendCommitPayload(
   apiUrl: string,

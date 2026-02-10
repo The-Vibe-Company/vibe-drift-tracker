@@ -10,7 +10,7 @@ import {
   getVibeDriftLevel,
   getVibeDriftColor,
   type VibeDriftLevel,
-} from "@vibedrift/shared";
+} from "vibedrift-shared";
 
 export interface VibeDriftSnapshot {
   score: number;
