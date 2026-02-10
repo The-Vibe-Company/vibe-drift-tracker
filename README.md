@@ -1,6 +1,6 @@
 # Vibe Drift Tracker
 
-**Track your AI interactions per commit. Detect drift before it derails your project.**
+**Track your AI interactions per commit. Detect vibe drift before it derails your project.**
 
 You start with a clear goal, open Claude Code, and 47 prompts later you've refactored half the codebase and added three features nobody asked for. Sound familiar?
 
