@@ -9,11 +9,12 @@
   ],
   "bin": {
     "vibedrift-post-commit": "./dist/post-commit.js",
+    "vibedrift-post-tool-use": "./dist/post-tool-use.js",
     "vibedrift-prompt-hook": "./dist/prompt-hook.js",
     "vibedrift-statusline": "./dist/statusline.js"
   },
   "scripts": {
-    "build": "esbuild src/post-commit.ts --bundle --outfile=dist/post-commit.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/prompt-hook.ts --bundle --outfile=dist/prompt-hook.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/statusline.ts --bundle --outfile=dist/statusline.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\"",
+    "build": "esbuild src/post-commit.ts --bundle --outfile=dist/post-commit.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/post-tool-use.ts --bundle --outfile=dist/post-tool-use.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/prompt-hook.ts --bundle --outfile=dist/prompt-hook.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\" && esbuild src/statusline.ts --bundle --outfile=dist/statusline.js --format=cjs --platform=node --banner:js=\"#!/usr/bin/env node\"",
     "clean": "rm -rf dist"
   },
   "dependencies": {

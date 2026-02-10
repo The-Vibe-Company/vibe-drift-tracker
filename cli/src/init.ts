@@ -89,6 +89,7 @@ export async function init(apiUrl?: string, apiKey?: string) {
 
 export async function installClaudeCodeHooks(options: { global?: boolean } = {}) {
   const promptHookPath = require.resolve("vibedrift-hooks/dist/prompt-hook.js");
+  const postToolUsePath = require.resolve("vibedrift-hooks/dist/post-tool-use.js");
   const statuslinePath = require.resolve("vibedrift-hooks/dist/statusline.js");
 
   let settingsPath: string;
@@ -137,6 +138,28 @@ export async function installClaudeCodeHooks(options: { global?: boolean } = {})
     }
   }
 
+  // Add PostToolUse hook (pre-warm cache after git commit)
+  const postToolUseCommand = `node "${postToolUsePath}"`;
+  const postToolUseEntry = {
+    matcher: "Bash",
+    hooks: [{ type: "command", command: postToolUseCommand }],
+  };
+
+  if (!hooks.PostToolUse) {
+    hooks.PostToolUse = [postToolUseEntry];
+  } else {
+    const existingPtu = hooks.PostToolUse as Array<{ hooks?: Array<{ command?: string }> }>;
+    const vibedriftPtuIndex = existingPtu.findIndex((group) =>
+      group.hooks?.some((h) => h.command?.includes("vibedrift") || h.command?.includes("post-tool-use")),
+    );
+    if (vibedriftPtuIndex >= 0) {
+      existingPtu[vibedriftPtuIndex] = postToolUseEntry;
+      console.log("vibedrift: updating existing PostToolUse hook");
+    } else {
+      existingPtu.push(postToolUseEntry);
+    }
+  }
+
   // Add statusLine
   settings.statusLine = {
     type: "command",
@@ -146,6 +169,7 @@ export async function installClaudeCodeHooks(options: { global?: boolean } = {})
   fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
   console.log(`vibedrift: Claude Code hooks installed at ${settingsPath}`);
   console.log(`vibedrift: UserPromptSubmit hook -> ${promptHookPath}`);
+  console.log(`vibedrift: PostToolUse hook -> ${postToolUsePath}`);
   console.log(`vibedrift: statusLine -> ${statuslinePath}`);
 }
 
@@ -179,9 +203,19 @@ export async function uninstallClaudeCodeHooks(options: { global?: boolean } = {
     if (hooks.UserPromptSubmit.length === 0) {
       delete hooks.UserPromptSubmit;
     }
-    if (Object.keys(hooks).length === 0) {
-      delete settings.hooks;
+  }
+
+  if (hooks?.PostToolUse) {
+    hooks.PostToolUse = (hooks.PostToolUse as Array<{ hooks?: Array<{ command?: string }> }>).filter(
+      (group) => !group.hooks?.some((h) => h.command?.includes("vibedrift") || h.command?.includes("post-tool-use")),
+    );
+    if (hooks.PostToolUse.length === 0) {
+      delete hooks.PostToolUse;
     }
+  }
+
+  if (hooks && Object.keys(hooks).length === 0) {
+    delete settings.hooks;
   }
 
   const statusLine = settings.statusLine as { command?: string } | undefined;
