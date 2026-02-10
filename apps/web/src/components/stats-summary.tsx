@@ -1,7 +1,7 @@
 import {
   getVibeDriftLevel,
   getVibeDriftColor,
-} from "@vibedrift/shared/dist/types";
+} from "vibedrift-shared/dist/types";
 
 const levelLabels: Record<string, string> = {
   low: "Low",

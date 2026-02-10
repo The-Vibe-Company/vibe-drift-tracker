@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { buildCommitPayload } from "@vibedrift/shared";
+import { buildCommitPayload } from "vibedrift-shared";
 import { GitWatcher } from "./git-watcher";
 import { SessionWatcher } from "./session-watcher";
 import { sendCommitPayload } from "./api-client";

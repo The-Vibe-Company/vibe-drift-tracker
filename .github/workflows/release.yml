@@ -38,17 +38,17 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build publishable packages
-        run: pnpm turbo build --filter=@vibedrift/shared --filter=@vibedrift/hooks --filter=vibedrift
+        run: pnpm turbo build --filter=vibedrift-shared --filter=vibedrift-hooks --filter=vibedrift
 
       # Publish all packages in dependency order: shared → hooks → cli
       # All versions are kept in sync via release-please extra-files
-      - name: Publish @vibedrift/shared
+      - name: Publish vibedrift-shared
         working-directory: packages/shared
         run: pnpm publish --access public --no-git-checks
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
-      - name: Publish @vibedrift/hooks
+      - name: Publish vibedrift-hooks
         working-directory: hooks
         run: pnpm publish --access public --no-git-checks
         env:

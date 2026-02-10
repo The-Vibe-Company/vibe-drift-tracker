@@ -4,7 +4,7 @@ import { Fragment, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { CommitRow } from "@/lib/db/schema";
-import { computeVibeDriftScore, getVibeDriftLevel } from "@vibedrift/shared/dist/types";
+import { computeVibeDriftScore, getVibeDriftLevel } from "vibedrift-shared/dist/types";
 import { DriftBadge } from "./drift-badge";
 import { Pagination } from "./pagination";
 

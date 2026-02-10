@@ -1,5 +1,5 @@
 {
-  "name": "@vibedrift/shared",
+  "name": "vibedrift-shared",
   "version": "0.1.2",
   "publishConfig": {
     "access": "public"

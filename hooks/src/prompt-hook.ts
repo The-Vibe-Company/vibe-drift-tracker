@@ -2,7 +2,7 @@ import {
   buildLivePayload,
   computeVibeDriftScore,
   getVibeDriftLevel,
-} from "@vibedrift/shared";
+} from "vibedrift-shared";
 
 interface UserPromptSubmitInput {
   session_id: string;
