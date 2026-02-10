@@ -4,6 +4,13 @@
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
   "group-pull-requests": true,
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "vibedrift",
+      "components": ["shared", "hooks", "cli"]
+    }
+  ],
   "packages": {
     "packages/shared": {
       "package-name": "@vibedrift/shared",
