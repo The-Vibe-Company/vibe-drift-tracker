@@ -8,8 +8,8 @@ export function createStatusBar(): vscode.StatusBarItem {
     vscode.StatusBarAlignment.Left,
     100,
   );
-  statusBarItem.text = "$(pulse) VibeDrift: --";
-  statusBarItem.tooltip = "VibeDrift Tracker - waiting for commit";
+  statusBarItem.text = "$(pulse) VibeDrift: 0.0";
+  statusBarItem.tooltip = "VibeDrift — monitoring prompts";
   statusBarItem.show();
   return statusBarItem;
 }

@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
 import { buildCommitPayload } from "@vibedrift/shared";
 import { GitWatcher } from "./git-watcher";
+import { SessionWatcher } from "./session-watcher";
 import { sendCommitPayload } from "./api-client";
 import { createStatusBar, updateStatusBar, disposeStatusBar } from "./status-bar";
 
 let gitWatcher: GitWatcher | undefined;
+let sessionWatcher: SessionWatcher | undefined;
 let outputChannel: vscode.OutputChannel;
 
 function log(message: string) {
@@ -41,9 +43,17 @@ export function activate(context: vscode.ExtensionContext) {
   const repoPath = workspaceFolders[0].uri.fsPath;
   log(`Watching repo: ${repoPath}`);
 
+  // Real-time session watcher for live score updates
+  sessionWatcher = new SessionWatcher(repoPath, (score, level, promptCount) => {
+    updateStatusBar(score, level);
+  });
+  sessionWatcher.start();
+  log("Session watcher started — real-time scoring active");
+
   gitWatcher = new GitWatcher(repoPath, async (_repoPath, commitHash) => {
     try {
       log(`New commit detected: ${commitHash.slice(0, 7)}`);
+      sessionWatcher?.resetSession();
 
       const currentConfig = vscode.workspace.getConfiguration("vibedrift");
       const url = currentConfig.get<string>("apiUrl", "http://localhost:3000");
@@ -57,12 +67,10 @@ export function activate(context: vscode.ExtensionContext) {
       log(`Sending payload for project "${payload.projectName}"...`);
 
       const result = await sendCommitPayload(url, payload, key || undefined);
-
-      updateStatusBar(result.vibeDriftScore, result.vibeDriftLevel);
       log(`Done — drift: ${result.vibeDriftLevel} (${result.vibeDriftScore.toFixed(1)})`);
 
       vscode.window.setStatusBarMessage(
-        `VibeDrift: ${result.vibeDriftLevel} (${result.vibeDriftScore.toFixed(1)})`,
+        `VibeDrift: commit sent (${result.vibeDriftLevel})`,
         5000,
       );
     } catch (error) {
@@ -77,6 +85,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push({
     dispose: () => {
       gitWatcher?.dispose();
+      sessionWatcher?.dispose();
       disposeStatusBar();
     },
   });
@@ -84,5 +93,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {
   gitWatcher?.dispose();
+  sessionWatcher?.dispose();
   disposeStatusBar();
 }

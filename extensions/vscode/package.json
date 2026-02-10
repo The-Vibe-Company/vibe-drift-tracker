@@ -1,9 +1,10 @@
 {
   "name": "vibedrift-vscode",
   "displayName": "VibeDrift Tracker",
-  "description": "Track AI-assisted development vibe drift from VS Code",
+  "description": "Track your AI prompt count per commit and detect vibe drift in real time",
   "version": "0.1.0",
   "publisher": "vibedrift",
+  "icon": "icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/vibedrift/vibedrift-tracker"
@@ -11,7 +12,12 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Other"],
+  "categories": ["Visualization", "Other"],
+  "keywords": ["ai", "claude", "drift", "productivity", "prompts", "vibe-coding"],
+  "galleryBanner": {
+    "color": "#0a0a0a",
+    "theme": "dark"
+  },
   "activationEvents": ["workspaceContains:.git"],
   "main": "./dist/extension.js",
   "contributes": {
