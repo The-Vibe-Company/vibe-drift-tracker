@@ -3,26 +3,26 @@
   "release-type": "node",
   "bump-minor-pre-major": true,
   "bump-patch-for-minor-pre-major": true,
-  "group-pull-requests": true,
-  "plugins": [
-    {
-      "type": "linked-versions",
-      "groupName": "vibedrift",
-      "components": ["shared", "hooks", "cli"]
-    }
-  ],
+  "include-component-in-tag": false,
   "packages": {
-    "packages/shared": {
-      "package-name": "@vibedrift/shared",
-      "component": "shared"
-    },
-    "hooks": {
-      "package-name": "@vibedrift/hooks",
-      "component": "hooks"
-    },
-    "cli": {
-      "package-name": "vibedrift",
-      "component": "cli"
+    ".": {
+      "extra-files": [
+        {
+          "type": "json",
+          "path": "packages/shared/package.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "hooks/package.json",
+          "jsonpath": "$.version"
+        },
+        {
+          "type": "json",
+          "path": "cli/package.json",
+          "jsonpath": "$.version"
+        }
+      ]
     }
   }
 }
