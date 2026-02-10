@@ -1,4 +1,4 @@
-import { init } from "./init";
+import { init, installClaudeCodeHooks } from "./init";
 
 const args = process.argv.slice(2);
 const command = args[0];
@@ -7,12 +7,15 @@ function printUsage() {
   console.log(`Usage: vibedrift <command>
 
 Commands:
-  init [--api-url URL]   Install the post-commit hook in the current repo
-  uninstall              Remove the VibeDrift post-commit hook
+  init [--api-url URL] [--global]   Install hooks in the current repo
+                                    --global installs Claude Code hooks globally
+  uninstall [--global]              Remove all VibeDrift hooks
 `);
 }
 
 async function main() {
+  const hasGlobal = args.includes("--global");
+
   switch (command) {
     case "init": {
       let apiUrl: string | undefined;
@@ -21,11 +24,13 @@ async function main() {
         apiUrl = args[apiUrlIndex + 1];
       }
       await init(apiUrl);
+      await installClaudeCodeHooks({ global: hasGlobal });
       break;
     }
     case "uninstall": {
-      const { uninstall } = await import("./init");
+      const { uninstall, uninstallClaudeCodeHooks } = await import("./init");
       await uninstall();
+      await uninstallClaudeCodeHooks({ global: hasGlobal });
       break;
     }
     default:
