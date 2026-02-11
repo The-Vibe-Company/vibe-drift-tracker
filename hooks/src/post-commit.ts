@@ -54,8 +54,7 @@ async function main() {
     });
 
     if (!response.ok) {
-      const body = await response.text();
-      console.error(`vibedrift: API error ${response.status}: ${body}`);
+      console.error(`vibedrift: API error ${response.status} from ${apiUrl}`);
       return;
     }
 
