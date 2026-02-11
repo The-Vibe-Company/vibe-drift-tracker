@@ -200,23 +200,32 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
                   >
                     {i + 1}
                   </span>
-                  {p.codeGenerated !== undefined && (
-                    <span
-                      className="flex-shrink-0"
-                      title={p.codeGenerated ? "Generated code (Write/Edit)" : "No code generated"}
-                    >
-                      {p.codeGenerated ? (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="16 18 22 12 16 6" />
-                          <polyline points="8 6 2 12 8 18" />
-                        </svg>
-                      ) : (
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                        </svg>
-                      )}
-                    </span>
-                  )}
+                  <span
+                    className="flex-shrink-0"
+                    title={
+                      p.codeGenerated === true
+                        ? "Generated code (Write/Edit)"
+                        : p.codeGenerated === false
+                          ? "No code generated"
+                          : "No data (old commit)"
+                    }
+                  >
+                    {p.codeGenerated === true ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="16 18 22 12 16 6" />
+                        <polyline points="8 6 2 12 8 18" />
+                      </svg>
+                    ) : p.codeGenerated === false ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    ) : (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    )}
+                  </span>
                   <p
                     className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono text-xs"
                     style={{ color: "var(--foreground)" }}
