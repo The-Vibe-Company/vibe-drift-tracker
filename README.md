@@ -2,7 +2,7 @@
 
 **Track your AI interactions per commit. Detect drift before it derails your project.**
 
-You start with a clear goal, open Claude Code, and 47 prompts later you've refactored half the codebase and added three features nobody asked for. Sound familiar?
+You start with a clear goal, open Claude Code, and 47 prompts later you've refactored half the codebase and added three features nobody asked for. We've all been there.
 
 Vibe Drift Tracker measures how many AI prompts go into each commit, how many lines each prompt produces, and whether your session is drifting from focused work into feature creep.
 
