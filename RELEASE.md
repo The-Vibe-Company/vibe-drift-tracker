@@ -8,10 +8,9 @@ We use [release-please](https://github.com/googleapis/release-please) with a **s
 
 1. Merge a PR to `main`
 2. Release-please automatically opens/updates a PR titled `chore(main): release X.Y.Z`
-3. That PR bumps versions in `package.json` (root + `packages/shared`, `hooks`) and updates `CHANGELOG.md`
-4. When you merge the release PR, the `publish` job publishes all packages to npm:
+3. That PR bumps versions in `package.json` (root + `packages/shared`) and updates `CHANGELOG.md`
+4. When you merge the release PR, the `publish` job publishes to npm:
    - `vibedrift-shared`
-   - `vibedrift-hooks`
 
 ### Key files
 
@@ -41,7 +40,7 @@ pnpm dev --filter vibedrift-app
 pnpm build
 
 # Build only publishable packages (what CI does)
-pnpm turbo build --filter=vibedrift-shared --filter=vibedrift-hooks
+pnpm turbo build --filter=vibedrift-shared
 ```
 
 ### Environment variables (web app)

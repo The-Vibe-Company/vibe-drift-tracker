@@ -19,8 +19,7 @@ export async function sendCommitPayload(
   });
 
   if (!response.ok) {
-    const body = await response.text();
-    throw new Error(`API error ${response.status}: ${body}`);
+    throw new Error(`API error ${response.status} from ${apiUrl}`);
   }
 
   return response.json();

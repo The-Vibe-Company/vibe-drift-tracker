@@ -112,7 +112,7 @@ The web dashboard gives you a clear view of your AI-assisted development pattern
 | Auth        | Neon Auth                       |
 | Package mgr | pnpm                            |
 | Monorepo    | Turborepo                       |
-| Bundler     | esbuild (hooks, extension) |
+| Bundler     | esbuild (extension)             |
 | Language    | TypeScript                      |
 
 ---
@@ -149,7 +149,6 @@ The web app requires these environment variables (see `app/.env.example` if avai
 vibedrift-tracker/
 ├── app/                   # Next.js dashboard (UI + API routes)
 ├── extensions/vscode/     # VS Code extension (commit tracking + live status bar)
-├── hooks/                 # Git post-commit hook
 ├── packages/shared/       # Shared types, scoring algorithm, Claude session parser
 ├── turbo.json
 └── pnpm-workspace.yaml

@@ -11,11 +11,6 @@
           "type": "json",
           "path": "packages/shared/package.json",
           "jsonpath": "$.version"
-        },
-        {
-          "type": "json",
-          "path": "hooks/package.json",
-          "jsonpath": "$.version"
         }
       ]
     }
