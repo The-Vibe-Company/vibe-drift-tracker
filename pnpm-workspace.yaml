@@ -1,4 +1,4 @@
 packages:
   - "app"
-  - "packages/*"
+  - "shared"
   - "extension"

@@ -9,7 +9,7 @@
       "extra-files": [
         {
           "type": "json",
-          "path": "packages/shared/package.json",
+          "path": "shared/package.json",
           "jsonpath": "$.version"
         }
       ]

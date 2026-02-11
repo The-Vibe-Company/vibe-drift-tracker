@@ -149,7 +149,7 @@ The web app requires these environment variables (see `app/.env.example` if avai
 vibedrift-tracker/
 ├── app/                   # Next.js dashboard (UI + API routes)
 ├── extension/             # VS Code extension (commit tracking + live status bar)
-├── packages/shared/       # Shared types, scoring algorithm, Claude session parser
+├── shared/                # Shared types, scoring algorithm, Claude session parser
 ├── turbo.json
 └── pnpm-workspace.yaml
 ```
