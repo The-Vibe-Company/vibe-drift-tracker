@@ -89,21 +89,6 @@ Then add to your VS Code `settings.json`:
 
 The extension activates when a `.git` folder is detected. It also shows a **real-time drift score in the status bar** as you interact with Claude, before you even commit.
 
-### 4. Alternative: Git hook
-
-If you prefer a standalone hook over the extension:
-
-```bash
-pnpm vibedrift init --api-url https://your-dashboard-url.com
-export VIBEDRIFT_API_KEY="your-api-key"
-```
-
-The hook installs into `.git/hooks/post-commit` and chains with any existing hook. To remove:
-
-```bash
-pnpm vibedrift uninstall
-```
-
 ---
 
 ## Dashboard
@@ -127,7 +112,7 @@ The web dashboard gives you a clear view of your AI-assisted development pattern
 | Auth        | Neon Auth                       |
 | Package mgr | pnpm                            |
 | Monorepo    | Turborepo                       |
-| Bundler     | esbuild (CLI, hooks, extension) |
+| Bundler     | esbuild (hooks, extension) |
 | Language    | TypeScript                      |
 
 ---
@@ -163,7 +148,6 @@ The web app requires these environment variables (see `app/.env.example` if avai
 ```
 vibedrift-tracker/
 ├── app/                   # Next.js dashboard (UI + API routes)
-├── cli/                   # CLI tool (vibedrift init / uninstall)
 ├── extensions/vscode/     # VS Code extension (commit tracking + live status bar)
 ├── hooks/                 # Git post-commit hook
 ├── packages/shared/       # Shared types, scoring algorithm, Claude session parser

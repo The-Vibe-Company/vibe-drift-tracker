@@ -3,4 +3,3 @@ packages:
   - "packages/*"
   - "extensions/*"
   - "hooks"
-  - "cli"

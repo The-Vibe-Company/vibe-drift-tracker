@@ -108,47 +108,57 @@ export function getSessionsInWindow(
   until: Date,
 ): Array<{ sessionId: string; fullPath: string }> {
   const sessions: Array<{ sessionId: string; fullPath: string }> = [];
+  const seen = new Set<string>();
 
   for (const dir of projectDirs) {
-    const indexPath = path.join(dir, "sessions-index.json");
+    // 1. Always scan .jsonl files in the directory
+    try {
+      const files = fs.readdirSync(dir).filter((f) => f.endsWith(".jsonl"));
+      for (const file of files) {
+        const fullPath = path.join(dir, file);
+        const stat = fs.statSync(fullPath);
 
+        if (stat.mtimeMs >= since.getTime() && stat.birthtimeMs <= until.getTime()) {
+          const sessionId = file.replace(".jsonl", "");
+          if (!seen.has(sessionId)) {
+            seen.add(sessionId);
+            sessions.push({ sessionId, fullPath });
+          }
+        }
+      }
+    } catch {
+      // Skip unreadable directories
+    }
+
+    // 2. Also check index for sessions with fullPath outside this directory
+    const indexPath = path.join(dir, "sessions-index.json");
     if (fs.existsSync(indexPath)) {
-      // Use the index for fast lookup
       try {
         const index: SessionIndexFile = JSON.parse(
           fs.readFileSync(indexPath, "utf-8"),
         );
 
         for (const entry of index.entries) {
+          if (seen.has(entry.sessionId)) continue;
+
+          const jsonlPath =
+            entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
+
+          // Only use index for files outside this directory (already scanned above)
+          if (jsonlPath.startsWith(dir)) continue;
+
           const created = new Date(entry.created);
           const modified = new Date(entry.modified);
 
           if (modified >= since && created <= until) {
-            const jsonlPath =
-              entry.fullPath || path.join(dir, `${entry.sessionId}.jsonl`);
             if (fs.existsSync(jsonlPath)) {
+              seen.add(entry.sessionId);
               sessions.push({ sessionId: entry.sessionId, fullPath: jsonlPath });
             }
           }
         }
       } catch {
         // Skip malformed index files
-      }
-    } else {
-      // Fallback: scan .jsonl files directly when index is missing
-      try {
-        const files = fs.readdirSync(dir).filter((f) => f.endsWith(".jsonl"));
-        for (const file of files) {
-          const fullPath = path.join(dir, file);
-          const stat = fs.statSync(fullPath);
-
-          if (stat.mtimeMs >= since.getTime() && stat.birthtimeMs <= until.getTime()) {
-            const sessionId = file.replace(".jsonl", "");
-            sessions.push({ sessionId, fullPath });
-          }
-        }
-      } catch {
-        // Skip unreadable directories
       }
     }
   }
