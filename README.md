@@ -67,7 +67,7 @@ Go to your hosted VibeDrift dashboard and sign up. Authentication is handled via
 ### 3. Install the VS Code extension
 
 ```bash
-cd extensions/vscode
+cd extension
 pnpm build && pnpm package
 code --install-extension vibedrift-vscode-0.1.0.vsix
 ```
@@ -88,21 +88,6 @@ Then add to your VS Code `settings.json`:
 | `vibedrift.enabled` | boolean | `true`                  | Enable automatic commit tracking   |
 
 The extension activates when a `.git` folder is detected. It also shows a **real-time drift score in the status bar** as you interact with Claude, before you even commit.
-
-### 4. Alternative: Git hook
-
-If you prefer a standalone hook over the extension:
-
-```bash
-pnpm vibedrift init --api-url https://your-dashboard-url.com
-export VIBEDRIFT_API_KEY="your-api-key"
-```
-
-The hook installs into `.git/hooks/post-commit` and chains with any existing hook. To remove:
-
-```bash
-pnpm vibedrift uninstall
-```
 
 ---
 
@@ -127,7 +112,7 @@ The web dashboard gives you a clear view of your AI-assisted development pattern
 | Auth        | Neon Auth                       |
 | Package mgr | pnpm                            |
 | Monorepo    | Turborepo                       |
-| Bundler     | esbuild (CLI, hooks, extension) |
+| Bundler     | esbuild (extension)             |
 | Language    | TypeScript                      |
 
 ---
@@ -151,7 +136,7 @@ The dashboard runs at `http://localhost:3000` with Turbopack.
 
 ### Environment variables
 
-The web app requires these environment variables (see `apps/web/.env.example` if available):
+The web app requires these environment variables (see `app/.env.example` if available):
 
 | Variable              | Description                     |
 | --------------------- | ------------------------------- |
@@ -162,11 +147,9 @@ The web app requires these environment variables (see `apps/web/.env.example` if
 
 ```
 vibedrift-tracker/
-├── apps/web/              # Next.js dashboard (UI + API routes)
-├── cli/                   # CLI tool (vibedrift init / uninstall)
-├── extensions/vscode/     # VS Code extension (commit tracking + live status bar)
-├── hooks/                 # Git post-commit hook
-├── packages/shared/       # Shared types, scoring algorithm, Claude session parser
+├── app/                   # Next.js dashboard (UI + API routes)
+├── extension/             # VS Code extension (commit tracking + live status bar)
+├── shared/                # Shared types, scoring algorithm, Claude session parser
 ├── turbo.json
 └── pnpm-workspace.yaml
 ```

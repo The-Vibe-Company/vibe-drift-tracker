@@ -10,16 +10,16 @@ importers:
     devDependencies:
       turbo:
         specifier: ^2.3.0
-        version: 2.8.3
+        version: 2.8.5
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
 
-  apps/web:
+  app:
     dependencies:
       '@neondatabase/auth':
         specifier: 0.2.0-beta.1
-        version: 0.2.0-beta.1(aawti24j7kx7s5o22raawf6tmq)
+        version: 0.2.0-beta.1(b2lqhuf3mjjbju2ruv6b4xi5am)
       '@neondatabase/serverless':
         specifier: ^0.10.4
         version: 0.10.4
@@ -37,7 +37,7 @@ importers:
         version: 19.2.4(react@19.2.4)
       vibedrift-shared:
         specifier: workspace:*
-        version: link:../../packages/shared
+        version: link:../shared
     devDependencies:
       '@tailwindcss/postcss':
         specifier: ^4.0.0
@@ -61,27 +61,11 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
-  cli:
-    dependencies:
-      vibedrift-hooks:
-        specifier: workspace:*
-        version: link:../hooks
-    devDependencies:
-      '@types/node':
-        specifier: ^25.2.1
-        version: 25.2.1
-      esbuild:
-        specifier: ^0.24.0
-        version: 0.24.2
-      typescript:
-        specifier: ^5.6.3
-        version: 5.9.3
-
-  extensions/vscode:
+  extension:
     dependencies:
       vibedrift-shared:
         specifier: workspace:*
-        version: link:../../packages/shared
+        version: link:../shared
     devDependencies:
       '@types/node':
         specifier: ^25.2.1
@@ -99,23 +83,7 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
-  hooks:
-    dependencies:
-      vibedrift-shared:
-        specifier: workspace:*
-        version: link:../packages/shared
-    devDependencies:
-      '@types/node':
-        specifier: ^25.2.1
-        version: 25.2.1
-      esbuild:
-        specifier: ^0.24.0
-        version: 0.24.2
-      typescript:
-        specifier: ^5.6.3
-        version: 5.9.3
-
-  packages/shared:
+  shared:
     devDependencies:
       '@types/node':
         specifier: ^25.2.1
@@ -3420,38 +3388,38 @@ packages:
     resolution: {integrity: sha512-1h/Lnq9yajKY2PEbBadPXj3VxsDDu844OnaAo52UVmIzIvwwtBPIuNvkjuzBlTWpfJyUbG3ez0KSBibQkj4ojg==}
     engines: {node: '>=0.6.11 <=0.7.0 || >=0.7.3'}
 
-  turbo-darwin-64@2.8.3:
-    resolution: {integrity: sha512-4kXRLfcygLOeNcP6JquqRLmGB/ATjjfehiojL2dJkL7GFm3SPSXbq7oNj8UbD8XriYQ5hPaSuz59iF1ijPHkTw==}
+  turbo-darwin-64@2.8.5:
+    resolution: {integrity: sha512-3wngnZrjRh6nXjNFURY9yKV7ysTF2gibpzkQjo4/c4eWjGt39q5p/A/wpxpnVBzyT1/auaPuzxJA98Sv1ZCOJg==}
     cpu: [x64]
     os: [darwin]
 
-  turbo-darwin-arm64@2.8.3:
-    resolution: {integrity: sha512-xF7uCeC0UY0Hrv/tqax0BMbFlVP1J/aRyeGQPZT4NjvIPj8gSPDgFhfkfz06DhUwDg5NgMo04uiSkAWE8WB/QQ==}
+  turbo-darwin-arm64@2.8.5:
+    resolution: {integrity: sha512-QAFH6X9h8M4G8uTVRBQFw6EN0LmvYYyNEA2EKJOEogyeULSUA04M+FzYuSScl6uS9P78fzOCC0hhzk/Eqo4GQg==}
     cpu: [arm64]
     os: [darwin]
 
-  turbo-linux-64@2.8.3:
-    resolution: {integrity: sha512-vxMDXwaOjweW/4etY7BxrXCSkvtwh0PbwVafyfT1Ww659SedUxd5rM3V2ZCmbwG8NiCfY7d6VtxyHx3Wh1GoZA==}
+  turbo-linux-64@2.8.5:
+    resolution: {integrity: sha512-o01d5g3CZWavW6vP0KD8wJwdqoHaLuOAb3PvuWY95JEcyPRAKGKNxsTW2xNifY4UYENwSVktFZXZlIO2qnrEmg==}
     cpu: [x64]
     os: [linux]
 
-  turbo-linux-arm64@2.8.3:
-    resolution: {integrity: sha512-mQX7uYBZFkuPLLlKaNe9IjR1JIef4YvY8f21xFocvttXvdPebnq3PK1Zjzl9A1zun2BEuWNUwQIL8lgvN9Pm3Q==}
+  turbo-linux-arm64@2.8.5:
+    resolution: {integrity: sha512-YSNVEUeFVGsA2pmPOokiximJOhKQnrg/M7JlJZzefjmp+j4Raj7YqLwK8pQRbAO4XDoojkf4tvmy+mRVW9O0gQ==}
     cpu: [arm64]
     os: [linux]
 
-  turbo-windows-64@2.8.3:
-    resolution: {integrity: sha512-YLGEfppGxZj3VWcNOVa08h6ISsVKiG85aCAWosOKNUjb6yErWEuydv6/qImRJUI+tDLvDvW7BxopAkujRnWCrw==}
+  turbo-windows-64@2.8.5:
+    resolution: {integrity: sha512-X0MMT+IwWS+veX8h9/SO3+gkorcuGi0nu8CIg0kBhaqbC6Me0tChvHYQpkXj/+5qG5oFpjgkCSCip4/KYesZtg==}
     cpu: [x64]
     os: [win32]
 
-  turbo-windows-arm64@2.8.3:
-    resolution: {integrity: sha512-afTUGKBRmOJU1smQSBnFGcbq0iabAPwh1uXu2BVk7BREg30/1gMnJh9DFEQTah+UD3n3ru8V55J83RQNFfqoyw==}
+  turbo-windows-arm64@2.8.5:
+    resolution: {integrity: sha512-YBHZ1a0y8J0ITKv4TgujMFk04y84KimPDg8Br2lQaywrj3i2eRXLVuxhPi0Sqw+QuoqBVNKsHigxShA/w+rLLQ==}
     cpu: [arm64]
     os: [win32]
 
-  turbo@2.8.3:
-    resolution: {integrity: sha512-8Osxz5Tu/Dw2kb31EAY+nhq/YZ3wzmQSmYa1nIArqxgCAldxv9TPlrAiaBUDVnKA4aiPn0OFBD1ACcpc5VFOAQ==}
+  turbo@2.8.5:
+    resolution: {integrity: sha512-pUhV1czFZNGOwnwCLaO727uSDH4botIrhOb/AAFqzfi3x4eeRZoOcAjoidnXD/dwCAw0HJf3+Sy4c2e8SlQKxQ==}
     hasBin: true
 
   tw-animate-css@1.4.0:
@@ -3706,32 +3674,32 @@ snapshots:
 
   '@babel/runtime@7.28.6': {}
 
-  '@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)':
+  '@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)':
     dependencies:
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.18
       '@standard-schema/spec': 1.1.0
-      better-call: 1.1.5(zod@4.1.12)
+      better-call: 1.1.5(zod@4.3.6)
       jose: 6.1.2
       kysely: 0.28.11
       nanostores: 1.1.0
-      zod: 4.1.12
+      zod: 4.3.6
 
-  '@better-auth/passkey@1.4.18(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-auth@1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.5(zod@4.1.12))(nanostores@1.1.0)':
+  '@better-auth/passkey@1.4.18(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-auth@1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.5(zod@4.3.6))(nanostores@1.1.0)':
     dependencies:
-      '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)
+      '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.18
       '@simplewebauthn/browser': 13.2.2
       '@simplewebauthn/server': 13.2.2
       better-auth: 1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      better-call: 1.1.5(zod@4.1.12)
+      better-call: 1.1.5(zod@4.3.6)
       nanostores: 1.1.0
       zod: 4.3.6
 
-  '@better-auth/telemetry@1.4.6(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))':
+  '@better-auth/telemetry@1.4.6(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))':
     dependencies:
-      '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)
+      '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.18
 
@@ -3757,9 +3725,9 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  '@daveyplate/better-auth-ui@3.3.9(t5fbo3lbxetsinobiv42le3r7q)':
+  '@daveyplate/better-auth-ui@3.3.9(334qtxutdoxef6rmgfo5ap2nui)':
     dependencies:
-      '@better-auth/passkey': 1.4.18(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-auth@1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.5(zod@4.1.12))(nanostores@1.1.0)
+      '@better-auth/passkey': 1.4.18(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-auth@1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(better-call@1.1.5(zod@4.3.6))(nanostores@1.1.0)
       '@better-fetch/fetch': 1.1.21
       '@captchafox/react': 1.10.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@daveyplate/better-auth-tanstack': 1.3.6(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.2.4))(better-auth@1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -3801,7 +3769,7 @@ snapshots:
       tailwindcss: 4.1.18
       ua-parser-js: 2.0.9
       vaul: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      zod: 4.1.12
+      zod: 4.3.6
     transitivePeerDependencies:
       - '@types/react'
       - '@types/react-dom'
@@ -4228,14 +4196,14 @@ snapshots:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  '@neondatabase/auth-ui@0.1.0-alpha.11(qytavtfi7x6ng4f76twkzeg2xy)':
+  '@neondatabase/auth-ui@0.1.0-alpha.11(5lmx5wwd3fhxmbo4zhj5yj4xmi)':
     dependencies:
       '@captchafox/react': 1.10.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@daveyplate/better-auth-ui': 3.3.9(t5fbo3lbxetsinobiv42le3r7q)
+      '@daveyplate/better-auth-ui': 3.3.9(334qtxutdoxef6rmgfo5ap2nui)
       '@hcaptcha/react-hcaptcha': 1.17.4(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@hookform/resolvers': 5.2.2(react-hook-form@7.71.1(react@19.2.4))
       '@marsidev/react-turnstile': 1.4.2(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@neondatabase/auth': 0.2.0-beta.1(aawti24j7kx7s5o22raawf6tmq)
+      '@neondatabase/auth': 0.2.0-beta.1(b2lqhuf3mjjbju2ruv6b4xi5am)
       '@radix-ui/react-avatar': 1.1.11(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-checkbox': 1.3.3(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@radix-ui/react-context': 1.1.3(@types/react@19.2.13)(react@19.2.4)
@@ -4266,7 +4234,7 @@ snapshots:
       tw-animate-css: 1.4.0
       ua-parser-js: 2.0.9
       vaul: 1.1.2(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      zod: 4.1.12
+      zod: 4.3.6
     transitivePeerDependencies:
       - '@better-auth/passkey'
       - '@daveyplate/better-auth-tanstack'
@@ -4278,9 +4246,9 @@ snapshots:
       - '@types/react-dom'
       - better-auth
 
-  '@neondatabase/auth@0.2.0-beta.1(aawti24j7kx7s5o22raawf6tmq)':
+  '@neondatabase/auth@0.2.0-beta.1(b2lqhuf3mjjbju2ruv6b4xi5am)':
     dependencies:
-      '@neondatabase/auth-ui': 0.1.0-alpha.11(qytavtfi7x6ng4f76twkzeg2xy)
+      '@neondatabase/auth-ui': 0.1.0-alpha.11(5lmx5wwd3fhxmbo4zhj5yj4xmi)
       '@supabase/auth-js': 2.79.0
       better-auth: 1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       jose: 6.1.2
@@ -5385,32 +5353,32 @@ snapshots:
 
   better-auth@1.4.6(next@15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
     dependencies:
-      '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)
-      '@better-auth/telemetry': 1.4.6(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.1.12))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))
+      '@better-auth/core': 1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0)
+      '@better-auth/telemetry': 1.4.6(@better-auth/core@1.4.6(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.5(zod@4.3.6))(jose@6.1.2)(kysely@0.28.11)(nanostores@1.1.0))
       '@better-auth/utils': 0.3.0
       '@better-fetch/fetch': 1.1.18
       '@noble/ciphers': 2.1.1
       '@noble/hashes': 2.0.1
-      better-call: 1.1.5(zod@4.1.12)
+      better-call: 1.1.5(zod@4.3.6)
       defu: 6.1.4
       jose: 6.1.2
       kysely: 0.28.11
       ms: 4.0.0-nightly.202508271359
       nanostores: 1.1.0
-      zod: 4.1.12
+      zod: 4.3.6
     optionalDependencies:
       next: 15.5.12(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 
-  better-call@1.1.5(zod@4.1.12):
+  better-call@1.1.5(zod@4.3.6):
     dependencies:
       '@better-auth/utils': 0.3.0
-      '@better-fetch/fetch': 1.1.18
+      '@better-fetch/fetch': 1.1.21
       rou3: 0.7.12
       set-cookie-parser: 2.7.2
     optionalDependencies:
-      zod: 4.1.12
+      zod: 4.3.6
 
   binaryextensions@6.11.0:
     dependencies:
@@ -6776,32 +6744,32 @@ snapshots:
 
   tunnel@0.0.6: {}
 
-  turbo-darwin-64@2.8.3:
+  turbo-darwin-64@2.8.5:
     optional: true
 
-  turbo-darwin-arm64@2.8.3:
+  turbo-darwin-arm64@2.8.5:
     optional: true
 
-  turbo-linux-64@2.8.3:
+  turbo-linux-64@2.8.5:
     optional: true
 
-  turbo-linux-arm64@2.8.3:
+  turbo-linux-arm64@2.8.5:
     optional: true
 
-  turbo-windows-64@2.8.3:
+  turbo-windows-64@2.8.5:
     optional: true
 
-  turbo-windows-arm64@2.8.3:
+  turbo-windows-arm64@2.8.5:
     optional: true
 
-  turbo@2.8.3:
+  turbo@2.8.5:
     optionalDependencies:
-      turbo-darwin-64: 2.8.3
-      turbo-darwin-arm64: 2.8.3
-      turbo-linux-64: 2.8.3
-      turbo-linux-arm64: 2.8.3
-      turbo-windows-64: 2.8.3
-      turbo-windows-arm64: 2.8.3
+      turbo-darwin-64: 2.8.5
+      turbo-darwin-arm64: 2.8.5
+      turbo-linux-64: 2.8.5
+      turbo-linux-arm64: 2.8.5
+      turbo-windows-64: 2.8.5
+      turbo-windows-arm64: 2.8.5
 
   tw-animate-css@1.4.0: {}
 

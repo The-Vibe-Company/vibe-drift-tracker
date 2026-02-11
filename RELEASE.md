@@ -8,11 +8,9 @@ We use [release-please](https://github.com/googleapis/release-please) with a **s
 
 1. Merge a PR to `main`
 2. Release-please automatically opens/updates a PR titled `chore(main): release X.Y.Z`
-3. That PR bumps versions in `package.json` (root + `packages/shared`, `hooks`, `cli`) and updates `CHANGELOG.md`
-4. When you merge the release PR, the `publish` job publishes all 3 packages to npm:
+3. That PR bumps versions in `package.json` (root + `shared`) and updates `CHANGELOG.md`
+4. When you merge the release PR, the `publish` job publishes to npm:
    - `vibedrift-shared`
-   - `vibedrift-hooks`
-   - `vibedrift`
 
 ### Key files
 
@@ -36,21 +34,18 @@ Release-please uses [Conventional Commits](https://www.conventionalcommits.org/)
 pnpm install
 
 # Run the web app (Next.js)
-pnpm dev --filter vibedrift-web
+pnpm dev --filter vibedrift-app
 
 # Build all packages
 pnpm build
 
 # Build only publishable packages (what CI does)
-pnpm turbo build --filter=vibedrift-shared --filter=vibedrift-hooks --filter=vibedrift
-
-# Run the CLI locally
-node cli/dist/cli.js init --api-url http://localhost:3000
+pnpm turbo build --filter=vibedrift-shared
 ```
 
 ### Environment variables (web app)
 
-Create `apps/web/.env` with:
+Create `app/.env` with:
 
 ```
 DATABASE_URL=<neon-postgres-url>

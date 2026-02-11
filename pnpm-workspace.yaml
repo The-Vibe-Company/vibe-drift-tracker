@@ -1,6 +1,4 @@
 packages:
-  - "apps/*"
-  - "packages/*"
-  - "extensions/*"
-  - "hooks"
-  - "cli"
+  - "app"
+  - "shared"
+  - "extension"
