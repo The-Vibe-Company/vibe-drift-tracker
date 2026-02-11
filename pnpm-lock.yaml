@@ -61,11 +61,11 @@ importers:
         specifier: ^5.6.3
         version: 5.9.3
 
-  extensions/vscode:
+  extension:
     dependencies:
       vibedrift-shared:
         specifier: workspace:*
-        version: link:../../packages/shared
+        version: link:../packages/shared
     devDependencies:
       '@types/node':
         specifier: ^25.2.1

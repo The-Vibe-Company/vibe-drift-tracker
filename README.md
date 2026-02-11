@@ -67,7 +67,7 @@ Go to your hosted VibeDrift dashboard and sign up. Authentication is handled via
 ### 3. Install the VS Code extension
 
 ```bash
-cd extensions/vscode
+cd extension
 pnpm build && pnpm package
 code --install-extension vibedrift-vscode-0.1.0.vsix
 ```
@@ -148,7 +148,7 @@ The web app requires these environment variables (see `app/.env.example` if avai
 ```
 vibedrift-tracker/
 ├── app/                   # Next.js dashboard (UI + API routes)
-├── extensions/vscode/     # VS Code extension (commit tracking + live status bar)
+├── extension/             # VS Code extension (commit tracking + live status bar)
 ├── packages/shared/       # Shared types, scoring algorithm, Claude session parser
 ├── turbo.json
 └── pnpm-workspace.yaml
