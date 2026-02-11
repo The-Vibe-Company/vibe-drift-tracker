@@ -197,6 +197,7 @@ export function parseSessionFile(
   let sessionId = "";
   const prompts: PromptDetail[] = [];
   let lastPromptIndex = -1;
+  let lastPromptHasResponse = true;
 
   for (const line of lines) {
     let msg: JSONLMessage;
@@ -240,12 +241,14 @@ export function parseSessionFile(
           codeGenerated: false,
         });
         lastPromptIndex = prompts.length - 1;
+        lastPromptHasResponse = false;
       }
     }
 
     // Count AI responses
     if (msg.message?.role === "assistant") {
       aiResponses++;
+      lastPromptHasResponse = true;
       if (msg.message.content) {
         toolCalls += countToolUses(msg.message.content);
         if (lastPromptIndex >= 0 && hasCodeToolUse(msg.message.content)) {
@@ -253,6 +256,13 @@ export function parseSessionFile(
         }
       }
     }
+  }
+
+  // Exclude the last prompt if it hasn't received a response yet.
+  // This prevents the drift score from changing before Claude responds.
+  if (!lastPromptHasResponse && prompts.length > 0) {
+    prompts.pop();
+    lastPromptIndex = prompts.length - 1;
   }
 
   const userPrompts = prompts.length;

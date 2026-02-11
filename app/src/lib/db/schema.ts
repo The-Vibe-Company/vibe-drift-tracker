@@ -31,7 +31,7 @@ export const commits = pgTable(
     vibeDriftLevel: text("vibe_drift_level").default("low"),
     source: text("source").default("manual"),
     sessionIds: jsonb("session_ids").$type<string[]>().default([]),
-    prompts: jsonb("prompts").$type<Array<{ text: string; timestamp: string; sessionId: string }>>().default([]),
+    prompts: jsonb("prompts").$type<Array<{ text: string; timestamp: string; sessionId: string; codeGenerated?: boolean }>>().default([]),
     receivedAt: timestamp("received_at", { withTimezone: true }).defaultNow(),
     userId: text("user_id"),
   },
