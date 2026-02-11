@@ -26,6 +26,7 @@ export class SessionWatcher {
   private fileWatchers: Map<string, fs.FSWatcher> = new Map();
   private fileCache: Map<string, FileCache> = new Map();
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private lastGitLines = { added: 0, deleted: 0 };
 
   constructor(repoPath: string, onScoreUpdate: ScoreCallback) {
     this.repoPath = repoPath;
@@ -37,8 +38,8 @@ export class SessionWatcher {
     this.refreshWatchedFiles();
     this.computeCurrentScore();
 
-    // Poll score every 3 seconds (also refreshes git diff)
-    this.scoreInterval = setInterval(() => this.computeCurrentScore(), 3000);
+    // Slow poll to detect manual code changes via git diff (every 30s)
+    this.scoreInterval = setInterval(() => this.computeCurrentScoreIfGitChanged(), 30000);
 
     // Discover new session files every 30 seconds
     this.filesInterval = setInterval(() => this.refreshWatchedFiles(), 30000);
@@ -82,6 +83,18 @@ export class SessionWatcher {
       this.onScoreUpdate(score, level, totalUserPrompts);
     } catch {
       // Silently ignore errors during polling
+    }
+  }
+
+  private computeCurrentScoreIfGitChanged(): void {
+    try {
+      const { linesAdded, linesDeleted } = this.getUncommittedChanges();
+      if (linesAdded !== this.lastGitLines.added || linesDeleted !== this.lastGitLines.deleted) {
+        this.lastGitLines = { added: linesAdded, deleted: linesDeleted };
+        this.computeCurrentScore();
+      }
+    } catch {
+      // Silently ignore
     }
   }
 
@@ -159,9 +172,11 @@ export class SessionWatcher {
 
         try {
           const watcher = fs.watch(filePath, () => {
-            // Debounce: wait 500ms after last change before recomputing
+            // Debounce: wait 5s after last JSONL change before recomputing.
+            // During Claude's turn, writes are continuous so the timer resets.
+            // Score only updates ~5s after Claude stops writing.
             if (this.debounceTimer) clearTimeout(this.debounceTimer);
-            this.debounceTimer = setTimeout(() => this.computeCurrentScore(), 500);
+            this.debounceTimer = setTimeout(() => this.computeCurrentScore(), 5000);
           });
           this.fileWatchers.set(filePath, watcher);
         } catch {
