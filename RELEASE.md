@@ -36,7 +36,7 @@ Release-please uses [Conventional Commits](https://www.conventionalcommits.org/)
 pnpm install
 
 # Run the web app (Next.js)
-pnpm dev --filter vibedrift-web
+pnpm dev --filter vibedrift-app
 
 # Build all packages
 pnpm build
@@ -50,7 +50,7 @@ node cli/dist/cli.js init --api-url http://localhost:3000
 
 ### Environment variables (web app)
 
-Create `apps/web/.env` with:
+Create `app/.env` with:
 
 ```
 DATABASE_URL=<neon-postgres-url>

@@ -151,7 +151,7 @@ The dashboard runs at `http://localhost:3000` with Turbopack.
 
 ### Environment variables
 
-The web app requires these environment variables (see `apps/web/.env.example` if available):
+The web app requires these environment variables (see `app/.env.example` if available):
 
 | Variable              | Description                     |
 | --------------------- | ------------------------------- |
@@ -162,7 +162,7 @@ The web app requires these environment variables (see `apps/web/.env.example` if
 
 ```
 vibedrift-tracker/
-├── apps/web/              # Next.js dashboard (UI + API routes)
+├── app/                   # Next.js dashboard (UI + API routes)
 ├── cli/                   # CLI tool (vibedrift init / uninstall)
 ├── extensions/vscode/     # VS Code extension (commit tracking + live status bar)
 ├── hooks/                 # Git post-commit hook
