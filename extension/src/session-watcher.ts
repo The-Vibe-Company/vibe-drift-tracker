@@ -14,6 +14,7 @@ type ScoreCallback = (score: number, level: VibeDriftLevel, promptCount: number)
 interface FileCache {
   size: number;
   userPrompts: number;
+  codePrompts: number;
 }
 
 export class SessionWatcher {
@@ -65,40 +66,43 @@ export class SessionWatcher {
       const projectDirs = findClaudeProjectDirs(this.repoPath);
       const sessions = getSessionsInWindow(projectDirs, this.sinceTimestamp, now);
 
-      let totalPrompts = 0;
+      let totalCodePrompts = 0;
+      let totalUserPrompts = 0;
 
       for (const { fullPath } of sessions) {
-        const prompts = this.getPromptsForFile(fullPath, now);
-        totalPrompts += prompts;
+        const { userPrompts, codePrompts } = this.getPromptsForFile(fullPath, now);
+        totalUserPrompts += userPrompts;
+        totalCodePrompts += codePrompts;
       }
 
       const { linesAdded, linesDeleted } = this.getUncommittedChanges();
-      const score = computeVibeDriftScore(totalPrompts, linesAdded, linesDeleted);
+      const score = computeVibeDriftScore(totalCodePrompts, linesAdded, linesDeleted);
       const level = getVibeDriftLevel(score);
 
-      this.onScoreUpdate(score, level, totalPrompts);
+      this.onScoreUpdate(score, level, totalUserPrompts);
     } catch {
       // Silently ignore errors during polling
     }
   }
 
-  private getPromptsForFile(fullPath: string, now: Date): number {
+  private getPromptsForFile(fullPath: string, now: Date): { userPrompts: number; codePrompts: number } {
     try {
       const stat = fs.statSync(fullPath);
       const cached = this.fileCache.get(fullPath);
 
       // If file size hasn't changed, reuse cached prompt count
       if (cached && cached.size === stat.size) {
-        return cached.userPrompts;
+        return { userPrompts: cached.userPrompts, codePrompts: cached.codePrompts };
       }
 
       const result = parseSessionFile(fullPath, this.sinceTimestamp, now);
       const userPrompts = result?.userPrompts ?? 0;
+      const codePrompts = result?.codePrompts ?? 0;
 
-      this.fileCache.set(fullPath, { size: stat.size, userPrompts });
-      return userPrompts;
+      this.fileCache.set(fullPath, { size: stat.size, userPrompts, codePrompts });
+      return { userPrompts, codePrompts };
     } catch {
-      return 0;
+      return { userPrompts: 0, codePrompts: 0 };
     }
   }
 

@@ -2,6 +2,7 @@ export interface PromptDetail {
   text: string;       // content of the prompt (truncated to 500 chars)
   timestamp: string;  // ISO 8601
   sessionId: string;
+  codeGenerated?: boolean; // true if assistant response used Write/Edit/NotebookEdit
 }
 
 export interface FileChangePayload {
@@ -20,6 +21,7 @@ export interface CommitPayload {
   projectName: string;
   remoteUrl?: string;
   userPrompts: number;
+  codePrompts?: number;
   aiResponses: number;
   totalInteractions: number;
   toolCalls: number;
@@ -35,6 +37,7 @@ export interface CommitPayload {
 export interface SessionStats {
   sessionId: string;
   userPrompts: number;
+  codePrompts: number;
   aiResponses: number;
   toolCalls: number;
   totalInteractions: number;

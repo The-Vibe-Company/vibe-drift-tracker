@@ -247,12 +247,17 @@ export async function cleanupSystemPrompts(userId: string) {
   let updated = 0;
 
   for (const commit of allCommits) {
-    const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
+    const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string; codeGenerated?: boolean }>;
     const filtered = prompts.filter((p) => !isSystemGeneratedPrompt(p.text));
 
     if (filtered.length === prompts.length) continue;
 
-    const score = computeVibeDriftScore(filtered.length, commit.linesAdded ?? 0, commit.linesDeleted ?? 0);
+    const hasCodeInfo = filtered.some((p) => p.codeGenerated !== undefined);
+    const codePromptCount = hasCodeInfo
+      ? filtered.filter((p) => p.codeGenerated === true).length
+      : filtered.length;
+
+    const score = computeVibeDriftScore(codePromptCount, commit.linesAdded ?? 0, commit.linesDeleted ?? 0);
     const level = getVibeDriftLevel(score);
 
     await db
