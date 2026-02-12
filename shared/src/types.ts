@@ -73,7 +73,7 @@ export function computeVibeDriftScore(
 export type VibeDriftLevel = "very-low" | "low" | "moderate" | "high" | "vibe-drift";
 
 export function getVibeDriftLevel(score: number): VibeDriftLevel {
-  if (score < 1) return "very-low";
+  if (score < 1.2) return "very-low";
   if (score < 2.5) return "low";
   if (score < 4) return "moderate";
   if (score < 7) return "high";
