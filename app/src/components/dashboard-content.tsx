@@ -15,13 +15,17 @@ function computeStats(commits: CommitRow[]) {
   let vibeCommits = 0;
 
   for (const c of commits) {
-    const prompts = (c.prompts ?? []) as Array<{ text: string }>;
+    const prompts = (c.prompts ?? []) as Array<{ text: string; codeGenerated?: boolean }>;
     const promptCount = prompts.length;
     const lines = (c.linesAdded ?? 0) + (c.linesDeleted ?? 0);
     totalLines += lines;
     totalPrompts += promptCount;
     if (promptCount > 0) {
-      totalScore += computeVibeDriftScore(promptCount, c.linesAdded ?? 0, c.linesDeleted ?? 0);
+      const hasCodeInfo = prompts.some((p) => p.codeGenerated !== undefined);
+      const codePromptCount = hasCodeInfo
+        ? prompts.filter((p) => p.codeGenerated === true).length
+        : prompts.length;
+      totalScore += computeVibeDriftScore(codePromptCount, c.linesAdded ?? 0, c.linesDeleted ?? 0);
       vibeCommits++;
     }
   }

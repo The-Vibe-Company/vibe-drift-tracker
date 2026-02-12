@@ -60,7 +60,13 @@ export async function POST(request: NextRequest) {
     });
     const userPrompts = cleanedPrompts.length;
 
-    const score = computeVibeDriftScore(userPrompts, payload.linesAdded, payload.linesDeleted);
+    // Use code-generating prompt count for drift score when available
+    const hasCodeInfo = cleanedPrompts.some((p) => p.codeGenerated !== undefined);
+    const codePromptCount = hasCodeInfo
+      ? cleanedPrompts.filter((p) => p.codeGenerated === true).length
+      : cleanedPrompts.length;
+
+    const score = computeVibeDriftScore(codePromptCount, payload.linesAdded, payload.linesDeleted);
     const level = getVibeDriftLevel(score);
 
     const commitData = {

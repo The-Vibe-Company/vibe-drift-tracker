@@ -14,6 +14,7 @@ type ScoreCallback = (score: number, level: VibeDriftLevel, promptCount: number)
 interface FileCache {
   size: number;
   userPrompts: number;
+  codePrompts: number;
 }
 
 export class SessionWatcher {
@@ -25,6 +26,7 @@ export class SessionWatcher {
   private fileWatchers: Map<string, fs.FSWatcher> = new Map();
   private fileCache: Map<string, FileCache> = new Map();
   private debounceTimer: ReturnType<typeof setTimeout> | undefined;
+  private lastGitLines = { added: 0, deleted: 0 };
 
   constructor(repoPath: string, onScoreUpdate: ScoreCallback) {
     this.repoPath = repoPath;
@@ -36,8 +38,8 @@ export class SessionWatcher {
     this.refreshWatchedFiles();
     this.computeCurrentScore();
 
-    // Poll score every 3 seconds (also refreshes git diff)
-    this.scoreInterval = setInterval(() => this.computeCurrentScore(), 3000);
+    // Slow poll to detect manual code changes via git diff (every 30s)
+    this.scoreInterval = setInterval(() => this.computeCurrentScoreIfGitChanged(), 30000);
 
     // Discover new session files every 30 seconds
     this.filesInterval = setInterval(() => this.refreshWatchedFiles(), 30000);
@@ -65,40 +67,55 @@ export class SessionWatcher {
       const projectDirs = findClaudeProjectDirs(this.repoPath);
       const sessions = getSessionsInWindow(projectDirs, this.sinceTimestamp, now);
 
-      let totalPrompts = 0;
+      let totalCodePrompts = 0;
+      let totalUserPrompts = 0;
 
       for (const { fullPath } of sessions) {
-        const prompts = this.getPromptsForFile(fullPath, now);
-        totalPrompts += prompts;
+        const { userPrompts, codePrompts } = this.getPromptsForFile(fullPath, now);
+        totalUserPrompts += userPrompts;
+        totalCodePrompts += codePrompts;
       }
 
       const { linesAdded, linesDeleted } = this.getUncommittedChanges();
-      const score = computeVibeDriftScore(totalPrompts, linesAdded, linesDeleted);
+      const score = computeVibeDriftScore(totalCodePrompts, linesAdded, linesDeleted);
       const level = getVibeDriftLevel(score);
 
-      this.onScoreUpdate(score, level, totalPrompts);
+      this.onScoreUpdate(score, level, totalUserPrompts);
     } catch {
       // Silently ignore errors during polling
     }
   }
 
-  private getPromptsForFile(fullPath: string, now: Date): number {
+  private computeCurrentScoreIfGitChanged(): void {
+    try {
+      const { linesAdded, linesDeleted } = this.getUncommittedChanges();
+      if (linesAdded !== this.lastGitLines.added || linesDeleted !== this.lastGitLines.deleted) {
+        this.lastGitLines = { added: linesAdded, deleted: linesDeleted };
+        this.computeCurrentScore();
+      }
+    } catch {
+      // Silently ignore
+    }
+  }
+
+  private getPromptsForFile(fullPath: string, now: Date): { userPrompts: number; codePrompts: number } {
     try {
       const stat = fs.statSync(fullPath);
       const cached = this.fileCache.get(fullPath);
 
       // If file size hasn't changed, reuse cached prompt count
       if (cached && cached.size === stat.size) {
-        return cached.userPrompts;
+        return { userPrompts: cached.userPrompts, codePrompts: cached.codePrompts };
       }
 
       const result = parseSessionFile(fullPath, this.sinceTimestamp, now);
       const userPrompts = result?.userPrompts ?? 0;
+      const codePrompts = result?.codePrompts ?? 0;
 
-      this.fileCache.set(fullPath, { size: stat.size, userPrompts });
-      return userPrompts;
+      this.fileCache.set(fullPath, { size: stat.size, userPrompts, codePrompts });
+      return { userPrompts, codePrompts };
     } catch {
-      return 0;
+      return { userPrompts: 0, codePrompts: 0 };
     }
   }
 
@@ -155,9 +172,11 @@ export class SessionWatcher {
 
         try {
           const watcher = fs.watch(filePath, () => {
-            // Debounce: wait 500ms after last change before recomputing
+            // Debounce: wait 5s after last JSONL change before recomputing.
+            // During Claude's turn, writes are continuous so the timer resets.
+            // Score only updates ~5s after Claude stops writing.
             if (this.debounceTimer) clearTimeout(this.debounceTimer);
-            this.debounceTimer = setTimeout(() => this.computeCurrentScore(), 500);
+            this.debounceTimer = setTimeout(() => this.computeCurrentScore(), 5000);
           });
           this.fileWatchers.set(filePath, watcher);
         } catch {

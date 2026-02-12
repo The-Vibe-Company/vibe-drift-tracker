@@ -58,7 +58,7 @@ export default async function AuthPage({
       </div>
 
       {/* Auth form */}
-      <div className="relative z-10 w-full" style={{ maxWidth: 440 }}>
+      <div className="relative z-10 flex w-full justify-center" style={{ maxWidth: 440 }}>
         <AuthView path={path} />
       </div>
     </main>

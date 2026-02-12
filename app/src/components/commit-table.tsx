@@ -89,7 +89,7 @@ function PromptModal({
 }
 
 function DetailPanel({ commit }: { commit: CommitRow }) {
-  const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string }>;
+  const prompts = (commit.prompts ?? []) as Array<{ text: string; timestamp: string; sessionId: string; codeGenerated?: boolean }>;
   const [modalPrompt, setModalPrompt] = useState<number | null>(null);
   const [hoveredPrompt, setHoveredPrompt] = useState<number | null>(null);
 
@@ -199,6 +199,32 @@ function DetailPanel({ commit }: { commit: CommitRow }) {
                     style={{ color: "var(--muted-foreground)", minWidth: "1.25rem" }}
                   >
                     {i + 1}
+                  </span>
+                  <span
+                    className="flex-shrink-0"
+                    title={
+                      p.codeGenerated === true
+                        ? "Generated code (Write/Edit)"
+                        : p.codeGenerated === false
+                          ? "No code generated"
+                          : "No data (old commit)"
+                    }
+                  >
+                    {p.codeGenerated === true ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="16 18 22 12 16 6" />
+                        <polyline points="8 6 2 12 8 18" />
+                      </svg>
+                    ) : p.codeGenerated === false ? (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                      </svg>
+                    ) : (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" opacity="0.4">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    )}
                   </span>
                   <p
                     className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-mono text-xs"
@@ -378,9 +404,13 @@ export function CommitTable({
         <tbody>
           {commits.map((commit) => {
             const isExpanded = expandedId === commit.id;
-            const prompts = (commit.prompts ?? []) as Array<{ text: string }>;
+            const prompts = (commit.prompts ?? []) as Array<{ text: string; codeGenerated?: boolean }>;
             const promptCount = prompts.length;
-            const driftScore = computeVibeDriftScore(promptCount, commit.linesAdded ?? 0, commit.linesDeleted ?? 0);
+            const hasCodeInfo = prompts.some((p) => p.codeGenerated !== undefined);
+            const codePromptCount = hasCodeInfo
+              ? prompts.filter((p) => p.codeGenerated === true).length
+              : prompts.length;
+            const driftScore = computeVibeDriftScore(codePromptCount, commit.linesAdded ?? 0, commit.linesDeleted ?? 0);
             const driftLevel = getVibeDriftLevel(driftScore);
             return (
               <Fragment key={commit.id}>

@@ -25,8 +25,19 @@ interface JSONLMessage {
   sessionId?: string;
   message?: {
     role: string;
-    content: string | Array<{ type: string; text?: string; id?: string }>;
+    content: string | Array<{ type: string; text?: string; id?: string; name?: string }>;
   };
+}
+
+const CODE_GENERATING_TOOLS = new Set(["Write", "Edit", "NotebookEdit"]);
+
+function hasCodeToolUse(
+  content: string | Array<{ type: string; name?: string }>,
+): boolean {
+  if (typeof content === "string") return false;
+  return content.some(
+    (c) => c.type === "tool_use" && c.name !== undefined && CODE_GENERATING_TOOLS.has(c.name),
+  );
 }
 
 function isCommand(content: string | Array<{ type: string; text?: string }>): boolean {
@@ -185,6 +196,8 @@ export function parseSessionFile(
   let endTime: string | undefined;
   let sessionId = "";
   const prompts: PromptDetail[] = [];
+  let lastPromptIndex = -1;
+  let lastPromptHasResponse = true;
 
   for (const line of lines) {
     let msg: JSONLMessage;
@@ -225,25 +238,41 @@ export function parseSessionFile(
           text: trimmed.slice(0, 500),
           timestamp: msg.timestamp || "",
           sessionId,
+          codeGenerated: false,
         });
+        lastPromptIndex = prompts.length - 1;
+        lastPromptHasResponse = false;
       }
     }
 
     // Count AI responses
     if (msg.message?.role === "assistant") {
       aiResponses++;
+      lastPromptHasResponse = true;
       if (msg.message.content) {
         toolCalls += countToolUses(msg.message.content);
+        if (lastPromptIndex >= 0 && hasCodeToolUse(msg.message.content)) {
+          prompts[lastPromptIndex].codeGenerated = true;
+        }
       }
     }
   }
 
+  // Exclude the last prompt if it hasn't received a response yet.
+  // This prevents the drift score from changing before Claude responds.
+  if (!lastPromptHasResponse && prompts.length > 0) {
+    prompts.pop();
+    lastPromptIndex = prompts.length - 1;
+  }
+
   const userPrompts = prompts.length;
+  const codePrompts = prompts.filter((p) => p.codeGenerated).length;
   if (userPrompts === 0 && aiResponses === 0) return null;
 
   return {
     sessionId,
     userPrompts,
+    codePrompts,
     aiResponses,
     toolCalls,
     totalInteractions: userPrompts + aiResponses,
@@ -267,6 +296,7 @@ export function parseClaudeSessions(
 
   const sessions: SessionStats[] = [];
   let totalUserPrompts = 0;
+  let totalCodePrompts = 0;
   let totalAiResponses = 0;
   let totalToolCalls = 0;
 
@@ -275,6 +305,7 @@ export function parseClaudeSessions(
     if (stats) {
       sessions.push(stats);
       totalUserPrompts += stats.userPrompts;
+      totalCodePrompts += stats.codePrompts;
       totalAiResponses += stats.aiResponses;
       totalToolCalls += stats.toolCalls;
     }
@@ -288,6 +319,7 @@ export function parseClaudeSessions(
     aggregate: {
       sessionId: "aggregate",
       userPrompts: totalUserPrompts,
+      codePrompts: totalCodePrompts,
       aiResponses: totalAiResponses,
       toolCalls: totalToolCalls,
       totalInteractions: totalUserPrompts + totalAiResponses,
