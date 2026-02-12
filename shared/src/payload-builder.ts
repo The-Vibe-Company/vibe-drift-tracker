@@ -136,11 +136,21 @@ export async function buildCommitPayload(
   repoPath: string,
   commitHash: string,
   source: CommitPayload["source"],
-): Promise<CommitPayload> {
+): Promise<CommitPayload | null> {
   // Get commit metadata
   const message = exec(`git log -1 --format=%s ${commitHash}`, repoPath);
   const author = exec(`git log -1 --format=%an ${commitHash}`, repoPath);
   const committedAt = exec(`git log -1 --format=%aI ${commitHash}`, repoPath);
+
+  // Skip commits from other authors
+  try {
+    const currentUser = exec("git config user.name", repoPath);
+    if (currentUser !== author) {
+      return null;
+    }
+  } catch {
+    // If we can't determine the current user, proceed anyway
+  }
   const branch = exec("git rev-parse --abbrev-ref HEAD", repoPath);
 
   // Project name from directory
