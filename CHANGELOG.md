@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.1.4](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.3...v0.1.4) (2026-02-12)
+
+
+### Features
+
+* prompt without code create no drift ([#32](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/32)) ([c4ec911](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/c4ec9114293bf307ada4ac32a144f42e432509a1))
+
+
+### Bug Fixes
+
+* clean repo ([#30](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/30)) ([f829067](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/f829067675bbe654a1f2b8d62f8fbaacfcf4a939))
+* skip commits from other authors in buildCommitPayload ([#34](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/34)) ([7a96a2c](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/7a96a2ccd9bea348131be590e90dbdb0e3959e6e))
+
 ## [0.1.3](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.2...v0.1.3) (2026-02-10)
 
 
