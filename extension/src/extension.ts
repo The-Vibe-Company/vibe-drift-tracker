@@ -4,10 +4,13 @@ import { GitWatcher } from "./git-watcher";
 import { SessionWatcher } from "./session-watcher";
 import { sendCommitPayload } from "./api-client";
 import { createStatusBar, updateStatusBar, disposeStatusBar } from "./status-bar";
+import { VibeDriftSidebarProvider } from "./sidebar-view";
+import { getApiUrl } from "./config";
 
 let gitWatcher: GitWatcher | undefined;
 let sessionWatcher: SessionWatcher | undefined;
 let outputChannel: vscode.OutputChannel;
+let sidebarProvider: VibeDriftSidebarProvider | undefined;
 
 function log(message: string) {
   const time = new Date().toLocaleTimeString();
@@ -20,13 +23,46 @@ export function activate(context: vscode.ExtensionContext) {
 
   log("Extension activating...");
 
-  const config = vscode.workspace.getConfiguration("vibedrift");
-  if (!config.get<boolean>("enabled", true)) {
-    log("Extension disabled in settings");
-    return;
-  }
+  sidebarProvider = new VibeDriftSidebarProvider(context, log);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      VibeDriftSidebarProvider.viewType,
+      sidebarProvider,
+    ),
+  );
 
-  const apiUrl = config.get<string>("apiUrl", "https://www.vibedrift.dev");
+  context.subscriptions.push(
+    vscode.window.registerUriHandler({
+      handleUri: async (uri: vscode.Uri) => {
+        if (uri.path !== "/auth-callback") {
+          return;
+        }
+        await sidebarProvider?.handleAuthCallback(uri);
+      },
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("vibedrift.openSidebar", async () => {
+      await vscode.commands.executeCommand(
+        "workbench.view.extension.vibedrift",
+      );
+      await vscode.commands.executeCommand(
+        "vibedrift.sidebarView.focus",
+      );
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(async (event) => {
+      if (event.affectsConfiguration("vibedrift.apiKey") || event.affectsConfiguration("vibedrift.apiUrl")) {
+        await sidebarProvider?.onConfigurationChanged();
+      }
+    }),
+  );
+
+  const config = vscode.workspace.getConfiguration("vibedrift");
+  const apiUrl = getApiUrl();
   const apiKey = config.get<string>("apiKey", "");
   log(`API URL: ${apiUrl}`);
   log(`API Key: ${apiKey ? "configured" : "NOT SET — go to /dashboard/settings to generate one"}`);
@@ -34,9 +70,14 @@ export function activate(context: vscode.ExtensionContext) {
   const statusBar = createStatusBar();
   context.subscriptions.push(statusBar);
 
+  if (!config.get<boolean>("enabled", true)) {
+    log("Tracking disabled in settings (sidebar remains available)");
+    return;
+  }
+
   const workspaceFolders = vscode.workspace.workspaceFolders;
   if (!workspaceFolders || workspaceFolders.length === 0) {
-    log("No workspace folder found");
+    log("No workspace folder found (sidebar is available)");
     return;
   }
 
@@ -56,7 +97,7 @@ export function activate(context: vscode.ExtensionContext) {
       sessionWatcher?.resetSession();
 
       const currentConfig = vscode.workspace.getConfiguration("vibedrift");
-      const url = currentConfig.get<string>("apiUrl", "https://www.vibedrift.dev");
+      const url = getApiUrl();
       const key = currentConfig.get<string>("apiKey", "");
 
       const payload = await buildCommitPayload(_repoPath, commitHash, "vscode");
@@ -72,6 +113,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       const result = await sendCommitPayload(url, payload, key || undefined);
       log(`Done — drift: ${result.vibeDriftLevel} (${result.vibeDriftScore.toFixed(1)})`);
+      await sidebarProvider?.refresh();
 
       vscode.window.setStatusBarMessage(
         `VibeDrift: commit sent (${result.vibeDriftLevel})`,

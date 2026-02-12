@@ -116,15 +116,15 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const { data: session } = await auth.getSession();
-  if (!session?.user) {
+  const userId = await resolveUser(request);
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const { searchParams } = request.nextUrl;
     const rows = await getCommits({
-      userId: session.user.id,
+      userId,
       project: searchParams.get("project") ?? undefined,
       since: searchParams.get("since") ?? undefined,
       until: searchParams.get("until") ?? undefined,

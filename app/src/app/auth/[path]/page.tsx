@@ -9,10 +9,13 @@ export function generateStaticParams() {
 
 export default async function AuthPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ path: string }>;
+  searchParams: Promise<{ redirectTo?: string }>;
 }) {
   const { path } = await params;
+  const { redirectTo } = await searchParams;
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center p-4">
@@ -59,7 +62,7 @@ export default async function AuthPage({
 
       {/* Auth form */}
       <div className="relative z-10 flex w-full justify-center" style={{ maxWidth: 440 }}>
-        <AuthView path={path} />
+        <AuthView path={path} redirectTo={redirectTo} />
       </div>
     </main>
   );
