@@ -152,9 +152,6 @@ export async function buildCommitPayload(
   } catch {
     // If we can't determine the current user, proceed anyway
   }
-  } catch {
-    // If we can't determine the current user, proceed anyway
-  }
   const branch = exec("git rev-parse --abbrev-ref HEAD", repoPath);
 
   // Project name from directory
