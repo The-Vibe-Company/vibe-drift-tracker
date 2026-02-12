@@ -1,7 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import { eq, desc, asc, sql, and, gte, lte } from "drizzle-orm";
-import { commits, fileChanges, apiKeys, type NewCommitRow, type NewFileChangeRow, type NewApiKeyRow } from "./schema";
+import { commits, fileChanges, apiKeys, userSettings, type NewCommitRow, type NewFileChangeRow, type NewApiKeyRow } from "./schema";
 import { computeVibeDriftScore, getVibeDriftLevel } from "vibedrift-shared";
 
 function getDb() {
@@ -227,6 +227,29 @@ export async function deleteApiKey(id: number, userId: string) {
   await db
     .delete(apiKeys)
     .where(and(eq(apiKeys.id, id), eq(apiKeys.userId, userId)));
+}
+
+// --- User Settings helpers ---
+
+export async function getUserSettings(userId: string) {
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(userSettings)
+    .where(eq(userSettings.userId, userId))
+    .limit(1);
+  return row ?? null;
+}
+
+export async function markSetupComplete(userId: string) {
+  const db = getDb();
+  await db
+    .insert(userSettings)
+    .values({ userId, hasCompletedSetup: true })
+    .onConflictDoUpdate({
+      target: userSettings.userId,
+      set: { hasCompletedSetup: true },
+    });
 }
 
 function isSystemGeneratedPrompt(text: string): boolean {

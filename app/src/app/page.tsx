@@ -38,7 +38,7 @@ const installSteps = [
       <>
         Install{" "}
         <a
-          href="https://marketplace.visualstudio.com/items?itemName=VibeDriftTracker.vibedrift-tracker"
+          href="https://marketplace.visualstudio.com/items?itemName=TheVibeCompany.vibedrift-vscode"
           target="_blank"
           rel="noopener noreferrer"
           className="underline underline-offset-2 transition-colors hover:opacity-80"
