@@ -143,7 +143,6 @@ export async function buildCommitPayload(
   const committedAt = exec(`git log -1 --format=%aI ${commitHash}`, repoPath);
 
   // Skip commits from other authors
-  // Skip commits from other authors
   try {
     const currentUserEmail = exec("git config user.email", repoPath);
     const commitAuthorEmail = exec(`git log -1 --format=%ae ${commitHash}`, repoPath);
