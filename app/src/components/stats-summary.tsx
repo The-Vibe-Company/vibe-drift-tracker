@@ -4,6 +4,7 @@ import {
 } from "vibedrift-shared/dist/types";
 
 const levelLabels: Record<string, string> = {
+  "very-low": "Very Low",
   low: "Low",
   moderate: "Moderate",
   high: "High",

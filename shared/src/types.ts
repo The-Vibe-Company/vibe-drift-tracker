@@ -70,19 +70,22 @@ export function computeVibeDriftScore(
   return P * factor;
 }
 
-export type VibeDriftLevel = "low" | "moderate" | "high" | "vibe-drift";
+export type VibeDriftLevel = "very-low" | "low" | "moderate" | "high" | "vibe-drift";
 
 export function getVibeDriftLevel(score: number): VibeDriftLevel {
-  if (score <= 1) return "low";
-  if (score <= 3) return "moderate";
-  if (score <= 6) return "high";
+  if (score < 1) return "very-low";
+  if (score < 2.5) return "low";
+  if (score < 4) return "moderate";
+  if (score < 7) return "high";
   return "vibe-drift";
 }
 
 export function getVibeDriftColor(level: VibeDriftLevel): string {
   switch (level) {
-    case "low":
+    case "very-low":
       return "#22c55e"; // green
+    case "low":
+      return "#4ade80"; // light green
     case "moderate":
       return "#eab308"; // yellow
     case "high":

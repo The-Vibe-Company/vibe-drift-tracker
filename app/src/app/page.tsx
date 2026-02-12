@@ -29,13 +29,23 @@ const pipelineSteps = [
   {
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
+    title: "See your drift live",
+    description: "Watch your drift score update in real time as you code.",
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="4" />
         <line x1="1.05" y1="12" x2="7" y2="12" />
         <line x1="17.01" y1="12" x2="22.96" y2="12" />
       </svg>
     ),
     title: "Commit your work",
-    description: "Every git commit triggers an analysis.",
+    description: "Every git commit saves a snapshot of your session.",
   },
   {
     icon: (
@@ -44,8 +54,8 @@ const pipelineSteps = [
         <path d="M7 16l4-8 4 4 4-8" />
       </svg>
     ),
-    title: "See your drift",
-    description: "Prompts, lines changed, drift score. Instantly.",
+    title: "Track your history",
+    description: "Prompts, lines changed, drift score — commit by commit.",
   },
 ];
 
@@ -201,9 +211,9 @@ export default async function Home() {
                 <div
                   className="rounded-lg p-5 border text-center w-full"
                   style={{
-                    borderColor: i === 3 ? "var(--primary)" : "var(--border)",
+                    borderColor: i === pipelineSteps.length - 1 ? "var(--primary)" : "var(--border)",
                     background: "var(--card)",
-                    boxShadow: i === 3 ? "0 0 30px rgba(250,204,21,0.1)" : "none",
+                    boxShadow: i === pipelineSteps.length - 1 ? "0 0 30px rgba(250,204,21,0.1)" : "none",
                   }}
                 >
                   <div
@@ -219,7 +229,7 @@ export default async function Home() {
                 </div>
 
                 {/* Vertical connector */}
-                {i < 3 && (
+                {i < pipelineSteps.length - 1 && (
                   <div
                     className="relative"
                     style={{ width: 2, height: 48, background: "var(--border)", overflow: "hidden" }}
