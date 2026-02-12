@@ -1,40 +1,80 @@
 # VibeDrift Tracker for VS Code
 
-**Track your AI prompt count per commit and detect vibe drift in real time.**
+**Your AI drift score, live in the status bar.**
 
-## Features
+You start with a clear goal, open Claude Code, and 47 prompts later you've refactored half the codebase and added three features nobody asked for.
 
-- **Real-time drift scoring** — see your current drift level in the status bar as you work
-- **Commit tracking** — automatically counts AI prompts between commits
-- **Drift detection** — alerts when you're drifting from your original intent
-- **Dashboard integration** — syncs data with the VibeDrift web dashboard
+VibeDrift watches your Claude Code sessions and shows a real-time drift score right in VS Code. The more you prompt without committing, the higher the score. Commit to reset, and keep your sessions focused.
 
-## How it works
+---
 
-1. **Prompts are counted** — each Claude Code interaction increments your session counter
-2. **Score is computed** — a drift score is calculated based on prompt count and activity
-3. **Status bar updates** — your current drift level is displayed in the VS Code status bar
-4. **Reset on commit** — the counter resets when you commit, starting a fresh cycle
+## Getting Started
 
-## Drift levels
+1. **Install** the extension from the marketplace.
+2. **Create an account** on [vibedrift.dev](https://www.vibedrift.dev) and generate an API key in your dashboard settings.
+3. **Set your API key** in VS Code settings (`vibedrift.apiKey`).
+4. **Code with Claude** — your drift score appears in the status bar.
 
-| Level | Prompts | Meaning |
-|-------|---------|---------|
-| Low | 1–5 | On track, focused work |
-| Moderate | 6–15 | Starting to explore, stay aware |
-| High | 16–30 | Significant drift, consider committing |
-| Vibe Drift | 30+ | Feature creep likely, time to refocus |
+That's it. No config files, no CLI, no extra steps.
+
+---
+
+## What You See
+
+### Status bar
+
+A live drift score updates as you work:
+
+```
+$(pulse) VibeDrift: 0.0 (very-low)     — you just committed, fresh start
+$(pulse) VibeDrift: 2.1 (low)          — focused work, on track
+$(pulse) VibeDrift: 5.3 (high)         — drifting, consider committing
+$(pulse) VibeDrift: 8.7 (vibe-drift)   — you've lost the plot
+```
+
+The score resets to 0 after every commit.
+
+### Commit notifications
+
+After each commit, a status bar message confirms the data was sent to your dashboard:
+
+```
+VibeDrift: commit sent (low)
+```
+
+---
+
+## Drift Levels
+
+| Level          | Score   | What it means                        |
+| -------------- | ------- | ------------------------------------ |
+| **very-low**   | < 1.2   | Minimal interaction, on track        |
+| **low**        | < 2.5   | Focused, on track                    |
+| **moderate**   | < 4     | Starting to wander                   |
+| **high**       | < 7     | Significant drift from original task |
+| **vibe-drift** | 7+      | Time to reset and refocus            |
+
+The score is based on **prompt count** and **efficiency** (lines changed per prompt). More prompts = more drift. But if each prompt produces a lot of code, the score stays lower. One prompt is never penalized.
+
+---
 
 ## Settings
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `vibedrift.apiUrl` | `http://localhost:3000` | URL of the VibeDrift dashboard API |
-| `vibedrift.apiKey` | `""` | API key for authentication (optional) |
-| `vibedrift.enabled` | `true` | Enable automatic commit tracking |
+| `vibedrift.apiUrl` | `https://www.vibedrift.dev` | VibeDrift API URL |
+| `vibedrift.apiKey` | — | Your API key (generate one in dashboard settings) |
+| `vibedrift.enabled` | `true` | Enable or disable tracking |
 
-## Getting started
+---
 
-1. **Install** — install the `.vsix` extension or get it from the marketplace
-2. **Configure** — set `vibedrift.apiUrl` to point to your VibeDrift dashboard
-3. **Code** — start working and watch your drift score in the status bar
+## How It Works
+
+The extension runs silently in the background:
+
+1. **Watches Claude Code sessions** — reads session logs from `~/.claude/projects/` and counts prompts since your last commit.
+2. **Tracks your code changes** — monitors `git diff` to know how many lines you've changed.
+3. **Computes a live score** — combines prompt count and code output into a drift score, updated in real time.
+4. **Sends data on commit** — when you commit, the full session snapshot (prompts, diff stats, drift score) is sent to your VibeDrift dashboard.
+
+Works with VS Code and Cursor. Requires a git repository and Claude Code.

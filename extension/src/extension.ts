@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
     return;
   }
 
-  const apiUrl = config.get<string>("apiUrl", "http://localhost:3000");
+  const apiUrl = config.get<string>("apiUrl", "https://www.vibedrift.dev");
   const apiKey = config.get<string>("apiKey", "");
   log(`API URL: ${apiUrl}`);
   log(`API Key: ${apiKey ? "configured" : "NOT SET — go to /dashboard/settings to generate one"}`);
@@ -56,7 +56,7 @@ export function activate(context: vscode.ExtensionContext) {
       sessionWatcher?.resetSession();
 
       const currentConfig = vscode.workspace.getConfiguration("vibedrift");
-      const url = currentConfig.get<string>("apiUrl", "http://localhost:3000");
+      const url = currentConfig.get<string>("apiUrl", "https://www.vibedrift.dev");
       const key = currentConfig.get<string>("apiKey", "");
 
       const payload = await buildCommitPayload(_repoPath, commitHash, "vscode");
