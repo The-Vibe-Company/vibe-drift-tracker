@@ -1,6 +1,6 @@
 const driftColors: Record<string, string> = {
   "very-low": "#22c55e",
-  low: "#4ade80",
+  low: "#34d399",
   moderate: "#eab308",
   high: "#f97316",
   "vibe-drift": "#ef4444",

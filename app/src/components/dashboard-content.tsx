@@ -47,6 +47,7 @@ export function DashboardContent({
   pageSize,
   sortBy,
   sortOrder,
+  hasApiKeys,
 }: {
   initialCommits: CommitRow[];
   totalCommits: number;
@@ -54,6 +55,7 @@ export function DashboardContent({
   pageSize: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  hasApiKeys: boolean;
 }) {
   const router = useRouter();
   const [commits, setCommits] = useState(initialCommits);
@@ -78,6 +80,7 @@ export function DashboardContent({
           totalCommits={totalCommits}
           sortBy={sortBy}
           sortOrder={sortOrder}
+          hasApiKeys={hasApiKeys}
         />
       </div>
     </div>

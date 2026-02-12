@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { getCommits, getCommitCount, getProjects } from "@/lib/db";
+import { getCommits, getCommitCount, getProjects, getApiKeysByUser } from "@/lib/db";
 import { auth } from "@/lib/auth/server";
 import { DashboardContent } from "@/components/dashboard-content";
 import { Filters } from "@/components/filters";
@@ -40,10 +40,11 @@ export default async function DashboardPage({
     until: params.until,
   };
 
-  const [commitRows, totalCommits, projects] = await Promise.all([
+  const [commitRows, totalCommits, projects, apiKeys] = await Promise.all([
     getCommits({ ...filterParams, limit: pageSize, offset, sortBy, sortOrder }),
     getCommitCount(filterParams),
     getProjects(userId),
+    getApiKeysByUser(userId),
   ]);
 
   return (
@@ -64,6 +65,7 @@ export default async function DashboardPage({
         pageSize={pageSize}
         sortBy={sortBy}
         sortOrder={sortOrder}
+        hasApiKeys={apiKeys.length > 0}
       />
     </main>
   );
