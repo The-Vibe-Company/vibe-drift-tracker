@@ -60,6 +60,10 @@ export function activate(context: vscode.ExtensionContext) {
       const key = currentConfig.get<string>("apiKey", "");
 
       const payload = await buildCommitPayload(_repoPath, commitHash, "vscode");
+      if (!payload) {
+        log("Commit skipped — author differs from current git user");
+        return;
+      }
       log(`Prompts extracted: ${payload.prompts?.length ?? 0}`);
       if (payload.prompts && payload.prompts.length > 0) {
         log(`First prompt: "${payload.prompts[0].text.slice(0, 80)}..."`);
