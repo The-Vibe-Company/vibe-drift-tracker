@@ -103,7 +103,7 @@ export function ApiKeyManager({ initialKeys }: { initialKeys: ApiKey[] }) {
           }}
         >
           <p className="mb-2 text-sm font-medium" style={{ color: "#facc15" }}>
-            Save this API key — it won't be shown again
+            Save this API key — it won&apos;t be shown again
           </p>
           <div className="flex items-center gap-2">
             <code
