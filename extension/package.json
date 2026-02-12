@@ -3,7 +3,7 @@
   "displayName": "VibeDrift Tracker",
   "description": "Track your AI prompt count per commit and detect vibe drift in real time",
   "version": "0.1.0",
-  "publisher": "vibedrift",
+  "publisher": "TheVibeCompany",
   "icon": "icon.png",
   "repository": {
     "type": "git",
