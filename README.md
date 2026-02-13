@@ -20,17 +20,17 @@ VibeDrift calculates a drift score on every prompt and resets it to 0 after each
 
 Every commit gets a **drift score** and a **drift level**:
 
-| Level          | Score   | Meaning                              |
-| -------------- | ------- | ------------------------------------ |
-| **very-low**   | < 1.2   | Minimal interaction, on track        |
-| **low**        | < 2.5   | Focused, on track                    |
-| **moderate**   | < 4     | Starting to wander                   |
-| **high**       | < 7     | Significant drift from original task |
-| **vibe-drift** | 7+      | You've lost the plot — time to reset |
+| Level          | Score | Meaning                              |
+| -------------- | ----- | ------------------------------------ |
+| **very-low**   | < 1.2 | Minimal interaction, on track        |
+| **low**        | < 2.5 | Focused, on track                    |
+| **moderate**   | < 4   | Starting to wander                   |
+| **high**       | < 7   | Significant drift from original task |
+| **vibe-drift** | 7+    | You've lost the plot — time to reset |
 
 ### Scoring
 
-The drift score is based on two factors:
+The drift score is based on :
 
 - **Prompt count** — more prompts per commit = more drift
 - **Lines per prompt** — a high ratio (50+ lines/prompt) means productive work and lowers the score; a low ratio (< 5 lines/prompt) means you're spinning and raises it
