@@ -10,12 +10,22 @@ VibeDrift watches your Claude Code sessions and shows a real-time drift score ri
 
 ## Getting Started
 
-1. **Install** the extension from the marketplace.
+1. **Install** the extension from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=TheVibeCompany.vibedrift-vscode), or install the `.vsix` manually (see below).
 2. **Create an account** on [vibedrift.dev](https://www.vibedrift.dev) and generate an API key in your dashboard settings.
 3. **Set your API key** in VS Code settings (`vibedrift.apiKey`).
 4. **Code with Claude** — your drift score appears in the status bar.
 
 That's it. No config files, no CLI, no extra steps.
+
+### Local / manual install
+
+If you have the `.vsix` file locally:
+
+```bash
+code --install-extension vibedrift-vscode-0.1.1.vsix
+```
+
+Or in VS Code: **Extensions** → **⋯** → **Install from VSIX…** and select the file.
 
 ---
 
