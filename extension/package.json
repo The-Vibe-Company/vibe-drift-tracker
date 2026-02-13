@@ -45,6 +45,8 @@
   "scripts": {
     "build": "esbuild src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
     "dev": "pnpm build --watch",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "prepackage": "pnpm build",
     "package": "vsce package --no-dependencies",
     "install-local": "code --install-extension vibedrift-vscode-0.1.0.vsix"

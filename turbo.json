@@ -18,6 +18,12 @@
     "package": {
       "dependsOn": ["build"],
       "outputs": ["*.vsix"]
+    },
+    "test": {
+      "dependsOn": ["^build"]
+    },
+    "test:coverage": {
+      "dependsOn": ["^build"]
     }
   }
 }
