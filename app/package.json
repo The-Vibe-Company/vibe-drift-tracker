@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint src/",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@neondatabase/auth": "0.2.0-beta.1",
