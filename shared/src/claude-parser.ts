@@ -25,19 +25,23 @@ interface JSONLMessage {
   sessionId?: string;
   message?: {
     role: string;
-    content: string | Array<{ type: string; text?: string; id?: string; name?: string }>;
+    content: string | Array<{ type: string; text?: string; id?: string; name?: string; input?: { command?: string } }>;
   };
 }
 
 const CODE_GENERATING_TOOLS = new Set(["Write", "Edit", "NotebookEdit"]);
+const FILE_REMOVE_PATTERN = /\brm\s/;
 
 function hasCodeToolUse(
-  content: string | Array<{ type: string; name?: string }>,
+  content: string | Array<{ type: string; name?: string; input?: { command?: string } }>,
 ): boolean {
   if (typeof content === "string") return false;
-  return content.some(
-    (c) => c.type === "tool_use" && c.name !== undefined && CODE_GENERATING_TOOLS.has(c.name),
-  );
+  return content.some((c) => {
+    if (c.type !== "tool_use") return false;
+    if (c.name && CODE_GENERATING_TOOLS.has(c.name)) return true;
+    if (c.name === "Bash" && c.input?.command && FILE_REMOVE_PATTERN.test(c.input.command)) return true;
+    return false;
+  });
 }
 
 function isCommand(content: string | Array<{ type: string; text?: string }>): boolean {
