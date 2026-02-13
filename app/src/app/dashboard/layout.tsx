@@ -1,12 +1,31 @@
 import { UserButton } from "@neondatabase/auth/react";
 import { SidebarNav } from "@/components/sidebar-nav";
+import { OnboardingModal } from "@/components/onboarding-modal";
 import Link from "next/link";
+import { auth } from "@/lib/auth/server";
+import { getUserSettings, getApiKeysByUser, markSetupComplete } from "@/lib/db";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  let showOnboarding = false;
+
+  const { data: session } = await auth.getSession();
+  if (session?.user) {
+    const settings = await getUserSettings(session.user.id);
+    if (!settings || !settings.hasCompletedSetup) {
+      const keys = await getApiKeysByUser(session.user.id);
+      if (keys.length > 0) {
+        // Existing user with API keys — auto-mark setup complete
+        await markSetupComplete(session.user.id);
+      } else {
+        showOnboarding = true;
+      }
+    }
+  }
+
   return (
     <div className="flex h-screen">
       <aside
@@ -53,6 +72,8 @@ export default function DashboardLayout({
       <div className="flex-1 overflow-auto">
         {children}
       </div>
+
+      {showOnboarding && <OnboardingModal />}
     </div>
   );
 }

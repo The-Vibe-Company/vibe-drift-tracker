@@ -2,6 +2,7 @@
 
 import { Fragment, useState } from "react";
 import { createPortal } from "react-dom";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import type { CommitRow } from "@/lib/db/schema";
 import { computeVibeDriftScore, getVibeDriftLevel } from "vibedrift-shared/dist/types";
@@ -323,6 +324,7 @@ export function CommitTable({
   totalCommits,
   sortBy,
   sortOrder,
+  hasApiKeys,
 }: {
   commits: CommitRow[];
   onCommitsChange?: (commits: CommitRow[]) => void;
@@ -331,6 +333,7 @@ export function CommitTable({
   totalCommits: number;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  hasApiKeys: boolean;
 }) {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -355,14 +358,22 @@ export function CommitTable({
   if (commits.length === 0) {
     return (
       <div
-        className="rounded-lg border p-8 text-center"
+        className="rounded-lg border p-8 text-center flex flex-col items-center gap-4"
         style={{
           borderColor: "var(--border)",
           color: "var(--muted-foreground)",
         }}
       >
-        No commits yet. Push some data via the API, VS Code extension, or
-        post-commit hook.
+        <p>No commits yet</p>
+        {!hasApiKeys && (
+          <Link
+            href="/dashboard/settings"
+            className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
+            style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+          >
+            Create an API key
+          </Link>
+        )}
       </div>
     );
   }

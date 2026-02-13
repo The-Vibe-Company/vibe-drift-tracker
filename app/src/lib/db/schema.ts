@@ -7,6 +7,7 @@ import {
   timestamp,
   jsonb,
   unique,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const commits = pgTable(
@@ -60,6 +61,15 @@ export const apiKeys = pgTable("api_keys", {
 
 export type ApiKeyRow = typeof apiKeys.$inferSelect;
 export type NewApiKeyRow = typeof apiKeys.$inferInsert;
+
+export const userSettings = pgTable("user_settings", {
+  userId: text("user_id").primaryKey(),
+  hasCompletedSetup: boolean("has_completed_setup").default(false).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});
+
+export type UserSettingsRow = typeof userSettings.$inferSelect;
+export type NewUserSettingsRow = typeof userSettings.$inferInsert;
 
 export type CommitRow = typeof commits.$inferSelect;
 export type NewCommitRow = typeof commits.$inferInsert;

@@ -1,7 +1,4 @@
-import {
-  getVibeDriftLevel,
-  getVibeDriftColor,
-} from "vibedrift-shared/dist/types";
+import { getVibeDriftLevel } from "vibedrift-shared/dist/types";
 
 const levelLabels: Record<string, string> = {
   "very-low": "Very Low",
@@ -9,6 +6,14 @@ const levelLabels: Record<string, string> = {
   moderate: "Moderate",
   high: "High",
   "vibe-drift": "Very High",
+};
+
+const levelColors: Record<string, string> = {
+  "very-low": "#22c55e",
+  low: "#34d399",
+  moderate: "#eab308",
+  high: "#f97316",
+  "vibe-drift": "#ef4444",
 };
 
 export function StatsSummary({
@@ -22,7 +27,8 @@ export function StatsSummary({
   };
 }) {
   const driftLevel = getVibeDriftLevel(stats.avgScore);
-  const driftColor = getVibeDriftColor(driftLevel);
+  const driftColor = levelColors[driftLevel] ?? "#6b7280";
+  const showDriftBadge = stats.totalCommits > 0;
 
   const cards = [
     {
@@ -39,10 +45,12 @@ export function StatsSummary({
     {
       label: "Avg Drift Score",
       value: Number(stats.avgScore).toFixed(2),
-      badge: {
-        label: levelLabels[driftLevel] ?? driftLevel,
-        color: driftColor,
-      },
+      badge: showDriftBadge
+        ? {
+            label: levelLabels[driftLevel] ?? driftLevel,
+            color: driftColor,
+          }
+        : undefined,
       icon: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M22 12h-4l-3 9L9 3l-3 9H2" />

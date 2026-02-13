@@ -6,6 +6,73 @@ import landingImg from "@/assets/landing.png";
 
 export const dynamic = "force-dynamic";
 
+const installSteps = [
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    title: "Create an account",
+    description: "Sign up — it only takes a few seconds.",
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
+      </svg>
+    ),
+    title: "Create an API key",
+    description: "Go to Settings and generate your personal API key.",
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="16 18 22 12 16 6" />
+        <polyline points="8 6 2 12 8 18" />
+      </svg>
+    ),
+    title: "Install the VS Code extension",
+    description: (
+      <>
+        Install{" "}
+        <a
+          href="https://marketplace.visualstudio.com/items?itemName=TheVibeCompany.vibedrift-vscode"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-2 transition-colors hover:opacity-80"
+          style={{ color: "var(--primary)" }}
+        >
+          VibeDrift Tracker from the VS Code Marketplace
+        </a>
+        .
+      </>
+    ),
+  },
+  {
+    icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </svg>
+    ),
+    title: "Set your API key in VS Code",
+    description: (
+      <>
+        Open VS Code settings and paste your key into{" "}
+        <code
+          className="rounded px-1.5 py-0.5 text-xs font-mono"
+          style={{ background: "rgba(255,255,255,0.06)" }}
+        >
+          vibedrift.apiKey
+        </code>
+        .
+      </>
+    ),
+  },
+];
+
 const pipelineSteps = [
   {
     icon: (
@@ -182,12 +249,58 @@ export default async function Home() {
               Get Started
             </Link>
             <a
-              href="#how-it-works"
+              href="#get-started"
               className="text-sm font-medium transition-colors hover:opacity-80"
               style={{ color: "var(--muted-foreground)" }}
             >
-              See how it works ↓
+              Get started ↓
             </a>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== GET STARTED ===== */}
+      <section id="get-started" className="px-6 py-16" style={{ scrollMarginTop: 80 }}>
+        <div className="mx-auto max-w-6xl">
+          <p
+            className="text-xs font-medium tracking-widest uppercase text-center mb-14"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            Get started
+          </p>
+
+          <div className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            {/* Single continuous line behind all bubbles */}
+            <div
+              className="hidden lg:block absolute top-6 left-0 right-0"
+              style={{ height: 2, background: "var(--border)" }}
+            />
+            {installSteps.map((step, i) => (
+              <div key={i} className="relative flex flex-col items-center text-center">
+                {/* Step number */}
+                <span
+                  className="relative z-10 mb-5 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold"
+                  style={{
+                    background: "#1a1805",
+                    color: "var(--primary)",
+                    border: "1px solid rgba(250,204,21,0.25)",
+                  }}
+                >
+                  {i + 1}
+                </span>
+                {/* Icon */}
+                <div
+                  className="mb-4 flex h-12 w-12 items-center justify-center rounded-md [&>svg]:h-7 [&>svg]:w-7"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
+                  {step.icon}
+                </div>
+                <h3 className="text-base font-semibold">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
+                  {step.description}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
