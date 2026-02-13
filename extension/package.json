@@ -2,7 +2,7 @@
   "name": "vibedrift-vscode",
   "displayName": "VibeDrift Tracker",
   "description": "Track your AI prompt count per commit and detect vibe drift in real time",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "TheVibeCompany",
   "icon": "icon.png",
   "repository": {
