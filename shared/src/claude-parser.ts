@@ -30,7 +30,7 @@ interface JSONLMessage {
 }
 
 const CODE_GENERATING_TOOLS = new Set(["Write", "Edit", "NotebookEdit"]);
-const FILE_REMOVE_PATTERN = /\brm\s/;
+const FILE_REMOVE_PATTERN = /(?:^|[;&|]\s*)rm\s/;
 
 function hasCodeToolUse(
   content: string | Array<{ type: string; name?: string; input?: { command?: string } }>,
