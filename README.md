@@ -30,7 +30,7 @@ Every commit gets a **drift score** and a **drift level**:
 
 ### Scoring
 
-The drift score is based on:
+The drift score is based on two factors:
 
 - **Prompt count** — more prompts per commit = more drift
 - **Lines per prompt** — a high ratio (50+ lines/prompt) means productive work and lowers the score; a low ratio (< 5 lines/prompt) means you're spinning and raises it
