@@ -18,9 +18,36 @@
     "color": "#0a0a0a",
     "theme": "dark"
   },
-  "activationEvents": ["workspaceContains:.git"],
+  "activationEvents": [
+    "workspaceContains:.git",
+    "onUri"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "vibedrift.openSidebar",
+        "title": "VibeDrift: Open Sidebar"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vibedrift",
+          "title": "VibeDrift",
+          "icon": "media/vibedrift.svg"
+        }
+      ]
+    },
+    "views": {
+      "vibedrift": [
+        {
+          "id": "vibedrift.sidebarView",
+          "name": "VibeDrift",
+          "type": "webview"
+        }
+      ]
+    },
     "configuration": {
       "title": "VibeDrift Tracker",
       "properties": {

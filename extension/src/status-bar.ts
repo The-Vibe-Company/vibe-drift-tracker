@@ -10,6 +10,7 @@ export function createStatusBar(): vscode.StatusBarItem {
   );
   statusBarItem.text = "$(pulse) VibeDrift: 0.0";
   statusBarItem.tooltip = "VibeDrift — monitoring prompts";
+  statusBarItem.command = "vibedrift.openSidebar";
   statusBarItem.show();
   return statusBarItem;
 }
