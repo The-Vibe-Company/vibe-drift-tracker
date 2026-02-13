@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.5](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.4...v0.1.5) (2026-02-13)
+
+
+### Features
+
+* installation explaination ([#38](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/38)) ([a97e389](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/a97e3893934f723537972541a8a7864d5479224b))
+* update README and configuration for improved clarity and API URL ([#35](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/35)) ([b055e03](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/b055e0349e7adbe2fd087bb699f07c9cfbbfffe5))
+
 ## [0.1.4](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.3...v0.1.4) (2026-02-12)
 
 
