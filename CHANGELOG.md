@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.8](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.7...v0.1.8) (2026-02-13)
+
+
+### Features
+
+* add test coverage ([e187200](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/e18720074d1be1d2e2ef2dc4a735b63e9a1f3cab))
+
+
+### Bug Fixes
+
+* rm files increase vibedrift score ([#47](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/47)) ([0044740](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/004474004ea9841ee1d2d0b28516d8646f3ee481))
+
 ## [0.1.7](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.6...v0.1.7) (2026-02-13)
 
 
