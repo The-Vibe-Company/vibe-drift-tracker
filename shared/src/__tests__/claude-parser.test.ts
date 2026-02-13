@@ -291,6 +291,87 @@ describe("parseSessionFile", () => {
     expect(result!.prompts![0].codeGenerated).toBe(true);
   });
 
+  it("marks codeGenerated true when Bash rm is used", () => {
+    const filePath = writeSession("bash-rm.jsonl", [
+      {
+        type: "user",
+        sessionId: "sess-rm",
+        timestamp: "2024-06-01T10:00:00Z",
+        message: { role: "user", content: "Delete the old config file" },
+      },
+      {
+        type: "assistant",
+        sessionId: "sess-rm",
+        timestamp: "2024-06-01T10:01:00Z",
+        message: {
+          role: "assistant",
+          content: [
+            { type: "text", text: "I'll remove that file" },
+            { type: "tool_use", name: "Bash", id: "t1", input: { command: "rm src/old-config.ts" } },
+          ],
+        },
+      },
+    ]);
+
+    const result = parseSessionFile(filePath, since, until);
+    expect(result).not.toBeNull();
+    expect(result!.prompts![0].codeGenerated).toBe(true);
+  });
+
+  it("marks codeGenerated true when Bash rm -rf is used", () => {
+    const filePath = writeSession("bash-rm-rf.jsonl", [
+      {
+        type: "user",
+        sessionId: "sess-rmrf",
+        timestamp: "2024-06-01T10:00:00Z",
+        message: { role: "user", content: "Remove the old directory" },
+      },
+      {
+        type: "assistant",
+        sessionId: "sess-rmrf",
+        timestamp: "2024-06-01T10:01:00Z",
+        message: {
+          role: "assistant",
+          content: [
+            { type: "text", text: "Removing directory" },
+            { type: "tool_use", name: "Bash", id: "t1", input: { command: "rm -rf old-dir/" } },
+          ],
+        },
+      },
+    ]);
+
+    const result = parseSessionFile(filePath, since, until);
+    expect(result).not.toBeNull();
+    expect(result!.prompts![0].codeGenerated).toBe(true);
+  });
+
+  it("marks codeGenerated false when Bash runs a non-rm command", () => {
+    const filePath = writeSession("bash-ls.jsonl", [
+      {
+        type: "user",
+        sessionId: "sess-ls",
+        timestamp: "2024-06-01T10:00:00Z",
+        message: { role: "user", content: "List the files" },
+      },
+      {
+        type: "assistant",
+        sessionId: "sess-ls",
+        timestamp: "2024-06-01T10:01:00Z",
+        message: {
+          role: "assistant",
+          content: [
+            { type: "text", text: "Here are the files" },
+            { type: "tool_use", name: "Bash", id: "t1", input: { command: "ls -la" } },
+          ],
+        },
+      },
+    ]);
+
+    const result = parseSessionFile(filePath, since, until);
+    expect(result).not.toBeNull();
+    expect(result!.prompts![0].codeGenerated).toBe(false);
+  });
+
   it("marks codeGenerated false when no code tools used", () => {
     const filePath = writeSession("nocode.jsonl", [
       {

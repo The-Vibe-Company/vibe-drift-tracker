@@ -2,7 +2,7 @@
   "name": "vibedrift-vscode",
   "displayName": "VibeDrift Tracker",
   "description": "Track your AI prompt count per commit and detect vibe drift in real time",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "TheVibeCompany",
   "icon": "icon.png",
   "repository": {
@@ -49,7 +49,7 @@
     "test:coverage": "vitest run --coverage",
     "prepackage": "pnpm build",
     "package": "vsce package --no-dependencies",
-    "install-local": "code --install-extension vibedrift-vscode-0.1.0.vsix"
+    "install-local": "code --install-extension vibedrift-vscode-*.vsix --force"
   },
   "dependencies": {
     "vibedrift-shared": "workspace:*"
