@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.7](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.6...v0.1.7) (2026-02-13)
+
+
+### Bug Fixes
+
+* clarify scoring factors in README ([#43](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/43)) ([9623b38](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/9623b3816b510bc7501f7d21a26c4d9b3ae8fc38))
+
 ## [0.1.6](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.5...v0.1.6) (2026-02-13)
 
 
