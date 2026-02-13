@@ -49,7 +49,7 @@
     "test:coverage": "vitest run --coverage",
     "prepackage": "pnpm build",
     "package": "vsce package --no-dependencies",
-    "install-local": "code --install-extension vibedrift-vscode-0.1.0.vsix"
+    "install-local": "code --install-extension vibedrift-vscode-*.vsix --force"
   },
   "dependencies": {
     "vibedrift-shared": "workspace:*"
