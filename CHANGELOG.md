@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.5...v0.1.6) (2026-02-13)
+
+
+### Bug Fixes
+
+* testing again ([#41](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/41)) ([728b0b5](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/728b0b59df03eb09968daaa16f56a94a38ce88a4))
+
 ## [0.1.5](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.4...v0.1.5) (2026-02-13)
 
 
