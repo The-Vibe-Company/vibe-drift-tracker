@@ -127,7 +127,7 @@ const pipelineSteps = [
       </svg>
     ),
     title: "Install the extension",
-    description: "One click in VS Code or Cursor.",
+    description: "One click in VS Code.",
   },
   {
     icon: (

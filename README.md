@@ -10,7 +10,7 @@ Vibe Drift Tracker measures how many AI prompts go into each commit, how many li
 
 ## How It Works
 
-1. **Install the extension** — One click in VS Code or Cursor.
+1. **[Install the extension](https://marketplace.visualstudio.com/items?itemName=TheVibeCompany.vibedrift-vscode)** — One click in VS Code.
 2. **Code with Claude** — Write code, ask questions, iterate. We silently count.
 3. **See your drift live** — Watch your drift score update in real time as you code.
 4. **Commit your work** — Every git commit saves a snapshot of your session.

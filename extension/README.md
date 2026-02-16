@@ -87,4 +87,4 @@ The extension runs silently in the background:
 3. **Computes a live score** — combines prompt count and code output into a drift score, updated in real time.
 4. **Sends data on commit** — when you commit, the full session snapshot (prompts, diff stats, drift score) is sent to your VibeDrift dashboard.
 
-Works with VS Code and Cursor. Requires a git repository and Claude Code.
+Works with VS Code. Requires a git repository and Claude Code.
