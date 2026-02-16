@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.9](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.8...v0.1.9) (2026-02-16)
+
+
+### Features
+
+* reorganize imports and improve SVG formatting in page component ([#48](https://github.com/The-Vibe-Company/vibe-drift-tracker/issues/48)) ([a414bda](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/a414bda3c9312c045022f53256fc6704fd5415b4))
+* update the readme.md ([a170546](https://github.com/The-Vibe-Company/vibe-drift-tracker/commit/a1705463362cb69d33c7fb5f4bbd06681b014c4b))
+
 ## [0.1.8](https://github.com/The-Vibe-Company/vibe-drift-tracker/compare/v0.1.7...v0.1.8) (2026-02-13)
 
 
