@@ -1,15 +1,24 @@
-import { auth } from "@/lib/auth/server";
-import { redirect } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
 import landingImg from "@/assets/landing.png";
+import { auth } from "@/lib/auth/server";
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 const installSteps = [
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
         <circle cx="12" cy="7" r="4" />
       </svg>
@@ -19,7 +28,16 @@ const installSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4" />
       </svg>
     ),
@@ -28,7 +46,16 @@ const installSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <polyline points="16 18 22 12 16 6" />
         <polyline points="8 6 2 12 8 18" />
       </svg>
@@ -52,7 +79,16 @@ const installSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <circle cx="12" cy="12" r="3" />
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
       </svg>
@@ -76,7 +112,16 @@ const installSteps = [
 const pipelineSteps = [
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <polyline points="16 18 22 12 16 6" />
         <polyline points="8 6 2 12 8 18" />
       </svg>
@@ -86,7 +131,16 @@ const pipelineSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
     ),
@@ -95,7 +149,16 @@ const pipelineSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
         <circle cx="12" cy="12" r="3" />
       </svg>
@@ -105,7 +168,16 @@ const pipelineSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <circle cx="12" cy="12" r="4" />
         <line x1="1.05" y1="12" x2="7" y2="12" />
         <line x1="17.01" y1="12" x2="22.96" y2="12" />
@@ -116,7 +188,16 @@ const pipelineSteps = [
   },
   {
     icon: (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
         <path d="M3 3v18h18" />
         <path d="M7 16l4-8 4 4 4-8" />
       </svg>
@@ -134,7 +215,10 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "var(--background)" }}>
+    <div
+      className="min-h-screen flex flex-col"
+      style={{ background: "var(--background)" }}
+    >
       {/* ===== HEADER ===== */}
       <header
         className="sticky top-0 z-50 flex items-center justify-between px-6 py-4 border-b"
@@ -144,13 +228,61 @@ export default async function Home() {
           backdropFilter: "blur(12px)",
         }}
       >
-        <Link href="/" className="flex items-center gap-1.5 text-lg font-semibold tracking-tight" style={{ color: "var(--primary)" }}>
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 text-lg font-semibold tracking-tight"
+          style={{ color: "var(--primary)" }}
+        >
           VibeDriftTracker
-          <svg width="20" height="12" viewBox="0 0 20 12" fill="none" style={{ display: "inline-block", opacity: 0.7 }}>
-            <path d="M1 6 C4 1, 7 1, 10 6 S16 11, 19 6" stroke="var(--primary)" strokeWidth="2" strokeLinecap="round" fill="none"  />
+          <svg
+            width="20"
+            height="12"
+            viewBox="0 0 20 12"
+            fill="none"
+            style={{ display: "inline-block", opacity: 0.7 }}
+          >
+            <path
+              d="M1 6 C4 1, 7 1, 10 6 S16 11, 19 6"
+              stroke="var(--primary)"
+              strokeWidth="2"
+              strokeLinecap="round"
+              fill="none"
+            />
           </svg>
         </Link>
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-5">
+          <a
+            href="https://www.thevibecompany.co/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs tracking-wide uppercase transition-colors hover:opacity-80"
+            style={{
+              color: "var(--muted-foreground)",
+              letterSpacing: "0.05em",
+            }}
+          >
+            The Vibe Company
+          </a>
+          <a
+            href="https://github.com/The-Vibe-Company/vibe-drift-tracker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition-opacity hover:opacity-80"
+            style={{ color: "var(--muted-foreground)" }}
+            aria-label="GitHub"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12Z" />
+            </svg>
+          </a>
+          <span
+            style={{
+              width: 1,
+              height: 16,
+              background: "var(--border)",
+              opacity: 0.5,
+            }}
+          />
           <Link
             href="/auth/sign-in"
             className="text-sm font-medium transition-colors hover:opacity-80"
@@ -161,7 +293,10 @@ export default async function Home() {
           <Link
             href="/auth/sign-up"
             className="rounded-md px-4 py-2 text-sm font-medium transition-colors hover:opacity-90"
-            style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+            style={{
+              background: "var(--primary)",
+              color: "var(--primary-foreground)",
+            }}
           >
             Sign up
           </Link>
@@ -177,7 +312,8 @@ export default async function Home() {
         <div
           className="pointer-events-none absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse 60% 50% at 20% 40%, rgba(250,204,21,0.08) 0%, transparent 70%)",
+            background:
+              "radial-gradient(ellipse 60% 50% at 20% 40%, rgba(250,204,21,0.08) 0%, transparent 70%)",
           }}
         />
 
@@ -236,7 +372,8 @@ export default async function Home() {
             style={{ color: "var(--muted-foreground)" }}
           >
             VibeDriftTracker tracks your Claude Code interactions per commit.
-            See when you&apos;re on track — and when you&apos;re losing the plot.
+            See when you&apos;re on track — and when you&apos;re losing the
+            plot.
           </p>
 
           {/* CTAs */}
@@ -244,7 +381,10 @@ export default async function Home() {
             <Link
               href="/auth/sign-up"
               className="rounded-md px-6 py-3 text-sm font-semibold transition-colors hover:opacity-90"
-              style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+              style={{
+                background: "var(--primary)",
+                color: "var(--primary-foreground)",
+              }}
             >
               Get Started
             </Link>
@@ -260,7 +400,11 @@ export default async function Home() {
       </section>
 
       {/* ===== GET STARTED ===== */}
-      <section id="get-started" className="px-6 py-16" style={{ scrollMarginTop: 80 }}>
+      <section
+        id="get-started"
+        className="px-6 py-16"
+        style={{ scrollMarginTop: 80 }}
+      >
         <div className="mx-auto max-w-6xl">
           <p
             className="text-xs font-medium tracking-widest uppercase text-center mb-14"
@@ -276,7 +420,10 @@ export default async function Home() {
               style={{ height: 2, background: "var(--border)" }}
             />
             {installSteps.map((step, i) => (
-              <div key={i} className="relative flex flex-col items-center text-center">
+              <div
+                key={i}
+                className="relative flex flex-col items-center text-center"
+              >
                 {/* Step number */}
                 <span
                   className="relative z-10 mb-5 flex h-12 w-12 items-center justify-center rounded-full text-lg font-bold"
@@ -296,7 +443,10 @@ export default async function Home() {
                   {step.icon}
                 </div>
                 <h3 className="text-base font-semibold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
+                <p
+                  className="mt-2 text-sm leading-relaxed"
+                  style={{ color: "var(--muted-foreground)" }}
+                >
                   {step.description}
                 </p>
               </div>
@@ -306,7 +456,11 @@ export default async function Home() {
       </section>
 
       {/* ===== FLOW PIPELINE ===== */}
-      <section id="how-it-works" className="px-6 py-16" style={{ scrollMarginTop: 80 }}>
+      <section
+        id="how-it-works"
+        className="px-6 py-16"
+        style={{ scrollMarginTop: 80 }}
+      >
         <div className="mx-auto max-w-sm">
           {/* Section label */}
           <p
@@ -324,19 +478,31 @@ export default async function Home() {
                 <div
                   className="rounded-lg p-5 border text-center w-full"
                   style={{
-                    borderColor: i === pipelineSteps.length - 1 ? "var(--primary)" : "var(--border)",
+                    borderColor:
+                      i === pipelineSteps.length - 1
+                        ? "var(--primary)"
+                        : "var(--border)",
                     background: "var(--card)",
-                    boxShadow: i === pipelineSteps.length - 1 ? "0 0 30px rgba(250,204,21,0.1)" : "none",
+                    boxShadow:
+                      i === pipelineSteps.length - 1
+                        ? "0 0 30px rgba(250,204,21,0.1)"
+                        : "none",
                   }}
                 >
                   <div
                     className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-md"
-                    style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
+                    style={{
+                      background: "var(--accent)",
+                      color: "var(--accent-foreground)",
+                    }}
                   >
                     {step.icon}
                   </div>
                   <h3 className="text-sm font-semibold">{step.title}</h3>
-                  <p className="mt-1.5 text-xs leading-relaxed" style={{ color: "var(--muted-foreground)" }}>
+                  <p
+                    className="mt-1.5 text-xs leading-relaxed"
+                    style={{ color: "var(--muted-foreground)" }}
+                  >
                     {step.description}
                   </p>
                 </div>
@@ -345,7 +511,12 @@ export default async function Home() {
                 {i < pipelineSteps.length - 1 && (
                   <div
                     className="relative"
-                    style={{ width: 2, height: 48, background: "var(--border)", overflow: "hidden" }}
+                    style={{
+                      width: 2,
+                      height: 48,
+                      background: "var(--border)",
+                      overflow: "hidden",
+                    }}
                   >
                     <span
                       style={{
@@ -403,7 +574,6 @@ export default async function Home() {
           />
         </div>
       </section>
-
     </div>
   );
 }
