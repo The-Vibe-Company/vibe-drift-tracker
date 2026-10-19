@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { authClient } from "@/lib/auth/client";
+import { PostHogUser } from "@/components/posthog-user";
 import { NeonAuthUIProvider } from "@neondatabase/auth/react";
 import "./globals.css";
 
@@ -22,6 +23,7 @@ export default function RootLayout({
           redirectTo="/dashboard"
           emailOTP
         >
+          <PostHogUser />
           {children}
         </NeonAuthUIProvider>
       </body>

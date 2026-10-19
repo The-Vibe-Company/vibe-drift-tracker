@@ -167,6 +167,96 @@ export async function getStats(project?: string, userId?: string) {
   return result;
 }
 
+export type AccountStats = {
+  total_users: number | null;
+  new_users_1d: number | null;
+  new_users_7d: number | null;
+  active_users_1d: number | null;
+  active_users_7d: number | null;
+};
+
+const NULL_ACCOUNT_STATS: AccountStats = {
+  total_users: null,
+  new_users_1d: null,
+  new_users_7d: null,
+  active_users_1d: null,
+  active_users_7d: null,
+};
+
+function asCount(value: unknown): number | null {
+  if (value === null || value === undefined) return null;
+  const n = typeof value === "number" ? value : Number(value);
+  if (!Number.isFinite(n)) return null;
+  return Math.trunc(n);
+}
+
+function errorText(error: unknown): string {
+  const parts: string[] = [];
+  let current: unknown = error;
+  for (let depth = 0; depth < 5 && current && typeof current === "object"; depth++) {
+    const record = current as { message?: unknown; cause?: unknown };
+    if (typeof record.message === "string") parts.push(record.message);
+    current = record.cause;
+  }
+  return parts.join("\n");
+}
+
+function isAuthSchemaMissing(error: unknown): boolean {
+  const text = errorText(error);
+  return (
+    /schema ["']neon_auth["'] does not exist/i.test(text) ||
+    /relation ["']neon_auth\.[^"']+["'] does not exist/i.test(text)
+  );
+}
+
+/**
+ * Account totals come from Neon Auth's user table. Activity is a session
+ * refresh or a commit received in the window. Counts are null when that
+ * source is not in this database.
+ */
+export async function getAccountStats(): Promise<AccountStats> {
+  const db = getDb();
+  try {
+    const result = await db.execute<{
+      total_users: number | null;
+      new_users_1d: number | null;
+      new_users_7d: number | null;
+      active_users_1d: number | null;
+      active_users_7d: number | null;
+    }>(sql`
+      WITH activity AS (
+        SELECT s."userId"::text AS user_id,
+               COALESCE(s."updatedAt", s."createdAt") AS seen_at
+        FROM neon_auth."session" s
+        UNION ALL
+        SELECT c.user_id, c.received_at
+        FROM commits c
+        WHERE c.user_id IS NOT NULL
+          AND c.received_at IS NOT NULL
+      )
+      SELECT
+        (SELECT count(*)::int FROM neon_auth."user") AS total_users,
+        (SELECT count(*)::int FROM neon_auth."user" WHERE "createdAt" >= now() - interval '1 day') AS new_users_1d,
+        (SELECT count(*)::int FROM neon_auth."user" WHERE "createdAt" >= now() - interval '7 days') AS new_users_7d,
+        (SELECT count(DISTINCT user_id)::int FROM activity WHERE seen_at >= now() - interval '1 day') AS active_users_1d,
+        (SELECT count(DISTINCT user_id)::int FROM activity WHERE seen_at >= now() - interval '7 days') AS active_users_7d
+    `);
+
+    const row = result.rows[0];
+    if (!row) return NULL_ACCOUNT_STATS;
+    return {
+      total_users: asCount(row.total_users),
+      new_users_1d: asCount(row.new_users_1d),
+      new_users_7d: asCount(row.new_users_7d),
+      active_users_1d: asCount(row.active_users_1d),
+      active_users_7d: asCount(row.active_users_7d),
+    };
+  } catch (error) {
+    if (isAuthSchemaMissing(error)) return NULL_ACCOUNT_STATS;
+    throw error;
+  }
+}
+
 // --- API Key helpers ---
 
 export async function hashApiKey(raw: string): Promise<string> {

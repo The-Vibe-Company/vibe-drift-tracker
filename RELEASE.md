@@ -51,4 +51,9 @@ Create `app/.env` with:
 DATABASE_URL=<neon-postgres-url>
 NEON_AUTH_BASE_URL=<neon-auth-url>
 NEON_AUTH_COOKIE_SECRET=<random-secret>
+NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=<posthog-project-token>
+NEXT_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+STATS_TOKEN=<bearer-token-for-get-/api/stats>
 ```
+
+`NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` and `NEXT_PUBLIC_POSTHOG_HOST` are optional. When they are unset, the app uses the public vibedrift.dev PostHog project. `GET /api/stats` returns 401 until `STATS_TOKEN` is set.

@@ -17,6 +17,7 @@
     "@neondatabase/serverless": "^0.10.4",
     "drizzle-orm": "^0.38.3",
     "next": "^15.1.0",
+    "posthog-js": "^1.438.10",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "vibedrift-shared": "workspace:*"
